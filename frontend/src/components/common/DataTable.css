@@ -1,0 +1,52 @@
+/* Apple iOS / VisionOS Crystal Light Glass Data Table */
+
+.table-container {
+  overflow-x: auto;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-ios);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  padding: 8px;
+  transition: var(--spring-transition);
+}
+
+.table-container:hover {
+  border-color: rgba(5, 150, 105, 0.35);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th,
+.data-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(241, 245, 249, 0.9);
+  font-size: 0.88rem;
+}
+
+.data-table th {
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.data-table tr {
+  transition: var(--spring-snappy);
+}
+
+.data-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.data-table td {
+  color: var(--text-primary);
+}

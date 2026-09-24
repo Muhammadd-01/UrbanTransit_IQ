@@ -1,0 +1,64 @@
+/* Apple iOS / VisionOS Crystal Light Glass Chart Container */
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-ios);
+  padding: 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  transition: var(--spring-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-container:hover {
+  background: var(--glass-surface-hover);
+  border-color: rgba(5, 150, 105, 0.4);
+  box-shadow: var(--glass-shadow-hover), inset 0 1.5px 2px 0 rgba(255, 255, 255, 1);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.chart-header h3 {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.015em;
+}
+
+.btn-download {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-ios-sm);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: var(--spring-transition);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.02);
+}
+
+.btn-download:hover {
+  background: #ffffff;
+  color: var(--accent-aurora);
+  border-color: var(--accent-aurora);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.chart-body {
+  flex: 1;
+  min-height: 320px;
+}

@@ -1,0 +1,33 @@
+/* VisionOS Liquid Glass Route Intelligence */
+
+.routeintel-page {
+  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.route-score-box {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  padding: 18px;
+  border-radius: var(--radius-ios-sm);
+  text-align: center;
+  margin-bottom: 18px;
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-glass-card);
+}
+
+.route-score-box.score-aurora {
+  border-color: rgba(5, 150, 105, 0.35);
+  box-shadow: 0 4px 16px -4px rgba(5, 150, 105, 0.15);
+}
+
+.route-score-val {
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.route-score-val span {
+  font-size: 1rem;
+  color: var(--text-muted);
+}

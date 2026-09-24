@@ -1,0 +1,74 @@
+/* Apple iOS / VisionOS Crystal Light Glass KPI Card */
+
+.kpi-card {
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-ios);
+  padding: 22px 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  transition: var(--spring-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  background: var(--glass-surface-hover);
+  border-color: rgba(5, 150, 105, 0.4);
+  box-shadow: 0 20px 42px -8px rgba(15, 23, 42, 0.12), inset 0 1.5px 2px 0 rgba(255, 255, 255, 1);
+}
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: left 0.7s ease;
+}
+
+.kpi-card:hover::after {
+  left: 150%;
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.kpi-value {
+  font-size: 2.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 8px 0;
+  color: #0f172a;
+  font-feature-settings: "tnum" 1;
+}
+
+.kpi-change.up {
+  color: var(--accent-aurora);
+  font-weight: 800;
+}
+
+.kpi-change.down {
+  color: var(--accent-coral);
+  font-weight: 800;
+}
+
+.kpi-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}

@@ -1,0 +1,56 @@
+/* Apple iOS / VisionOS Crystal Light Glass Map Container */
+
+.map-wrapper {
+  height: 440px;
+  border-radius: var(--radius-ios);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  position: relative;
+  transition: var(--spring-transition);
+}
+
+.map-wrapper:hover {
+  border-color: rgba(5, 150, 105, 0.4);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background: #f1f5f9 !important;
+}
+
+/* Custom iOS Crystal Light Leaflet Controls */
+.leaflet-bar {
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+  backdrop-filter: blur(20px);
+}
+
+.leaflet-bar a {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: #ffffff !important;
+  color: var(--accent-aurora) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 16px !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.95) !important;
+}

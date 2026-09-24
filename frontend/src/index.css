@@ -1,0 +1,484 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* ==========================================================================
+     UrbanTransit IQ: Apple iOS / VisionOS Crystal Light Glass Palette
+     STRICTLY ZERO BLUE. Ultra-High Optical Contrast & Deep Obsidian Ink.
+     ========================================================================== */
+  
+  /* Primary Luminescence: Emerald Jade / Cyber Mint */
+  --accent-aurora: #059669;
+  --accent-aurora-glow: rgba(5, 150, 105, 0.22);
+  --accent-aurora-light: #10b981;
+  --accent-aurora-bg: rgba(16, 185, 129, 0.12);
+
+  /* Secondary Luminescence: Warm Solar Gold / Radiant Amber */
+  --accent-gold: #d97706;
+  --accent-gold-glow: rgba(217, 119, 6, 0.22);
+  --accent-gold-light: #f59e0b;
+  --accent-gold-bg: rgba(245, 158, 11, 0.12);
+
+  /* Tertiary Luminescence: Royal Cyber Amethyst / Violet Orchid */
+  --accent-violet: #7c3aed;
+  --accent-violet-glow: rgba(124, 58, 237, 0.22);
+  --accent-violet-light: #a855f7;
+  --accent-violet-bg: rgba(124, 58, 237, 0.12);
+
+  /* Critical Indicator: Luminous Coral Crimson */
+  --accent-coral: #e11d48;
+  --accent-coral-glow: rgba(225, 29, 72, 0.22);
+  --accent-coral-light: #f43f5e;
+  --accent-coral-bg: rgba(225, 29, 72, 0.12);
+
+  /* Legacy semantic mappings redirected away from blue */
+  --primary: var(--accent-aurora);
+  --primary-glow: var(--accent-aurora-glow);
+  --secondary: var(--accent-gold);
+  --secondary-glow: var(--accent-gold-glow);
+  --accent: var(--accent-violet);
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #e11d48;
+
+  /* Canvas: Luxurious Pearl Ice & Warm Platinum */
+  --bg-space: #f6f8fc;
+  --bg-space-dark: #eef2f8;
+  --bg-card: rgba(255, 255, 255, 0.78);
+  --bg-sidebar: rgba(255, 255, 255, 0.88);
+  --bg-header: rgba(255, 255, 255, 0.84);
+  --border: rgba(226, 232, 240, 0.85);
+  --border-light: rgba(241, 245, 249, 0.95);
+
+  /* Apple iOS / VisionOS Crystal Light Glass Tokens */
+  --glass-surface: rgba(255, 255, 255, 0.75);
+  --glass-surface-hover: rgba(255, 255, 255, 0.94);
+  --glass-surface-active: rgba(255, 255, 255, 1);
+  --glass-border: rgba(255, 255, 255, 0.95);
+  --glass-border-hover: rgba(5, 150, 105, 0.45);
+  --glass-specular: inset 0 1.5px 1px 0 rgba(255, 255, 255, 1), 0 0 0 1px rgba(226, 232, 240, 0.65);
+  --glass-shadow: 0 10px 30px -6px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  --glass-shadow-hover: 0 20px 42px -8px rgba(15, 23, 42, 0.12), 0 0 25px -4px var(--accent-aurora-glow);
+  --glass-blur: blur(28px) saturate(190%) contrast(105%);
+
+  /* High Contrast Deep Ink Typography */
+  --text-white: #ffffff;
+  --text-primary: #0f172a;        /* Deep obsidian slate for supreme readability */
+  --text-secondary: #334155;      /* Slate 700 */
+  --text-muted: #64748b;          /* Slate 500 */
+
+  /* Squircles & Transitions */
+  --radius-ios: 22px;
+  --radius-ios-sm: 14px;
+  --radius-ios-pill: 999px;
+  --radius: var(--radius-ios);
+  --radius-sm: var(--radius-ios-sm);
+  --shadow: var(--glass-shadow);
+  --spring-transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-snappy: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+
+button {
+  transition: var(--spring-transition);
+}
+
+button:active {
+  transform: scale(0.965);
+}
+
+body { 
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+  background-color: var(--bg-space); 
+  color: var(--text-primary); 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+/* Dynamic Ambient Canvas Lighting Background (Soft Pastel Aura) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(circle at 10% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 88% 22%, rgba(124, 58, 237, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 50% 88%, rgba(245, 158, 11, 0.07) 0%, transparent 50%);
+  animation: ambientBreathing 20s ease-in-out infinite alternate;
+}
+
+@keyframes ambientBreathing {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.85; }
+  50% { transform: scale(1.06) translate(15px, -15px); opacity: 1; }
+  100% { transform: scale(0.96) translate(-12px, 18px); opacity: 0.9; }
+}
+
+/* Page Scaffolding */
+.page-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.page-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.page-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin-bottom: 26px;
+  line-height: 1.55;
+  max-width: 820px;
+}
+
+/* ==========================================================================
+   Apple iOS Crystal Light Glass Containers
+   All page cards, chart cards, and generic cards inherit this universally
+   ========================================================================== */
+.card,
+.chart-card,
+.liquid-glass-card {
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-ios);
+  padding: 26px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  transition: var(--spring-transition);
+  position: relative;
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+.card:hover,
+.chart-card:hover,
+.liquid-glass-card:hover {
+  transform: translateY(-4px) scale(1.008);
+  background: var(--glass-surface-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover), inset 0 1.5px 2px 0 rgba(255, 255, 255, 1);
+}
+
+/* Subtle Specular Sheen line reflection on cards */
+.card::after,
+.chart-card::after,
+.liquid-glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  transition: left 0.75s ease;
+}
+
+.card:hover::after,
+.chart-card:hover::after,
+.liquid-glass-card:hover::after {
+  left: 150%;
+}
+
+.card h3,
+.chart-card h3,
+.liquid-glass-card h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.015em;
+  margin-bottom: 14px;
+}
+
+/* KPI Crystal Light Glass Cards */
+.kpi-card {
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-ios);
+  padding: 22px 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  transition: var(--spring-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  background: var(--glass-surface-hover);
+  border-color: rgba(5, 150, 105, 0.4);
+  box-shadow: 0 20px 42px -8px rgba(15, 23, 42, 0.12), inset 0 1.5px 2px 0 rgba(255, 255, 255, 1);
+}
+
+.kpi-header {
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kpi-value {
+  font-size: 2.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+  margin: 6px 0;
+  font-feature-settings: "tnum" 1;
+}
+
+.kpi-trend {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Glass Badges */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: var(--radius-ios-pill);
+  font-size: 0.74rem;
+  font-weight: 800;
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text-primary);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  backdrop-filter: blur(12px);
+  letter-spacing: 0.03em;
+  transition: var(--spring-transition);
+}
+
+.badge-pill:hover {
+  background: rgba(15, 23, 42, 0.08);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+.badge-aurora {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: var(--accent-aurora);
+}
+
+.badge-gold {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: var(--accent-gold);
+}
+
+.badge-violet {
+  background: rgba(124, 58, 237, 0.12);
+  border-color: rgba(124, 58, 237, 0.35);
+  color: var(--accent-violet);
+}
+
+.badge-coral {
+  background: rgba(225, 29, 72, 0.12);
+  border-color: rgba(225, 29, 72, 0.35);
+  color: var(--accent-coral);
+}
+
+/* Table in Crystal Light Glass Container */
+.table-container {
+  overflow-x: auto;
+  background: var(--glass-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-ios);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-specular);
+  padding: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table thead tr {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+table thead th {
+  padding: 14px 16px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+table tbody tr {
+  border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+  transition: var(--spring-snappy);
+}
+
+table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+table tbody td {
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+}
+
+/* Form Controls with iOS frosted light styling */
+input, select, textarea {
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  border-radius: var(--radius-ios-sm);
+  color: #0f172a;
+  padding: 12px 16px;
+  outline: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: var(--spring-transition);
+  backdrop-filter: blur(15px);
+  box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+}
+
+input:focus, select:focus, textarea:focus {
+  background: #ffffff;
+  border-color: var(--accent-aurora);
+  box-shadow: 0 0 0 3px var(--accent-aurora-glow);
+}
+
+select option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* iOS Spring Buttons */
+button {
+  font-family: inherit;
+  transition: var(--spring-transition);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.btn-aurora {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-weight: 800;
+  padding: 11px 20px;
+  border: none;
+  border-radius: var(--radius-ios-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 18px -2px var(--accent-aurora-glow);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-aurora:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px -2px rgba(5, 150, 105, 0.45);
+}
+
+.btn-ghost-glass {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: var(--radius-ios-sm);
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.btn-ghost-glass:hover {
+  background: #ffffff;
+  border-color: var(--accent-aurora);
+  color: var(--accent-aurora);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Animations */
+@keyframes iosPageEntrance {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px) scale(0.985); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinning {
+  animation: spin 0.9s linear infinite;
+}
+
+/* iOS Light Frosted Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: var(--radius-ios-pill);
+  backdrop-filter: blur(10px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-aurora);
+}

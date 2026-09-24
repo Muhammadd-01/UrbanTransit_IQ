@@ -1,0 +1,134 @@
+/* Apple iOS / VisionOS Crystal Light Glass Sidebar */
+
+.sidebar {
+  width: 260px;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  color: var(--text-secondary);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  border-right: 1px solid rgba(226, 232, 240, 0.9);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  box-shadow: 4px 0 25px rgba(15, 23, 42, 0.04), inset -1px 0 0 0 rgba(255, 255, 255, 0.8);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
+.sidebar-brand {
+  padding: 20px 18px 18px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.brand-header-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  transition: transform 0.25s ease;
+}
+
+.sidebar-logo-icon:hover {
+  transform: rotate(4deg) scale(1.05);
+}
+
+.brand-text-col h2 {
+  color: #0f172a;
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.badge-dev {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--accent-aurora);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+
+.sidebar-nav {
+  padding: 16px 12px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nav-group {
+  padding: 16px 14px 6px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sidebar-nav a {
+  padding: 11px 16px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-radius: var(--radius-ios-sm);
+  transition: var(--spring-transition);
+  position: relative;
+}
+
+.sidebar-nav a svg {
+  font-size: 0.95rem;
+  transition: transform 0.25s ease, color 0.25s ease;
+  color: var(--text-muted);
+}
+
+.sidebar-nav a:hover {
+  background: rgba(15, 23, 42, 0.04);
+  color: #0f172a;
+  transform: translateX(4px);
+}
+
+.sidebar-nav a:hover svg {
+  color: var(--accent-aurora);
+}
+
+.sidebar-nav a.active {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--accent-aurora);
+  font-weight: 800;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  box-shadow: 0 4px 14px -3px var(--accent-aurora-glow), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-nav a.active svg {
+  color: var(--accent-aurora);
+}

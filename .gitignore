@@ -1,0 +1,87 @@
+# UrbanTransit IQ - Git Ignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+.Python
+venv/
+env/
+.venv/
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Data (large files)
+data/raw/*.csv
+data/cleaned/*.csv
+data/processed/*.csv
+data/parquet/
+data/training/
+data/validation/
+data/test/
+
+# Models (large files)
+models/*.pkl
+models/*.joblib
+models/*.model
+models/spark/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+
+# Hadoop
+hadoop/hadoop-*/
+hadoop/logs/
+hadoop/tmp/
+
+# Spark
+spark/spark-*/
+spark/logs/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Logs
+*.log
+logs/
+
+# Reports (generated)
+reports/*.pdf
+reports/*.html
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/

@@ -1,0 +1,26 @@
+/* VisionOS Liquid Glass Model Comparison */
+
+.comparison-page {
+  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.match-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-ios-pill);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  display: inline-block;
+}
+
+.match-badge.agreement {
+  background: rgba(5, 150, 105, 0.12);
+  border: 1px solid rgba(5, 150, 105, 0.25);
+  color: #059669;
+}
+
+.match-badge.discrepancy {
+  background: rgba(217, 119, 6, 0.12);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  color: #b45309;
+}

@@ -1,0 +1,66 @@
+/* VisionOS Liquid Glass Data Quality Styling */
+
+.dataquality-page {
+  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-chip-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-ios-pill);
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--spring-transition);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.filter-chip-btn.active {
+  background: var(--accent-aurora);
+  color: #04080c;
+  border-color: var(--accent-aurora);
+  box-shadow: 0 0 16px var(--accent-aurora-glow);
+}
+
+.filter-chip-btn:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.filter-chip-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-ios-pill);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  display: inline-block;
+}
+
+.status-badge.VALID {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.status-badge.CORRECTED {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+.status-badge.FLAGGED {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #c084fc;
+}
+
+.status-badge.QUARANTINED {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #fb7185;
+}

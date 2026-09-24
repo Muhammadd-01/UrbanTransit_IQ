@@ -1,0 +1,31 @@
+overcrowding:
+  low: 0.5
+  moderate: 0.7
+  high: 0.85
+  overcrowded: 0.95
+  critical: 1.0
+delay:
+  on_time: 2
+  minor: 5
+  moderate: 10
+  major: 20
+  severe: 999
+headway:
+  bunching_threshold_ratio: 0.4
+  gap_threshold_ratio: 2.0
+anomaly:
+  zscore_threshold: 3.0
+  iqr_multiplier: 1.5
+  isolation_forest_contamination: 0.05
+forecast:
+  default_horizon_days: 30
+  train_ratio: 0.7
+  validation_ratio: 0.15
+  test_ratio: 0.15
+route_performance:
+  demand_weight: 0.2
+  occupancy_weight: 0.15
+  punctuality_weight: 0.2
+  delay_frequency_weight: 0.15
+  reliability_weight: 0.15
+  travel_time_weight: 0.15

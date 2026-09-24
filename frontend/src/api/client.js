@@ -249,3 +249,5 @@ export const sparkJobsAPI = {
   list: () => client.get('/api/spark-jobs'),
   get: (id) => client.get(`/api/spark-jobs/${id}`),
 };
+
+export default client;

@@ -1,0 +1,115 @@
+{
+    "total_sources": 12,
+    "valid_sources": 12,
+    "total_rows_ingested": 2963678,
+    "sources": [
+        {
+            "source": "tickets.csv",
+            "format": "CSV",
+            "schema": "11 cols (ticket_id, passenger_id, trip_id...)",
+            "rows": 2055000,
+            "partition": "by date/route",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "passenger_counts.csv",
+            "format": "CSV",
+            "schema": "9 cols (count_id, trip_id, stop_id...)",
+            "rows": 520000,
+            "partition": "by route_id",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "delays.csv",
+            "format": "CSV",
+            "schema": "12 cols (delay_id, trip_id, stop_id...)",
+            "rows": 260000,
+            "partition": "by date/cause",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "trips.csv",
+            "format": "CSV",
+            "schema": "9 cols (trip_id, schedule_id, route_id...)",
+            "rows": 65650,
+            "partition": "by date/route",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "routes.csv",
+            "format": "CSV",
+            "schema": "13 cols (route_id, route_name, route_type...)",
+            "rows": 110,
+            "partition": "unpartitioned",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "stops.csv",
+            "format": "CSV",
+            "schema": "9 cols (stop_id, stop_name, latitude...)",
+            "rows": 520,
+            "partition": "by zone",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "vehicles.csv",
+            "format": "CSV",
+            "schema": "7 cols (vehicle_id, vehicle_type, capacity...)",
+            "rows": 260,
+            "partition": "unpartitioned",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "passengers.csv",
+            "format": "CSV",
+            "schema": "6 cols (passenger_id, registration_date, passenger_type...)",
+            "rows": 55000,
+            "partition": "by home_zone",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "schedules.csv",
+            "format": "CSV",
+            "schema": "8 cols (schedule_id, route_id, vehicle_id...)",
+            "rows": 2200,
+            "partition": "by route_id",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "service_calendar.csv",
+            "format": "CSV",
+            "schema": "9 cols (date, day_of_week, day_name...)",
+            "rows": 360,
+            "partition": "by year/month",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "route_stops.csv",
+            "format": "CSV",
+            "schema": "5 cols (route_id, stop_id, stop_sequence...)",
+            "rows": 2578,
+            "partition": "by route_id",
+            "validation_status": "VALID",
+            "errors": "None"
+        },
+        {
+            "source": "gps_events.csv",
+            "format": "CSV",
+            "schema": "10 cols (event_id, vehicle_id, trip_id...)",
+            "rows": 2000,
+            "partition": "by route_id/time",
+            "validation_status": "VALID",
+            "errors": "None"
+        }
+    ]
+}

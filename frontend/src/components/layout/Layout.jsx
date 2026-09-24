@@ -1,22 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import FilterBar from './FilterBar';
+import BackgroundParticles from '../common/BackgroundParticles';
 import './Layout.css';
 
 const Layout = () => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   return (
-    <div className="layout">
-      <Sidebar />
-      <div className="main-content">
-        <Header />
+    <div className="layout" style={{ position: 'relative' }}>
+      <BackgroundParticles />
+      <Sidebar 
+        isCollapsed={isSidebarCollapsed} 
+        toggleSidebar={() => setIsSidebarCollapsed(prev => !prev)} 
+      />
+      <div className={`main-content ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+        <Header toggleSidebar={() => setIsSidebarCollapsed(prev => !prev)} isSidebarCollapsed={isSidebarCollapsed} />
         <FilterBar />
-        <div className="page-content">
+        <main className="page-content">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );
 };
+
 export default Layout;

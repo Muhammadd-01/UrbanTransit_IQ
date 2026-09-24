@@ -11,8 +11,16 @@ async def get_dual_pipeline_results():
         cases=results["cases"][:20],
         summary_stats=results["summary"],
         agreement_rate=results["summary"]["agreement_rate"],
-        model_metrics_spark={"f1": 0.838, "accuracy": 0.841, "roc_auc": 0.894},
-        model_metrics_python={"f1": 0.846, "accuracy": 0.848, "roc_auc": 0.902}
+        model_metrics_spark={
+            "accuracy": results["spark_metrics"]["test_accuracy"],
+            "f1": results["spark_metrics"]["f1"],
+            "roc_auc": results["spark_metrics"]["roc_auc"]
+        },
+        model_metrics_python={
+            "accuracy": results["python_metrics"]["test_accuracy"],
+            "f1": results["python_metrics"]["f1"],
+            "roc_auc": results["python_metrics"]["roc_auc"]
+        }
     )
 
 @router.post("/run")

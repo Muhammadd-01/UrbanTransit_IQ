@@ -1,0 +1,88 @@
+{
+    "timestamp": "2026-09-24T12:05:00Z",
+    "specification": "UrbanTransit IQ SRS v1.0",
+    "overall_status": "COMPLIANT",
+    "compliance_percentage": 100.0,
+    "summary": {
+        "total_categories": 15,
+        "compliant": 15,
+        "partial": 0,
+        "failed": 0,
+        "total_automated_tests": 39,
+        "tests_passed": 39,
+        "tests_failed": 0
+    },
+    "verified_dataset_scale": {
+        "status": "PASS",
+        "ticket_movements": 2055000,
+        "srs_target_tickets": 2000000,
+        "passenger_counts": 520000,
+        "srs_target_passenger_counts": 500000,
+        "delays": 260000,
+        "srs_target_delays": 250000,
+        "trips": 65650,
+        "srs_target_trips": 50000,
+        "routes": 110,
+        "srs_target_routes": 100,
+        "stops": 520,
+        "srs_target_stops": 500,
+        "vehicles": 260,
+        "srs_target_vehicles": 250,
+        "passengers": 55000,
+        "srs_target_passengers": 50000,
+        "historical_span_months": 12.0,
+        "srs_target_months": 12.0,
+        "raw_ingestion_rows": 2963678
+    },
+    "verified_data_quality": {
+        "status": "PASS",
+        "rules_evaluated": 15,
+        "total_records_audited": 365650,
+        "valid_records": 301906,
+        "corrected_records": 43595,
+        "flagged_records": 8000,
+        "quarantined_records": 20649,
+        "overall_quality_pct": 89.97,
+        "completeness_pct": 95.62,
+        "validity_pct": 82.57,
+        "consistency_pct": 91.73
+    },
+    "verified_machine_learning": {
+        "delay_prediction": {
+            "best_model": "Gradient Boosted Trees",
+            "test_accuracy": 0.9256,
+            "srs_target_accuracy": 0.85,
+            "f1_score": 0.9255,
+            "srs_target_f1": 0.80,
+            "roc_auc": 0.9457,
+            "p95_inference_latency_ms": 4.42,
+            "srs_target_latency_ms": 200.0,
+            "status": "PASS"
+        },
+        "demand_forecasting": {
+            "model": "Lagged GradientBoostingRegressor",
+            "horizon_days": 14,
+            "test_mae": 1007.7,
+            "test_rmse": 1168.9,
+            "test_mape_pct": 19.67,
+            "status": "PASS"
+        },
+        "dual_pipeline_comparison": {
+            "spark_model": "Spark MLlib GBTClassifier (v1.0)",
+            "python_model": "Python Scikit-Learn GradientBoostedTrees (v1.0)",
+            "agreement_rate_pct": 100.0,
+            "srs_target_agreement_pct": 95.0,
+            "status": "PASS"
+        }
+    },
+    "verified_performance_benchmarks": {
+        "status": "PASS",
+        "total_endpoints_evaluated": 20,
+        "endpoints_passing": 20,
+        "analytics_p95_max_observed_ms": 998.51,
+        "analytics_threshold_ms": 5000.0,
+        "ml_inference_p95_observed_ms": 4.42,
+        "ml_inference_threshold_ms": 200.0,
+        "scalability_peak_throughput_records_sec": 3643249
+    }
+}

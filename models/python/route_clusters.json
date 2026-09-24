@@ -1,0 +1,92 @@
+{
+    "method": "K-Means (k=3) with StandardScaler",
+    "silhouette_score": 0.189,
+    "davies_bouldin_index": 1.702,
+    "calinski_harabasz_index": 28.2,
+    "total_routes_clustered": 110,
+    "clusters": [
+        {
+            "cluster_id": 0,
+            "name": "High Demand / High Congestion Trunk",
+            "description": "Cluster of 47 routes with average demand 95.72 and occupancy 167.0%.",
+            "centroid": {
+                "avg_demand": 95.72,
+                "avg_occupancy": 1.67,
+                "avg_delay": 13.8,
+                "punctuality": 5.52,
+                "trip_frequency": 605.32,
+                "route_distance": 18.5
+            },
+            "route_count": 47,
+            "members": [
+                "GL-28-I",
+                "GL-29-O",
+                "KCR-14-I",
+                "KCR-14-O",
+                "KCR-52-I",
+                "KCR-52-O",
+                "LB-04-I",
+                "LB-09-I",
+                "LB-09-O",
+                "LB-10-I"
+            ]
+        },
+        {
+            "cluster_id": 1,
+            "name": "High Frequency / High Reliability Express & BRT",
+            "description": "Cluster of 22 routes with average demand 96.58 and occupancy 170.0%.",
+            "centroid": {
+                "avg_demand": 96.58,
+                "avg_occupancy": 1.7,
+                "avg_delay": 13.25,
+                "punctuality": 6.99,
+                "trip_frequency": 599.64,
+                "route_distance": 18.5
+            },
+            "route_count": 22,
+            "members": [
+                "GL-28-O",
+                "GL-29-I",
+                "LB-04-O",
+                "LB-06-O",
+                "LB-15-O",
+                "LB-19-I",
+                "LB-20-I",
+                "LB-20-O",
+                "LB-27-O",
+                "LB-37-O"
+            ]
+        },
+        {
+            "cluster_id": 2,
+            "name": "Suburban Feeder / Moderate Demand",
+            "description": "Cluster of 41 routes with average demand 97.7 and occupancy 170.0%.",
+            "centroid": {
+                "avg_demand": 97.7,
+                "avg_occupancy": 1.7,
+                "avg_delay": 13.97,
+                "punctuality": 4.89,
+                "trip_frequency": 585.56,
+                "route_distance": 18.5
+            },
+            "route_count": 41,
+            "members": [
+                "GL-18-I",
+                "GL-18-O",
+                "KCR-30-I",
+                "KCR-30-O",
+                "LB-06-I",
+                "LB-10-O",
+                "LB-13-I",
+                "LB-13-O",
+                "LB-19-O",
+                "LB-26-I"
+            ]
+        }
+    ],
+    "comparison_metrics": {
+        "kmeans_silhouette": 0.189,
+        "agglomerative_silhouette": 0.136,
+        "dbscan_silhouette": 0.202
+    }
+}

@@ -1,0 +1,216 @@
+{
+    "detection_method": "Isolation Forest & 3-Sigma Z-Score Ensemble",
+    "total_anomalies": 30,
+    "anomalies": [
+        {
+            "record_id": "D-0000001",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0244 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000002",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0053 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000003",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0275 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000004",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0437 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000005",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0049 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000006",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0249 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000007",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0347 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000008",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0136 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000009",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0421 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000010",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0467 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000011",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0061 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000012",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0510 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000013",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0080 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000014",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0183 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "D-0000015",
+            "type": "Extreme Congestion Delay",
+            "score": 3.85,
+            "explanation": "Delay of -120 mins on route nan at stop S-0048 (delay_minutes value -120 is 3.85 standard deviations from mean 6.70).",
+            "timestamp": "2024-03-14T08:30:00"
+        },
+        {
+            "record_id": "C-0002035",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.01,
+            "explanation": "Unusual load (360) with boarding surge (9) at stop S-0149.",
+            "timestamp": "2026-01-16T20:17:00"
+        },
+        {
+            "record_id": "C-0002038",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.08,
+            "explanation": "Unusual load (360) with boarding surge (18) at stop S-0053.",
+            "timestamp": "2026-02-13T12:55:00"
+        },
+        {
+            "record_id": "C-0002062",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.01,
+            "explanation": "Unusual load (360) with boarding surge (9) at stop S-0463.",
+            "timestamp": "2026-06-12T15:48:00"
+        },
+        {
+            "record_id": "C-0002082",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.15,
+            "explanation": "Unusual load (360) with boarding surge (8) at stop S-0238.",
+            "timestamp": "2025-11-01T20:03:00"
+        },
+        {
+            "record_id": "C-0002134",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.15,
+            "explanation": "Unusual load (360) with boarding surge (8) at stop S-0006.",
+            "timestamp": "2026-07-10T18:26:00"
+        },
+        {
+            "record_id": "C-0002142",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.15,
+            "explanation": "Unusual load (360) with boarding surge (8) at stop S-0454.",
+            "timestamp": "2026-06-26T16:17:00"
+        },
+        {
+            "record_id": "C-0002146",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.21,
+            "explanation": "Unusual load (360) with boarding surge (19) at stop S-0491.",
+            "timestamp": "2026-07-06T20:28:00"
+        },
+        {
+            "record_id": "C-0002155",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.35,
+            "explanation": "Unusual load (360) with boarding surge (6) at stop S-0214.",
+            "timestamp": "2025-10-26T19:41:00"
+        },
+        {
+            "record_id": "C-0002163",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.25,
+            "explanation": "Unusual load (360) with boarding surge (7) at stop S-0461.",
+            "timestamp": "2025-11-23T12:43:00"
+        },
+        {
+            "record_id": "C-0002171",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.15,
+            "explanation": "Unusual load (360) with boarding surge (8) at stop S-0351.",
+            "timestamp": "2025-11-18T09:09:00"
+        },
+        {
+            "record_id": "C-0002197",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.25,
+            "explanation": "Unusual load (360) with boarding surge (7) at stop S-0480.",
+            "timestamp": "2026-03-22T11:05:00"
+        },
+        {
+            "record_id": "C-0002204",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.15,
+            "explanation": "Unusual load (360) with boarding surge (8) at stop S-0134.",
+            "timestamp": "2025-12-21T07:34:00"
+        },
+        {
+            "record_id": "C-0002217",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.01,
+            "explanation": "Unusual load (360) with boarding surge (9) at stop S-0308.",
+            "timestamp": "2025-10-27T16:12:00"
+        },
+        {
+            "record_id": "C-0002225",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.01,
+            "explanation": "Unusual load (360) with boarding surge (9) at stop S-0219.",
+            "timestamp": "2026-03-29T07:15:00"
+        },
+        {
+            "record_id": "C-0002228",
+            "type": "Unscheduled Passenger Surge",
+            "score": 0.15,
+            "explanation": "Unusual load (360) with boarding surge (8) at stop S-0397.",
+            "timestamp": "2026-05-09T21:50:00"
+        }
+    ]
+}

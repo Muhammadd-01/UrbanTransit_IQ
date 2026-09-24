@@ -3,7 +3,10 @@ Tests for verifying dual-pipeline independence (Pipeline A: Spark vs Pipeline B:
 Verifies that Python does not consume Spark outputs, and tests comparison logic.
 """
 
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 from python_pipeline.comparison import analyze_disagreement
 
 

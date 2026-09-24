@@ -1,87 +1,138 @@
 import React, { useState, useEffect } from 'react';
 import { settingsAPI } from '../api/client';
-import { FaSlidersH, FaServer, FaMicrochip, FaUsers } from 'react-icons/fa';
+import { FaSlidersH, FaServer, FaMicrochip, FaUsers, FaDatabase, FaBolt, FaHdd, FaSave } from 'react-icons/fa';
 import './Settings.css';
 
 const Settings = () => {
   const [thresholds, setThresholds] = useState(null);
 
   useEffect(() => {
-    settingsAPI.getThresholds().then(res => setThresholds(res.data));
+    settingsAPI.getThresholds()
+      .then(res => setThresholds(res.data))
+      .catch(console.error);
   }, []);
 
   return (
     <div className="page-container settings-page">
-      <div className="dashboard-hero">
-        <div>
-          <h1 className="page-title">System Settings & Analytical Thresholds</h1>
-          <p className="page-desc">
-            Externalized threshold parameters loaded dynamically from <code>config/thresholds.yaml</code> for deterministic transit evaluation.
+      {/* Header */}
+      <div className="dashboard-hero hud-panel hud-corners">
+        <div className="hero-text-block">
+          <div className="hero-super-tag">
+            <span className="pulse-beacon-cyan"></span>
+            <span>SYSTEM CONFIGURATION // ANALYTICAL THRESHOLDS</span>
+          </div>
+          <h1 className="hero-main-title">System Settings & Threshold Engine</h1>
+          <p className="hero-desc">
+            Externalized operational parameters loaded dynamically from <code>config/thresholds.yaml</code> for deterministic transit evaluation and Mac 16GB hardware constraints.
           </p>
+        </div>
+        <div className="hero-right-actions">
+          <span className="sys-badge"><FaSlidersH className="text-cyan" /> YAML SPEC: SYNCED</span>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}>
-        <div className="chart-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-            <FaSlidersH style={{ color: 'var(--accent-aurora)' }} />
-            <h3>Configurable Analytical Thresholds</h3>
+      <div className="dashboard-grid-two">
+        {/* Left: Configurable Thresholds */}
+        <div className="chart-card hud-panel hud-corners">
+          <div className="chart-header">
+            <div>
+              <h3>Analytical Evaluation Thresholds</h3>
+              <span className="chart-subtitle">Loaded from config/thresholds.yaml</span>
+            </div>
+            <span className="badge-pill badge-aurora">CONFIG // YAML</span>
           </div>
 
           {thresholds ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.88rem' }}>
-              <div className="threshold-param-box">
-                <strong style={{ color: 'var(--accent-gold)', display: 'block', marginBottom: '4px' }}>Overcrowding Thresholds:</strong>
-                <div style={{ color: 'var(--text-secondary)' }}>Moderate: {(thresholds.overcrowding?.moderate * 100).toFixed(0)}% | Critical Overcrowded: {(thresholds.overcrowding?.overcrowded * 100).toFixed(0)}%</div>
+            <div className="thresholds-container">
+              <div className="threshold-card hud-panel">
+                <span className="tc-title text-gold">OVERCROWDING THRESHOLDS:</span>
+                <div className="tc-row">
+                  <span>Moderate Overcrowding:</span>
+                  <strong className="mono-val text-white">{((thresholds.overcrowding?.moderate || 0.85) * 100).toFixed(0)}% Load</strong>
+                </div>
+                <div className="tc-row">
+                  <span>Critical Overcrowding:</span>
+                  <strong className="mono-val text-coral">{((thresholds.overcrowding?.overcrowded || 0.95) * 100).toFixed(0)}% Load</strong>
+                </div>
               </div>
-              <div className="threshold-param-box">
-                <strong style={{ color: 'var(--accent-aurora)', display: 'block', marginBottom: '4px' }}>Delay Severity Bands (Minutes):</strong>
-                <div style={{ color: 'var(--text-secondary)' }}>On-Time: &lt;{thresholds.delay?.on_time}m | Minor: {thresholds.delay?.minor}m | Major: {thresholds.delay?.major}m</div>
+
+              <div className="threshold-card hud-panel">
+                <span className="tc-title text-cyan">DELAY SEVERITY BANDS (MINUTES):</span>
+                <div className="tc-row">
+                  <span>On-Time Arrival:</span>
+                  <strong className="mono-val text-success">&lt; {thresholds.delay?.on_time || 5} min</strong>
+                </div>
+                <div className="tc-row">
+                  <span>Minor Delay:</span>
+                  <strong className="mono-val text-gold">{thresholds.delay?.minor || 10} min</strong>
+                </div>
+                <div className="tc-row">
+                  <span>Major Severe Delay:</span>
+                  <strong className="mono-val text-coral">&gt; {thresholds.delay?.major || 15} min</strong>
+                </div>
               </div>
-              <div className="threshold-param-box">
-                <strong style={{ color: 'var(--accent-violet)', display: 'block', marginBottom: '4px' }}>Headway Bunching & Gapping:</strong>
-                <div style={{ color: 'var(--text-secondary)' }}>Bunching Ratio: {thresholds.headway?.bunching_threshold_ratio}x | Gap Ratio: {thresholds.headway?.gap_threshold_ratio}x scheduled headway</div>
+
+              <div className="threshold-card hud-panel">
+                <span className="tc-title text-sky">HEADWAY BUNCHING & GAPPING:</span>
+                <div className="tc-row">
+                  <span>Bunching Ratio Threshold:</span>
+                  <strong className="mono-val text-coral">&lt; {thresholds.headway?.bunching_threshold_ratio || 0.5}x Scheduled</strong>
+                </div>
+                <div className="tc-row">
+                  <span>Gap Ratio Threshold:</span>
+                  <strong className="mono-val text-gold">&gt; {thresholds.headway?.gap_threshold_ratio || 1.8}x Scheduled</strong>
+                </div>
               </div>
             </div>
-          ) : <div style={{ color: 'var(--text-muted)' }}>Loading thresholds from YAML...</div>}
+          ) : (
+            <div className="mono-val text-dim" style={{ padding: '20px' }}>Loading configuration schema...</div>
+          )}
         </div>
 
-        <div className="chart-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-            <FaServer style={{ color: 'var(--accent-gold)' }} />
-            <h3>Platform & Hardware Architecture Context</h3>
+        {/* Right: Architecture Specifications */}
+        <div className="chart-card hud-panel hud-corners">
+          <div className="chart-header">
+            <div>
+              <h3>Platform & Cluster Execution Context</h3>
+              <span className="chart-subtitle">Mac 16GB Single-Node Big Data Specifications</span>
+            </div>
+            <span className="badge-pill badge-gold">HARDWARE ALLOCATION</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Focus Metropolis:</span>
-              <strong style={{ color: 'var(--text-primary)' }}>Karachi, Pakistan</strong>
+          <div className="platform-spec-list">
+            <div className="ps-row">
+              <span className="ps-label">FOCUS METROPOLIS:</span>
+              <strong className="text-white">Karachi Metropolitan Area, Pakistan</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Execution Mode:</span>
-              <span className="badge-pill badge-aurora">DEVELOPMENT (Offline Fallback Supported)</span>
+            <div className="ps-row">
+              <span className="ps-label">EXECUTION PROFILE:</span>
+              <span className="status-badge-chip valid">ONLINE CLUSTER (OFFLINE RESILIENT)</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Apache Spark Allocation:</span>
-              <strong style={{ color: 'var(--accent-gold)' }}>2GB Driver / 2GB Executor (16GB RAM Mac)</strong>
+            <div className="ps-row">
+              <span className="ps-label">APACHE SPARK RESOURCE:</span>
+              <strong className="mono-val text-cyan">2GB Driver / 2GB Executor (Standalone)</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(0, 0, 0, 0.06)' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Hadoop HDFS Storage:</span>
-              <strong style={{ color: 'var(--text-primary)' }}>Replication 1, 64MB Block Size</strong>
+            <div className="ps-row">
+              <span className="ps-label">HADOOP HDFS STORAGE:</span>
+              <strong className="mono-val text-white">Replication 1 / 64MB Block Size</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Supabase Database Ledger:</span>
-              <strong style={{ color: 'var(--accent-aurora)' }}>PostgreSQL with RLS Enforced</strong>
+            <div className="ps-row">
+              <span className="ps-label">DATABASE FABRIC:</span>
+              <strong className="mono-val text-gold">PostgreSQL (Supabase) with RLS Enforced</strong>
+            </div>
+            <div className="ps-row">
+              <span className="ps-label">FASTAPI GATEWAY:</span>
+              <strong className="mono-val text-white">Uvicorn Async Worker on Port 8000</strong>
             </div>
           </div>
 
-          <div style={{ marginTop: '24px', borderTop: '1px solid rgba(0, 0, 0, 0.06)', paddingTop: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <FaUsers style={{ color: 'var(--accent-aurora)' }} />
-              <strong style={{ color: 'var(--text-primary)', fontSize: '0.86rem' }}>Core Engineering Team:</strong>
-            </div>
-            <p style={{ margin: 0, fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-              Muhammad Affan (Lead) · Muhammad Hammad (Big Data) · Shahmir Qadri (ML) · Waqas Rehman (Data Quality)
+          <div className="team-credits-box hud-panel">
+            <span className="tc-header text-cyan"><FaUsers /> LEAD ARCHITECT & ENGINEERING ROSTER:</span>
+            <p>
+              <strong>Muhammad Affan</strong> (Lead Architect & Full-Stack Data Engineer) · 
+              <strong> Muhammad Hammad</strong> (Big Data & Spark) · 
+              <strong> Shahmir Qadri</strong> (Machine Learning) · 
+              <strong> Waqas Rehman</strong> (Data Quality Governance)
             </p>
           </div>
         </div>

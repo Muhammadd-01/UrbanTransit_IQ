@@ -1,9 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { 
-  FaBus, 
-  FaSubway, 
   FaShieldAlt, 
   FaUser, 
   FaLock, 
@@ -12,9 +10,12 @@ import {
   FaCheckCircle,
   FaExclamationCircle,
   FaBolt,
-  FaCity
+  FaCity,
+  FaSun,
+  FaMoon
 } from 'react-icons/fa';
-import logoImg from '../assets/logo.png';
+import Logo from '../components/common/Logo';
+import BackgroundParticles from '../components/common/BackgroundParticles';
 import './Login.css';
 
 const Login = () => {
@@ -29,6 +30,18 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // Sync theme
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,10 +67,9 @@ const Login = () => {
         navigate('/');
       }
     } catch (err) {
-      console.error(err);
       setError(
         err.response?.data?.detail || 
-        'Authentication failed. Please verify credentials or use One-Click Demo Login.'
+        'Authentication failed. Please verify credentials or try Quick Evaluator Access.'
       );
     } finally {
       setLoading(false);
@@ -81,17 +93,31 @@ const Login = () => {
 
   return (
     <div className="transit-auth-wrapper">
-      {/* Dynamic Animated Background Mesh */}
-      <div className="cyber-transit-bg">
-        <div className="glow-orb orb-1"></div>
-        <div className="glow-orb orb-2"></div>
-        <div className="transit-lines-canvas">
-          <div className="transit-stream line-green"></div>
-          <div className="transit-stream line-orange"></div>
-          <div className="transit-stream line-red"></div>
-        </div>
-      </div>
+      {/* 3D Interactive Three.js Particle Wave Mesh (Responds to Cursor Hover & Clicks) */}
+      <BackgroundParticles />
 
+      {/* Floating Theme Switcher */}
+      <button 
+        type="button"
+        className={`theme-toggle-ios auth-theme-toggle ${theme === 'dark' ? 'is-dark' : 'is-light'}`}
+        onClick={toggleTheme}
+        title={theme === 'dark' ? 'Slide to Switch to iOS Light Mode' : 'Slide to Switch to iOS 27 Night Mode'}
+        aria-label="Toggle Night Mode"
+      >
+        <div className="theme-toggle-track">
+          <span className="track-icon-sun" title="Day"><FaSun /></span>
+          <span className="track-icon-moon" title="Night"><FaMoon /></span>
+          <div className="theme-toggle-thumb">
+            {theme === 'dark' ? (
+              <FaMoon className="thumb-icon moon" />
+            ) : (
+              <FaSun className="thumb-icon sun" />
+            )}
+          </div>
+        </div>
+      </button>
+
+      {/* Main Authentication Liquid Glass Panel */}
       <div className="auth-card-container">
         {/* Brand Header */}
         <div className="auth-header">
@@ -99,8 +125,9 @@ const Login = () => {
             <span className="pulse-dot"></span>
             <FaCity className="badge-icon" /> TRANSITVERSE INTELLIGENCE • KARACHI
           </div>
+
           <div className="brand-logo-title">
-            <img src={logoImg} alt="UrbanTransit IQ Logo" className="auth-brand-logo-img" />
+            <Logo size={46} className="auth-brand-logo-svg" />
             <h1 className="brand-title">UrbanTransit<span className="brand-accent">IQ</span></h1>
           </div>
           <p className="brand-subtitle">
@@ -108,9 +135,9 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Glassmorphic Auth Box */}
-        <div className="auth-glass-box">
-          {/* Tabs */}
+        {/* Liquid Glass Box */}
+        <div className="auth-glass-box hud-panel">
+          {/* iOS Segmented Tabs */}
           <div className="auth-tabs">
             <button 
               type="button"
@@ -129,7 +156,7 @@ const Login = () => {
             <div className={`tab-indicator ${isRegister ? 'right' : 'left'}`}></div>
           </div>
 
-          {/* Alerts */}
+          {/* Feedback Alerts */}
           {error && (
             <div className="auth-alert error-alert">
               <FaExclamationCircle className="alert-icon" />
@@ -147,7 +174,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="auth-form">
             {isRegister && (
               <div className="form-group fade-in-up">
-                <label>Full Name</label>
+                <label>FULL OPERATOR NAME</label>
                 <div className="input-group">
                   <FaUser className="input-icon" />
                   <input
@@ -162,7 +189,7 @@ const Login = () => {
             )}
 
             <div className="form-group">
-              <label>Official Email</label>
+              <label>OFFICIAL TELEMETRY EMAIL</label>
               <div className="input-group">
                 <FaEnvelope className="input-icon" />
                 <input
@@ -176,7 +203,7 @@ const Login = () => {
             </div>
 
             <div className="form-group">
-              <label>Password</label>
+              <label>SECURITY PASSCODE</label>
               <div className="input-group">
                 <FaLock className="input-icon" />
                 <input
@@ -191,7 +218,7 @@ const Login = () => {
 
             {isRegister && (
               <div className="form-group fade-in-up">
-                <label>Role Assignment</label>
+                <label>SECURITY ROLE ENTITLEMENT</label>
                 <div className="input-group">
                   <FaShieldAlt className="input-icon" />
                   <select value={role} onChange={(e) => setRole(e.target.value)}>
@@ -210,14 +237,14 @@ const Login = () => {
                 </div>
               ) : (
                 <>
-                  <span>{isRegister ? 'Register Account' : 'Access Command Center'}</span>
+                  <span>{isRegister ? 'Register Credentials' : 'Access Command Center'}</span>
                   <FaArrowRight className="btn-arrow" />
                 </>
               )}
             </button>
           </form>
 
-          {/* One-Click Quick Demo Sign-Ins */}
+          {/* Quick Demo Sign-Ins */}
           <div className="quick-demo-section">
             <div className="divider">
               <span>ONE-CLICK EVALUATOR ACCESS</span>
@@ -230,7 +257,7 @@ const Login = () => {
                 title="Login as Lead Architect & Administrator"
               >
                 <FaBolt className="demo-icon bolt" />
-                <div>
+                <div className="demo-meta">
                   <strong>Muhammad Affan</strong>
                   <small>Lead Architect (Admin)</small>
                 </div>
@@ -243,7 +270,7 @@ const Login = () => {
                 title="Login as Competition Evaluator"
               >
                 <FaShieldAlt className="demo-icon shield" />
-                <div>
+                <div className="demo-meta">
                   <strong>Evaluator Panel</strong>
                   <small>Competition Juror (Analyst)</small>
                 </div>
@@ -255,23 +282,23 @@ const Login = () => {
         {/* Live Footprint Ticker */}
         <div className="auth-footer-stats">
           <div className="stat-item">
-            <span className="stat-num">2.0M+</span>
+            <span className="stat-num">2.05M+</span>
             <span className="stat-label">Movement Records</span>
           </div>
           <div className="stat-separator">•</div>
           <div className="stat-item">
             <span className="stat-num">110</span>
-            <span className="stat-label">Karachi Routes</span>
+            <span className="stat-label">Corridors</span>
           </div>
           <div className="stat-separator">•</div>
           <div className="stat-item">
             <span className="stat-num">Spark 3.5</span>
-            <span className="stat-label">Distributed Engine</span>
+            <span className="stat-label">MLlib Engine</span>
           </div>
           <div className="stat-separator">•</div>
           <div className="stat-item">
-            <span className="stat-num">Supabase</span>
-            <span className="stat-label">Security Ledger</span>
+            <span className="stat-num">PostgreSQL</span>
+            <span className="stat-label">Live Fabric</span>
           </div>
         </div>
       </div>

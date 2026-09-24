@@ -1,0 +1,42 @@
+{
+    "status": "PASSED",
+    "counts": {
+        "ticket_movements": 2055000,
+        "trip_passenger_records": 520000,
+        "routes": 110,
+        "stops": 520,
+        "vehicles": 260,
+        "passengers": 55000,
+        "delay_records": 260000,
+        "service_calendar_records": 360,
+        "trips": 65650,
+        "schedules": 2200,
+        "historical_months": 12.0
+    },
+    "minimums": {
+        "tickets": 2000000,
+        "passenger_counts": 500000,
+        "routes": 100,
+        "stops": 500,
+        "vehicles": 250,
+        "passengers": 50000,
+        "delays": 250000,
+        "service_calendar": 360,
+        "trips": 50000,
+        "schedules": 1500
+    },
+    "checks": {
+        "Ticket movements (>= 2,000,000)": true,
+        "Trip passenger records (>= 500,000)": true,
+        "Routes (>= 100)": true,
+        "Stops (>= 500)": true,
+        "Vehicles (>= 250)": true,
+        "Passengers (>= 50,000)": true,
+        "Delay records (>= 250,000)": true,
+        "Historical months (>= 12 months / 360 days)": true,
+        "Trips (>= 50,000)": true,
+        "Schedules (>= 1,500)": true
+    },
+    "all_passed": true,
+    "report_text": "\n============================================================\n                Dataset Validation Report\n============================================================\nTicket movements:          2,055,000 (SRS Req: >= 2,000,000)\nTrip passenger records:    520,000 (SRS Req: >= 500,000)\nRoutes:                    110 (SRS Req: >= 100)\nStops:                     520 (SRS Req: >= 500)\nVehicles:                  260 (SRS Req: >= 250)\nPassengers:                55,000 (SRS Req: >= 50,000)\nDelay records:             260,000 (SRS Req: >= 250,000)\nHistorical months:         12.0 months (360 days)\nTrips:                     65,650 (SRS Req: >= 50,000)\nSchedules:                 2,200 (SRS Req: >= 1,500)\nService calendar records:  360\n============================================================\nValidation Status:         PASSED (All SRS Minimums Met)\n============================================================\n"
+}

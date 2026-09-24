@@ -1,58 +1,95 @@
-/* Apple iOS / VisionOS Crystal Light Glass Header Bar */
+/* VisionOS Floating Header */
 
 .header {
-  height: 68px;
-  background: var(--bg-header);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  height: 64px;
+  background: var(--color-panel);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
+  padding: 0 24px;
   position: sticky;
-  top: 0;
+  top: 16px;
+  margin: 0 32px;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03), inset 0 -1px 0 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 8px 32px -4px rgba(0, 0, 0, 0.05), 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header:hover {
+  background: var(--color-panel-elevated);
+  box-shadow: 
+    0 12px 40px -8px rgba(0, 122, 255, 0.1), 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
 .header-left {
   display: flex;
   align-items: center;
+  gap: 16px;
 }
 
-.header-breadcrumbs {
+.system-status-trigger {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
-.network-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(16, 185, 129, 0.12);
-  color: var(--accent-aurora);
-  font-size: 0.72rem;
-  font-weight: 800;
-  padding: 5px 12px;
-  border-radius: var(--radius-ios-pill);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
-  letter-spacing: 0.06em;
+.system-status-trigger:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 122, 255, 0.15);
+  border-color: #FFFFFF;
 }
 
-.status-dot-green {
-  color: var(--accent-aurora);
-  font-size: 0.55rem;
-  animation: pulseBeacon 1.8s infinite;
+.system-status-trigger:active {
+  transform: translateY(0) scale(0.96);
 }
 
-.network-title {
-  font-size: 0.95rem;
+.status-title {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #0f172a;
-  letter-spacing: -0.01em;
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+}
+
+.telemetry-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.telemetry-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 6px 12px;
+  border-radius: 10px;
+}
+
+.telemetry-icon {
+  color: var(--color-accent);
+  font-size: 0.8rem;
 }
 
 .header-right {
@@ -61,55 +98,71 @@
   gap: 16px;
 }
 
-.mode-indicator {
+.cmd-palette-trigger {
   display: flex;
   align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  padding: 8px 16px;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.mode-tag {
-  background: rgba(15, 23, 42, 0.05);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  color: var(--text-secondary);
+.cmd-palette-trigger:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-text);
+  transform: translateY(-1px);
+}
+
+.cmd-search-icon {
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.cmd-kbd {
+  font-family: var(--font-sans);
   font-size: 0.7rem;
-  font-weight: 800;
-  padding: 5px 12px;
-  border-radius: 8px;
-  letter-spacing: 0.06em;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--color-text-secondary);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.header-divider {
+  width: 1.5px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .user-profile-badge {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  padding: 6px 14px;
-  border-radius: var(--radius-ios-sm);
-  transition: var(--spring-transition);
+  gap: 10px;
+  background: transparent;
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  text-decoration: none;
 }
 
 .user-profile-badge:hover {
-  background: #ffffff;
-  border-color: var(--accent-aurora);
-  box-shadow: 0 4px 16px -2px var(--accent-aurora-glow);
-  transform: translateY(-2px);
-}
-
-.user-avatar {
-  font-size: 1.7rem;
-  color: var(--accent-aurora);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .user-avatar-custom {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-aurora);
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-meta {
@@ -120,41 +173,383 @@
 .user-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text);
   line-height: 1.2;
 }
 
 .user-role {
   font-size: 0.68rem;
-  font-weight: 800;
-  color: var(--accent-aurora);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  letter-spacing: 0.05em;
-}
-
-.role-icon {
-  color: var(--accent-aurora);
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
 }
 
 .btn-logout {
-  background: rgba(15, 23, 42, 0.05);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  color: var(--text-secondary);
-  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
   cursor: pointer;
-  padding: 8px 10px;
+  padding: 8px 12px;
   border-radius: 10px;
-  transition: var(--spring-transition);
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-logout:hover {
-  background: rgba(225, 29, 72, 0.1);
-  border-color: rgba(225, 29, 72, 0.35);
-  color: var(--accent-coral);
+  background: var(--color-danger);
+  color: #FFFFFF;
+  border-color: var(--color-danger);
+  box-shadow: 0 4px 12px var(--color-danger-bg);
+}
+
+@media (max-width: 1024px) {
+  .telemetry-badges {
+    display: none;
+  }
+}
+
+/* NEW HEADER ELEMENTS */
+.sidebar-toggle-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(0, 122, 255, 0.1);
+  color: var(--color-accent);
+}
+
+.live-clock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.clock-date {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.clock-time {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   iOS 27 Fluid Theme Toggle Switch (Day / Night Mode)
+   ========================================================================== */
+
+/* ==========================================================================
+   iOS 27 Authentic Sliding Theme Toggle Switch (Day / Night Mode)
+   ========================================================================== */
+
+.theme-toggle-ios {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  transition: transform 0.25s ease;
+}
+
+.theme-toggle-ios:hover {
+  transform: scale(1.04);
+}
+
+.theme-toggle-track {
+  position: relative;
+  width: 66px;
+  height: 32px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1.5px solid var(--color-border);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 9px;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .theme-toggle-track {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5), 0 0 16px rgba(10, 132, 255, 0.25);
+}
+
+.theme-toggle-ios:hover .theme-toggle-track {
+  border-color: var(--color-accent);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08), 0 0 14px var(--color-accent-glow);
+}
+
+.track-icon-sun {
+  font-size: 0.76rem;
+  color: #F59E0B;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.track-icon-moon {
+  font-size: 0.74rem;
+  color: #38BDF8;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  color: #F59E0B;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px #FFFFFF;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.4s ease,
+              box-shadow 0.45s ease,
+              color 0.3s ease;
+  z-index: 2;
+}
+
+/* SLIDE TO THE NEXT SIDE IN NIGHT MODE! */
+.theme-toggle-ios.is-dark .theme-toggle-thumb {
+  transform: translateX(33px); /* Physically slides across to the other side! */
+  background: #0A84FF;
+  color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(10, 132, 255, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.theme-toggle-ios.is-light .theme-toggle-thumb {
+  transform: translateX(0px); /* Sits on the left side in Day mode */
+}
+
+.thumb-icon {
+  font-size: 0.8rem;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.theme-toggle-ios.is-dark .thumb-icon {
+  transform: rotate(360deg);
+}
+
+/* ==========================================================================
+   iOS 27 Liquid Glass Logout Confirmation Alert Modal
+   ========================================================================== */
+
+.logout-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.logout-confirm-card {
+  width: 440px;
+  max-width: 90vw;
+  padding: 32px 28px !important;
+  border-radius: var(--radius-xl) !important;
+  position: relative;
+  text-align: center;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.logout-close-corner {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-close-corner:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+  transform: scale(1.1);
+}
+
+.logout-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout-icon-glow {
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  background: rgba(255, 59, 48, 0.12);
+  border: 1px solid rgba(255, 59, 48, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  box-shadow: 0 8px 24px rgba(255, 59, 48, 0.15);
+}
+
+.logout-lock-svg {
+  font-size: 1.4rem;
+  color: var(--color-danger);
+}
+
+.logout-title {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.logout-desc {
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.logout-user-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  margin: 6px 0 12px;
+  width: 100%;
+}
+
+.logout-preview-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.logout-preview-email {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+}
+
+.logout-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.btn-logout-cancel {
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout-cancel:hover {
+  background: #FFFFFF;
   transform: translateY(-1px);
+}
+
+[data-theme="dark"] .btn-logout-cancel {
+  background: rgba(30, 41, 59, 0.6);
+  color: #F8FAFC;
+}
+
+[data-theme="dark"] .btn-logout-cancel:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.btn-logout-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: #FF3B30;
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 59, 48, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-logout-confirm:hover {
+  background: #E02E24;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 59, 48, 0.5);
+}
+
+.btn-logout-confirm:active {
+  transform: translateY(0);
 }

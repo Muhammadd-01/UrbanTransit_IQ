@@ -92,7 +92,7 @@ const Profile = () => {
       )}
 
       {/* Hero Card with Liquid Glass Effect */}
-      <div className="liquid-glass-card profile-hero-card">
+      <div className="liquid-glass-card hud-panel profile-hero-card">
         <div className="profile-avatar-container">
           <input 
             type="file" 
@@ -161,7 +161,7 @@ const Profile = () => {
       {/* Grid: Profile Form & System Entitlements */}
       <div className="profile-grid">
         {/* Left Column: Editable Settings */}
-        <div className="liquid-glass-card">
+        <div className="liquid-glass-card hud-panel">
           <div className="card-header-liquid">
             <h3>Operator Details & Preferences</h3>
             <span className="badge-pill">EDITABLE</span>
@@ -214,7 +214,7 @@ const Profile = () => {
         </div>
 
         {/* Right Column: Entitlements & Hardware Topology */}
-        <div className="liquid-glass-card">
+        <div className="liquid-glass-card hud-panel">
           <div className="card-header-liquid">
             <h3>Platform Security & Execution Entitlements</h3>
             <span className="badge-pill">HARDWARE BUFFER</span>
@@ -258,7 +258,7 @@ const Profile = () => {
       </div>
 
       {/* Team Matrix Section */}
-      <div className="liquid-glass-card" style={{ marginTop: '24px' }}>
+      <div className="liquid-glass-card hud-panel" style={{ marginTop: '24px' }}>
         <div className="card-header-liquid">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <FaUsers style={{ color: 'var(--accent-aurora)', fontSize: '1.2rem' }} />
@@ -269,7 +269,7 @@ const Profile = () => {
 
         <div className="team-roster-grid">
           {teamMembers.map((m, idx) => (
-            <div key={idx} className="team-member-card">
+            <div key={idx} className="team-member-card hud-panel">
               <div className="member-avatar">
                 {m.name.split(' ').map(n => n[0]).join('')}
               </div>

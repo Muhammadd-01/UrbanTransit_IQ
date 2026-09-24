@@ -1,5 +1,394 @@
-/* VisionOS Liquid Glass Passenger Flow */
+/* ==========================================================================
+   UrbanTransit IQ — Passenger Flow & Demand Profiles
+   Senior UI/UX Executive Light Theme Design
+   Generous Spacing, High Contrast, Refined Typography
+   ========================================================================== */
 
 .passengerflow-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+}
+
+/* Hero Telemetry Badges */
+.pf-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pf-telemetry-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-accent-bg);
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  color: var(--color-accent);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);
+}
+
+.pf-telemetry-chip.alt {
+  background: var(--color-secondary-bg);
+  border-color: rgba(2, 132, 199, 0.28);
+  color: var(--color-secondary);
+}
+
+/* Executive Rush-Hour Insight Strip */
+.pf-insight-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-hud);
+  padding: 18px 24px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+}
+
+@media (max-width: 960px) {
+  .pf-insight-strip {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.pf-insight-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 12px;
+  border-right: 1px solid #F1F5F9;
+}
+
+.pf-insight-card:last-child {
+  border-right: none;
+}
+
+.pf-insight-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.pf-insight-icon-box.teal {
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+}
+
+.pf-insight-icon-box.sky {
+  background: var(--color-secondary-bg);
+  color: var(--color-secondary);
+}
+
+.pf-insight-icon-box.amber {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.pf-insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pf-insight-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pf-insight-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pf-insight-sub {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* Chart Container & Header */
+.pf-chart-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-hud);
+  padding: 30px 34px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px 0 rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pf-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid #F1F5F9;
+  padding-bottom: 18px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pf-chart-title-group h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.pf-chart-subtitle {
+  font-size: 0.86rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+.pf-chart-legend-pills {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pf-legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.pf-legend-pill.inbound {
+  background: rgba(13, 148, 136, 0.08);
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  color: #0D9488;
+}
+
+.pf-legend-pill.outbound {
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.28);
+  color: #0284C7;
+}
+
+.pf-color-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.pf-color-indicator.inbound {
+  background: #0D9488;
+}
+
+.pf-color-indicator.outbound {
+  background: #0284C7;
+}
+
+/* Terminal Ledger Table Enhancements */
+.pf-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+}
+
+.pf-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.90rem;
+}
+
+.pf-table thead tr {
+  background: #F8FAFC;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.pf-table thead th {
+  padding: 16px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.pf-table tbody tr {
+  border-bottom: 1px solid #F1F5F9;
+  transition: var(--transition-fast);
+}
+
+.pf-table tbody tr:hover {
+  background: rgba(13, 148, 136, 0.035);
+}
+
+.pf-table tbody td {
+  padding: 16px 20px;
+  color: var(--color-text);
+  font-size: 0.90rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.pf-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Rank Badge */
+.pf-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+  margin-right: 10px;
+}
+
+.pf-rank-badge.top-1 {
+  background: rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 148, 136, 0.35);
+  color: #0D9488;
+}
+
+.pf-rank-badge.top-2 {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.35);
+  color: #0284C7;
+}
+
+/* Station Details Cell */
+.pf-station-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pf-station-name {
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 0.92rem;
+}
+
+.pf-station-corridor {
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Route Pill */
+.pf-route-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.pf-route-pill.gl {
+  background: rgba(13, 148, 136, 0.10);
+  border: 1px solid rgba(13, 148, 136, 0.30);
+  color: #0D9488;
+}
+
+.pf-route-pill.pb {
+  background: rgba(225, 29, 72, 0.08);
+  border: 1px solid rgba(225, 29, 72, 0.28);
+  color: #E11D48;
+}
+
+/* Net Imbalance Pill */
+.pf-imbalance-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.pf-imbalance-pill.net-in {
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+  color: #16A34A;
+}
+
+.pf-imbalance-pill.net-out {
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  color: #D97706;
+}
+
+/* Capacity Load Progress Bar */
+.pf-load-gauge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 140px;
+}
+
+.pf-gauge-track {
+  flex: 1;
+  height: 6px;
+  background: #F1F5F9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pf-gauge-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0D9488, #14B8A6);
+}
+
+.pf-gauge-pct {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748B;
+  min-width: 32px;
 }

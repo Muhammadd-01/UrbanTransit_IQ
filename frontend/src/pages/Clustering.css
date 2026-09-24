@@ -1,5 +1,123 @@
-/* VisionOS Liquid Glass Clustering */
+/* Technical Light HUD Clustering Page — Spacious & Uncongested */
 
 .clustering-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.clusters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.cluster-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--color-panel-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-hud);
+  padding: 24px 28px;
+  box-shadow: var(--glass-shadow);
+  transition: var(--spring-transition);
+}
+
+.cluster-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.cluster-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cluster-k-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.cluster-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.cluster-desc {
+  font-size: 0.86rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.cluster-centroid-box {
+  padding: 14px 18px;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ccb-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--color-accent);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.ccb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.84rem;
+}
+
+.ccb-stat-name {
+  color: #64748B;
+  font-weight: 500;
+}
+
+.cluster-members-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.members-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.members-pill-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.member-corridor-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F1F5F9;
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-weight: 600;
 }

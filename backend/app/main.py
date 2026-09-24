@@ -47,6 +47,12 @@ app.include_router(export.router, prefix="/api/export", tags=["export"])
 @app.on_event("startup")
 async def startup_event():
     logger.info(f"Starting application in {settings.EXECUTION_MODE} mode")
+    from backend.app.database.engine import init_db
+    try:
+        init_db()
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+        
     if settings.EXECUTION_MODE == "COMPETITION":
         verify_competition_mode()
 

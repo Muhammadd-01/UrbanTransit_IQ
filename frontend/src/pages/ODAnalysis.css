@@ -1,5 +1,339 @@
-/* VisionOS Liquid Glass Origin-Destination Analysis */
+/* ==========================================================================
+   UrbanTransit IQ — Origin-Destination (OD) Intelligence
+   Senior UI/UX Executive Light Theme Design
+   Generous Spacing, Spatial Heatmap Polish, Refined Typography
+   ========================================================================== */
 
 .odanalysis-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+}
+
+/* Hero Actions & Telemetry Chips */
+.od-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.od-telemetry-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-accent-bg);
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  color: var(--color-accent);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);
+}
+
+.od-telemetry-chip.alt {
+  background: var(--color-secondary-bg);
+  border-color: rgba(2, 132, 199, 0.28);
+  color: var(--color-secondary);
+}
+
+/* Spatial Commuting Insight Callout Strip */
+.od-insight-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-hud);
+  padding: 18px 24px;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+}
+
+@media (max-width: 960px) {
+  .od-insight-strip {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.od-insight-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 12px;
+  border-right: 1px solid #F1F5F9;
+}
+
+.od-insight-card:last-child {
+  border-right: none;
+}
+
+.od-insight-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.od-insight-icon-box.teal {
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+}
+
+.od-insight-icon-box.gold {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.od-insight-icon-box.emerald {
+  background: rgba(22, 163, 74, 0.08);
+  color: #16A34A;
+}
+
+.od-insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.od-insight-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.od-insight-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.od-insight-sub {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* Container Cards */
+.od-chart-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-hud);
+  padding: 30px 34px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px 0 rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.od-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid #F1F5F9;
+  padding-bottom: 18px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.od-chart-title-group h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.od-chart-subtitle {
+  font-size: 0.86rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+.od-matrix-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-accent-bg);
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  color: var(--color-accent);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Heatmap Plotly Wrapper */
+.od-heatmap-wrapper {
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 6px 0;
+}
+
+/* Corridor Ledger Table */
+.od-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+}
+
+.od-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.90rem;
+}
+
+.od-table thead tr {
+  background: #F8FAFC;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.od-table thead th {
+  padding: 16px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.od-table tbody tr {
+  border-bottom: 1px solid #F1F5F9;
+  transition: var(--transition-fast);
+}
+
+.od-table tbody tr:hover {
+  background: rgba(13, 148, 136, 0.035);
+}
+
+.od-table tbody td {
+  padding: 16px 20px;
+  color: var(--color-text);
+  font-size: 0.90rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.od-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Corridor Trajectory Cell */
+.od-trajectory-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.od-zone-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 5px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.od-zone-arrow {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+}
+
+.od-zone-dest {
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 0.88rem;
+}
+
+/* Route Pill */
+.od-route-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.od-route-pill.pb {
+  background: rgba(225, 29, 72, 0.08);
+  border: 1px solid rgba(225, 29, 72, 0.28);
+  color: #E11D48;
+}
+
+.od-route-pill.gl {
+  background: rgba(13, 148, 136, 0.10);
+  border: 1px solid rgba(13, 148, 136, 0.30);
+  color: #0D9488;
+}
+
+.od-route-pill.lb {
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.28);
+  color: #0284C7;
+}
+
+/* Volume Gauge */
+.od-volume-gauge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 140px;
+}
+
+.od-gauge-track {
+  flex: 1;
+  height: 6px;
+  background: #F1F5F9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.od-gauge-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0D9488, #0284C7);
+}
+
+.od-gauge-val {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  min-width: 38px;
 }

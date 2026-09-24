@@ -1,66 +1,254 @@
-/* VisionOS Liquid Glass Data Quality Styling */
+/* Technical Light HUD Data Quality Page — Spacious & Uncongested */
 
 .dataquality-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* 6-Stage Pipeline Flow Visualizer */
+.pipeline-flow-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--color-panel-glass);
+  padding: 24px 28px;
+}
+
+.pipeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pipeline-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #64748B;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.pipeline-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow-x: auto;
+  padding: 10px 4px;
+  gap: 12px;
+}
+
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  min-width: 150px;
+  flex: 1;
+  transition: var(--transition-fast);
+}
+
+.pipeline-step:hover {
+  background: #FFFFFF;
+  border-color: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.pipeline-step.active-final {
+  border-color: rgba(13, 148, 136, 0.5);
+  background: rgba(13, 148, 136, 0.06);
+}
+
+.step-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.step-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.step-metric {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.step-status {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.pipeline-arrow {
+  color: #94A3B8;
+  font-size: 0.90rem;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+}
+
+/* 4-Column KPI Grid */
+.kpi-grid-four {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+@media (max-width: 960px) {
+  .kpi-grid-four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .kpi-grid-four {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 7 Issue Breakdown Micro-Metrics Strip */
+.quality-breakdown-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.qb-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qb-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.qb-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+}
+
+.text-coral { color: var(--color-danger) !important; }
+.text-gold { color: var(--color-warning) !important; }
+.text-cyan { color: var(--color-accent) !important; }
+.text-success { color: var(--color-success) !important; }
+
+/* Audit Header Controls */
+.audit-controls-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.audit-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.audit-search-input {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-size: 0.84rem;
+  padding: 7px 14px;
+  height: 36px;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.audit-search-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+.audit-chip-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .filter-chip-btn {
-  padding: 6px 14px;
-  border-radius: var(--radius-ios-pill);
-  font-size: 0.74rem;
-  font-weight: 800;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border-medium);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: var(--spring-transition);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
+  transition: var(--transition-fast);
+}
+
+.filter-chip-btn:hover {
+  color: var(--color-text);
+  background: #E2E8F0;
 }
 
 .filter-chip-btn.active {
-  background: var(--accent-aurora);
-  color: #04080c;
-  border-color: var(--accent-aurora);
-  box-shadow: 0 0 16px var(--accent-aurora-glow);
+  background: #FFFFFF;
+  border-color: rgba(13, 148, 136, 0.4);
+  color: var(--color-accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-.filter-chip-btn:not(.active) {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
-}
-
-.filter-chip-btn:not(.active):hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-}
-
-.status-badge {
+/* Status Badge Chips */
+.status-badge-chip {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  font-weight: 700;
   padding: 4px 10px;
-  border-radius: var(--radius-ios-pill);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  border-radius: 4px;
   display: inline-block;
 }
 
-.status-badge.VALID {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #34d399;
+.status-badge-chip.valid {
+  background: rgba(22, 163, 74, 0.10);
+  color: var(--color-success);
+  border: 1px solid rgba(22, 163, 74, 0.3);
 }
 
-.status-badge.CORRECTED {
-  background: rgba(245, 158, 11, 0.15);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #fbbf24;
+.status-badge-chip.corrected {
+  background: rgba(217, 119, 6, 0.10);
+  color: var(--color-warning);
+  border: 1px solid rgba(217, 119, 6, 0.3);
 }
 
-.status-badge.FLAGGED {
-  background: rgba(168, 85, 247, 0.15);
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  color: #c084fc;
+.status-badge-chip.flagged {
+  background: rgba(2, 132, 199, 0.10);
+  color: var(--color-secondary);
+  border: 1px solid rgba(2, 132, 199, 0.3);
 }
 
-.status-badge.QUARANTINED {
-  background: rgba(244, 63, 94, 0.15);
-  border: 1px solid rgba(244, 63, 94, 0.35);
-  color: #fb7185;
+.status-badge-chip.quarantined {
+  background: rgba(225, 29, 72, 0.10);
+  color: var(--color-danger);
+  border: 1px solid rgba(225, 29, 72, 0.3);
 }

@@ -2,7 +2,10 @@
 Tests for security, password hashing, and JWT creation/validation.
 """
 
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 from datetime import timedelta
 from backend.app.utils.security import (
     hash_password,

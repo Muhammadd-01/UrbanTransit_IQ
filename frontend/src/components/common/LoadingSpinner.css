@@ -1,32 +1,124 @@
-/* VisionOS Dual-Orbit Luminous Spinner */
+/* iOS Liquid Glass Loading Sequence & Radar */
 
 .spinner-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 40px 24px;
+  gap: 20px;
+  min-height: 240px;
+  /* Already receives .hud-panel */
+  box-shadow: 
+    0 12px 32px -8px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(40px) saturate(200%);
+  border-radius: var(--radius-xl);
 }
 
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba(255, 255, 255, 0.08);
-  border-top-color: var(--accent-aurora);
-  border-right-color: var(--accent-gold);
+.hud-radar-spinner {
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  animation: liquidOrbit 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  box-shadow: 0 0 20px var(--accent-aurora-glow);
+  border: 1px solid rgba(0, 122, 255, 0.2);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.1);
+}
+
+.radar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 122, 255, 0.4);
+  position: absolute;
+  animation: pulse-ring 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+
+.radar-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border-top: 2.5px solid var(--color-accent);
+  border-right: 2.5px solid transparent;
+  border-bottom: 2.5px solid transparent;
+  border-left: 2.5px solid transparent;
+  box-shadow: 0 0 12px var(--color-accent-bg);
+  animation: radarSpin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.radar-core {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  z-index: 10;
+}
+
+@keyframes radarSpin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner-brand {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .spinner-message {
-  margin-top: 16px;
-  color: var(--text-secondary);
-  font-size: 0.88rem;
+  font-family: var(--font-sans);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  text-align: center;
 }
 
-@keyframes liquidOrbit {
-  to { transform: rotate(360deg); }
+.spinner-progress-line {
+  width: 160px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.spinner-progress-glow {
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  animation: lineSweep 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes lineSweep {
+  0% { left: -50%; }
+  100% { left: 100%; }
 }

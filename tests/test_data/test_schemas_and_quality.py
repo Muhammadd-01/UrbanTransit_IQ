@@ -2,7 +2,10 @@
 Tests for transport data schemas, validation, and data quality engine.
 """
 
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 from backend.app.schemas.analytics import FilterParams, KPIResponse
 from backend.app.schemas.quality import DataQualityReport
 from backend.app.utils.validators import (

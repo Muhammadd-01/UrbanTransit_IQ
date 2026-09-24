@@ -1,3 +1,22 @@
-from .supabase_client import get_supabase_client, get_admin_client
+"""
+Database package for UrbanTransit IQ.
+Uses SQLAlchemy with PostgreSQL via psycopg2.
+"""
 
-__all__ = ["get_supabase_client", "get_admin_client"]
+from backend.app.database.engine import (
+    engine,
+    SessionLocal,
+    Base,
+    get_db,
+    init_db,
+    check_db_connection,
+)
+
+__all__ = [
+    "engine",
+    "SessionLocal",
+    "Base",
+    "get_db",
+    "init_db",
+    "check_db_connection",
+]

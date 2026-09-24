@@ -2,7 +2,10 @@
 Tests for forecasting constraints (chronological split validation, forecast logic).
 """
 
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 import pandas as pd
 
 

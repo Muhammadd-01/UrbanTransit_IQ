@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { FilterProvider } from './contexts/FilterContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
@@ -52,6 +54,18 @@ function App() {
             <Route path="/profile" element={<Profile />} />
           </Route>
         </Routes>
+        <ToastContainer 
+          position="bottom-right" 
+          autoClose={4000} 
+          hideProgressBar={false} 
+          newestOnTop={true} 
+          closeOnClick 
+          rtl={false} 
+          pauseOnFocusLoss 
+          draggable 
+          pauseOnHover 
+          theme="light" 
+        />
       </FilterProvider>
     </AuthProvider>
   );

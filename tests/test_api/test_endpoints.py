@@ -2,7 +2,10 @@
 Tests for FastAPI API endpoints and status codes.
 """
 
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 from fastapi.testclient import TestClient
 from backend.app.main import app
 

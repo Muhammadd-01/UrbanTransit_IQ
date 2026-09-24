@@ -1,0 +1,4 @@
+Model,Training time (s),Validation accuracy,Test accuracy,Precision,Recall,F1,ROC-AUC,Confusion matrix,Inference time (ms/sample)
+Logistic Regression,0.26,0.7419,0.7349,0.7788,0.7349,0.7208,0.6713,"[[1838, 113], [881, 918]]",0.001
+Random Forest,0.176,0.8949,0.8997,0.9005,0.8997,0.8998,0.9395,"[[1727, 224], [152, 1647]]",0.012
+Gradient Boosted Trees,1.735,0.9221,0.9256,0.9309,0.9256,0.9255,0.9457,"[[1710, 241], [38, 1761]]",0.004

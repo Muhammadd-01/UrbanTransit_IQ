@@ -1,0 +1,86 @@
+[
+    {
+        "date": "2026-09-24",
+        "predicted_demand": 2253372,
+        "lower_bound": 2118170,
+        "upper_bound": 2388574
+    },
+    {
+        "date": "2026-09-25",
+        "predicted_demand": 1812218,
+        "lower_bound": 1703485,
+        "upper_bound": 1920951
+    },
+    {
+        "date": "2026-09-26",
+        "predicted_demand": 1743419,
+        "lower_bound": 1638813,
+        "upper_bound": 1848024
+    },
+    {
+        "date": "2026-09-27",
+        "predicted_demand": 2253256,
+        "lower_bound": 2118060,
+        "upper_bound": 2388451
+    },
+    {
+        "date": "2026-09-28",
+        "predicted_demand": 2245051,
+        "lower_bound": 2110348,
+        "upper_bound": 2379754
+    },
+    {
+        "date": "2026-09-29",
+        "predicted_demand": 2254516,
+        "lower_bound": 2119245,
+        "upper_bound": 2389787
+    },
+    {
+        "date": "2026-09-30",
+        "predicted_demand": 2290712,
+        "lower_bound": 2153269,
+        "upper_bound": 2428155
+    },
+    {
+        "date": "2026-10-01",
+        "predicted_demand": 2190096,
+        "lower_bound": 2058690,
+        "upper_bound": 2321502
+    },
+    {
+        "date": "2026-10-02",
+        "predicted_demand": 1772085,
+        "lower_bound": 1665760,
+        "upper_bound": 1878410
+    },
+    {
+        "date": "2026-10-03",
+        "predicted_demand": 1743419,
+        "lower_bound": 1638813,
+        "upper_bound": 1848024
+    },
+    {
+        "date": "2026-10-04",
+        "predicted_demand": 2253256,
+        "lower_bound": 2118060,
+        "upper_bound": 2388451
+    },
+    {
+        "date": "2026-10-05",
+        "predicted_demand": 2245051,
+        "lower_bound": 2110348,
+        "upper_bound": 2379754
+    },
+    {
+        "date": "2026-10-06",
+        "predicted_demand": 2254516,
+        "lower_bound": 2119245,
+        "upper_bound": 2389787
+    },
+    {
+        "date": "2026-10-07",
+        "predicted_demand": 2290712,
+        "lower_bound": 2153269,
+        "upper_bound": 2428155
+    }
+]

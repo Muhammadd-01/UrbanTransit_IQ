@@ -1,0 +1,47 @@
+{
+    "best_model": "Gradient Boosted Trees",
+    "models_evaluated": [
+        "Logistic Regression",
+        "Random Forest",
+        "Gradient Boosted Trees"
+    ],
+    "feature_importance": [
+        [
+            "occupancy_percentage",
+            0.9478421493118891
+        ],
+        [
+            "historical_delay",
+            0.015433363324453272
+        ],
+        [
+            "historical_demand",
+            0.01053270765454028
+        ],
+        [
+            "route_distance",
+            0.008658393048556071
+        ],
+        [
+            "peak_indicator",
+            0.00662629095858628
+        ],
+        [
+            "hour",
+            0.0043503464596391
+        ],
+        [
+            "month",
+            0.0035336491302001556
+        ],
+        [
+            "day_of_week",
+            0.002476982694398149
+        ],
+        [
+            "weekend_indicator",
+            0.0005461174177375848
+        ]
+    ],
+    "test_cases_count": 3750
+}

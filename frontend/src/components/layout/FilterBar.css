@@ -1,31 +1,45 @@
-/* Apple iOS / VisionOS Crystal Light Glass Filter Ribbon */
+/* VisionOS Floating Filter Ribbon */
 
 .filter-bar {
-  background: var(--bg-header);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
-  padding: 10px 32px;
+  background: var(--color-panel);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 12px 24px;
+  margin: 16px 32px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  font-size: 0.82rem;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);
+  position: sticky;
+  top: 96px; /* Below the floating header */
+  z-index: 90;
+  box-shadow: 
+    0 8px 24px -4px rgba(0, 0, 0, 0.04), 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-bar:hover {
+  background: var(--color-panel-elevated);
 }
 
 .filter-label-group {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 800;
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .filter-main-icon {
-  color: var(--accent-aurora);
+  font-size: 0.85rem;
+  color: var(--color-accent);
 }
 
 .filter-controls {
@@ -33,69 +47,75 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  flex: 1;
 }
 
 .filter-item {
-  position: relative;
   display: flex;
   align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 0 14px;
+  height: 38px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.filter-item:hover, .filter-item:focus-within {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .filter-item-icon {
-  position: absolute;
-  left: 12px;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  pointer-events: none;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
 }
 
 .filter-item select,
 .filter-item input {
-  padding: 7px 14px 7px 32px;
-  border-radius: var(--radius-ios-pill);
-  border: 1px solid rgba(203, 213, 225, 0.85);
-  background: rgba(255, 255, 255, 0.9);
-  color: #0f172a;
-  font-size: 0.82rem;
-  outline: none;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
   font-weight: 600;
-  transition: var(--spring-transition);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.02);
-}
-
-.filter-item select:focus,
-.filter-item input:focus {
-  border-color: var(--accent-aurora);
-  background: #ffffff;
-  box-shadow: 0 0 0 3px var(--accent-aurora-glow);
-}
-
-.filter-item select option {
-  background: #ffffff;
-  color: #0f172a;
+  padding: 0;
+  height: 100%;
+  outline: none;
+  cursor: pointer;
 }
 
 .btn-reset-filters {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  padding: 0 16px;
+  height: 38px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(203, 213, 225, 0.85);
-  color: var(--text-secondary);
-  padding: 7px 14px;
-  border-radius: var(--radius-ios-pill);
-  font-size: 0.78rem;
-  font-weight: 700;
   cursor: pointer;
-  transition: var(--spring-transition);
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.02);
+  transition: all 0.3s ease;
 }
 
 .btn-reset-filters:hover {
-  background: #ffffff;
-  border-color: var(--accent-aurora);
-  color: var(--accent-aurora);
+  background: #FFFFFF;
+  color: var(--color-danger);
+  border-color: #FFFFFF;
+  box-shadow: 0 4px 12px var(--color-danger-bg);
   transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .filter-bar {
+    padding: 10px 16px;
+    margin: 12px 16px;
+  }
 }

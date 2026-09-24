@@ -13,10 +13,12 @@ async def list_recommendations():
             recommendation=r["recommendation"],
             reason=r["reason"],
             supporting_metrics=r["supporting_metrics"],
-            affected_route=r["affected_route"],
-            affected_time=r["affected_time"],
-            expected_impact=r["expected_impact"],
-            confidence_level=r["confidence_level"]
+            affected_route=r.get("affected_route"),
+            affected_time=r.get("affected_time"),
+            expected_impact=r.get("expected_impact", ""),
+            confidence_level=r.get("confidence_level", "MEDIUM"),
+            priority=r.get("priority", 2),
+            category=r.get("category", "CAPACITY")
         )
         for r in recs
     ]

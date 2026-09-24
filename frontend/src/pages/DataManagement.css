@@ -1,19 +1,135 @@
-/* VisionOS Liquid Glass Data Management */
+/* Technical Light HUD Data Management & Spark Monitoring — Spacious & Uncongested */
 
 .datamanagement-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.hdfs-box {
-  background: rgba(255, 255, 255, 0.04);
-  padding: 16px;
-  border-radius: var(--radius-ios-sm);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px);
-  transition: var(--spring-transition);
+.alert-message-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-accent-bg);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
-.hdfs-box:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
+/* Big Data Status Strip */
+.bigdata-status-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  flex-wrap: wrap;
+  gap: 18px;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.bds-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bds-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #64748B;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.bds-state {
+  font-family: var(--font-mono);
+  font-size: 0.94rem;
+  font-weight: 800;
+}
+
+.bds-sub {
+  font-size: 0.74rem;
+  color: #64748B;
+}
+
+.tech-field-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.tech-select-full {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 6px;
+  color: var(--color-text);
+  padding: 11px 16px;
+  font-size: 0.88rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.tech-select-full:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+.tech-select-full option {
+  background: #FFFFFF;
+  color: var(--color-text);
+}
+
+/* HDFS Spec Grid */
+.hdfs-spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .hdfs-spec-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hdfs-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.hdfs-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.hdfs-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+}
+
+.hdfs-sub {
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  color: #64748B;
 }

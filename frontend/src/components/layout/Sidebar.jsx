@@ -1,52 +1,136 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaDatabase, FaChartLine, FaRoute, FaClock, FaCar, FaMagic, FaExclamationTriangle, FaLightbulb, FaExchangeAlt, FaCog, FaFileAlt, FaUser } from 'react-icons/fa';
-import logoImg from '../../assets/logo.png';
+import { 
+  FaTachometerAlt, FaRoute, FaCar, FaClock, 
+  FaChartLine, FaMagic, FaExclamationTriangle,
+  FaLightbulb, FaExchangeAlt, FaShieldAlt,
+  FaDatabase, FaFileAlt, FaCog, FaUser,
+  FaChevronLeft, FaChevronRight
+} from 'react-icons/fa';
 import './Sidebar.css';
+import Logo from '../common/Logo';
 
-const Sidebar = () => {
+const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   return (
-    <div className="sidebar">
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-brand">
         <div className="brand-header-flex">
-          <img src={logoImg} alt="UrbanTransit IQ" className="sidebar-logo-icon" />
-          <div className="brand-text-col">
-            <h2>UrbanTransit IQ</h2>
-            <span className="badge-dev">KARACHI METRO</span>
+          <Logo size={34} className="sidebar-logo-icon" />
+          <div className="brand-text-col nav-text">
+            <h2>UrbanTransit <span className="brand-iq">IQ</span></h2>
+            <span className="badge-dev">V1.0.0 PRO</span>
           </div>
         </div>
       </div>
+
       <nav className="sidebar-nav">
-        <div className="nav-group">OVERVIEW</div>
-        <NavLink to="/"><FaTachometerAlt /> Dashboard</NavLink>
-        
-        <div className="nav-group">DATA</div>
-        <NavLink to="/data-management"><FaDatabase /> Data Management</NavLink>
-        <NavLink to="/data-quality"><FaDatabase /> Data Quality</NavLink>
-        
-        <div className="nav-group">ANALYTICS</div>
-        <NavLink to="/passenger-flow"><FaChartLine /> Passenger Flow</NavLink>
-        <NavLink to="/od-analysis"><FaExchangeAlt /> OD Analysis</NavLink>
-        <NavLink to="/route-intelligence"><FaRoute /> Route Intelligence</NavLink>
-        <NavLink to="/delay-analytics"><FaClock /> Delay Analytics</NavLink>
-        <NavLink to="/vehicle-analytics"><FaCar /> Vehicle Analytics</NavLink>
-        
-        <div className="nav-group">INTELLIGENCE</div>
-        <NavLink to="/forecasting"><FaChartLine /> Forecasting</NavLink>
-        <NavLink to="/clustering"><FaMagic /> Clustering</NavLink>
-        <NavLink to="/anomaly-detection"><FaExclamationTriangle /> Anomaly Detection</NavLink>
-        
-        <div className="nav-group">DECISIONS</div>
-        <NavLink to="/recommendations"><FaLightbulb /> Recommendations</NavLink>
-        <NavLink to="/what-if-simulator"><FaExchangeAlt /> What-If Simulator</NavLink>
-        
-        <div className="nav-group">SYSTEM</div>
-        <NavLink to="/profile"><FaUser /> Profile</NavLink>
-        <NavLink to="/model-comparison"><FaCog /> Model Comparison</NavLink>
-        <NavLink to="/reports"><FaFileAlt /> Reports</NavLink>
-        <NavLink to="/settings"><FaCog /> Settings</NavLink>
+        {/* Intelligence Group */}
+        <div className="nav-group-header">
+          <span className="nav-text">INTELLIGENCE</span>
+        </div>
+        <NavLink to="/" end title="Dashboard Overview">
+          <FaTachometerAlt className="nav-icon" />
+          <span className="nav-text">Overview</span>
+        </NavLink>
+        <NavLink to="/passenger-flow" title="Passenger Flow Analytics">
+          <FaChartLine className="nav-icon" />
+          <span className="nav-text">Passenger Flow</span>
+        </NavLink>
+        <NavLink to="/od-analysis" title="Origin-Destination Matrix">
+          <FaExchangeAlt className="nav-icon" />
+          <span className="nav-text">OD Analysis</span>
+        </NavLink>
+
+        {/* Network Group */}
+        <div className="nav-group-header">
+          <span className="nav-text">NETWORK</span>
+        </div>
+        <NavLink to="/route-intelligence" title="Route Intelligence & Headways">
+          <FaRoute className="nav-icon" />
+          <span className="nav-text">Route Intelligence</span>
+        </NavLink>
+        <NavLink to="/vehicle-analytics" title="Vehicle Fleet & Maintenance">
+          <FaCar className="nav-icon" />
+          <span className="nav-text">Vehicle Analytics</span>
+        </NavLink>
+
+        {/* Operations Group */}
+        <div className="nav-group-header">
+          <span className="nav-text">OPERATIONS</span>
+        </div>
+        <NavLink to="/delay-analytics" title="Delay Analytics & ML Inference">
+          <FaClock className="nav-icon" />
+          <span className="nav-text">Delay Analytics</span>
+        </NavLink>
+
+        {/* Data Science Group */}
+        <div className="nav-group-header">
+          <span className="nav-text">DATA SCIENCE</span>
+        </div>
+        <NavLink to="/forecasting" title="Demand & Occupancy Forecast">
+          <FaChartLine className="nav-icon" />
+          <span className="nav-text">Demand Forecast</span>
+        </NavLink>
+        <NavLink to="/clustering" title="K-Means Route Clustering">
+          <FaMagic className="nav-icon" />
+          <span className="nav-text">Route Clustering</span>
+        </NavLink>
+        <NavLink to="/anomaly-detection" title="Isolation Forest Anomaly Telemetry">
+          <FaExclamationTriangle className="nav-icon" />
+          <span className="nav-text">Anomaly Detection</span>
+        </NavLink>
+
+        {/* Decision Intelligence Group */}
+        <div className="nav-group-header">
+          <span className="nav-text">DECISION INTELLIGENCE</span>
+        </div>
+        <NavLink to="/recommendations" title="Algorithmic Operational Actions">
+          <FaLightbulb className="nav-icon" />
+          <span className="nav-text">Recommendations</span>
+        </NavLink>
+        <NavLink to="/what-if-simulator" title="Counterfactual Scenario Sandbox">
+          <FaExchangeAlt className="nav-icon" />
+          <span className="nav-text">What-If Simulation</span>
+        </NavLink>
+        <NavLink to="/model-comparison" title="Spark vs Python ML Reconciliation">
+          <FaShieldAlt className="nav-icon" />
+          <span className="nav-text">Model Comparison</span>
+        </NavLink>
+
+        {/* Platform Group */}
+        <div className="nav-group-header">
+          <span className="nav-text">PLATFORM</span>
+        </div>
+        <NavLink to="/data-quality" title="4-Tier Data Quality Governance">
+          <FaDatabase className="nav-icon" />
+          <span className="nav-text">Data Quality</span>
+        </NavLink>
+        <NavLink to="/data-management" title="HDFS Storage Fabric & Synthesis">
+          <FaDatabase className="nav-icon" />
+          <span className="nav-text">Dataset Manager</span>
+        </NavLink>
+        <NavLink to="/reports" title="Export Hub & Benchmark JSONs">
+          <FaFileAlt className="nav-icon" />
+          <span className="nav-text">Export Reports</span>
+        </NavLink>
+        <NavLink to="/settings" title="Externalized Analytical Thresholds">
+          <FaCog className="nav-icon" />
+          <span className="nav-text">System Settings</span>
+        </NavLink>
+        <NavLink to="/profile" title="Operator Credentials & Team Roster">
+          <FaUser className="nav-icon" />
+          <span className="nav-text">Operator Profile</span>
+        </NavLink>
       </nav>
-    </div>
+
+      <div className="sidebar-footer">
+        <div className="sidebar-engine-tag">
+          <span className="engine-dot"></span>
+          <span className="nav-text">SPARK 3.5 // FASTAPI</span>
+        </div>
+      </div>
+    </aside>
   );
 };
+
 export default Sidebar;

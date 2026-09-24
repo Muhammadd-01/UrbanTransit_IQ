@@ -1,5 +1,56 @@
-/* VisionOS Liquid Glass Reports */
+/* Technical Light HUD Reports Page — Spacious & Uncongested */
 
 .reports-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.reports-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.report-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--color-panel-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-hud);
+  padding: 26px 30px;
+  box-shadow: var(--glass-shadow);
+  transition: var(--spring-transition);
+}
+
+.report-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.report-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.report-icon {
+  font-size: 1.45rem;
+}
+
+.report-card h3 {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.report-card p {
+  font-size: 0.86rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.55;
+  flex: 1;
 }

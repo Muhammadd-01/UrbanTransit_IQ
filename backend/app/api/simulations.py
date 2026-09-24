@@ -6,13 +6,12 @@ router = APIRouter()
 
 @router.post("/run", response_model=SimulationResponse)
 async def execute_simulation(request: SimulationRequest):
-    scenario = SimulationScenario(
-        route_id=request.parameters.get("route_id", "PB-01"),
-        vehicle_count_modifier=request.parameters.get("vehicle_count_modifier", 2),
-        capacity_modifier=request.parameters.get("capacity_modifier", 0.0),
-        frequency_modifier=request.parameters.get("frequency_modifier", 20.0),
-        demand_modifier=request.parameters.get("demand_modifier", 0.0)
-    )
+    # Dynamically extract all supported levers
+    valid_fields = SimulationScenario.__fields__.keys()
+    scenario_kwargs = {k: v for k, v in request.parameters.items() if k in valid_fields}
+    if "route_id" not in scenario_kwargs:
+        scenario_kwargs["route_id"] = "PB-01"
+    scenario = SimulationScenario(**scenario_kwargs)
     res = run_simulation(scenario)
     return SimulationResponse(
         scenario_name=request.scenario_name,

@@ -1,5 +1,93 @@
-/* VisionOS Liquid Glass Forecasting */
+/* Technical Light HUD Forecasting Page — Spacious & Uncongested */
 
 .forecasting-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.horizon-btn-group {
+  display: flex;
+  align-items: center;
+  background: #F1F5F9;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.horizon-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.horizon-btn:hover {
+  color: var(--color-text);
+  background: #E2E8F0;
+}
+
+.horizon-btn.active {
+  background: #FFFFFF;
+  border-color: rgba(13, 148, 136, 0.4);
+  color: var(--color-accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Objective Model Metrics Benchmark */
+.forecast-models-benchmark {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.fmb-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.fmb-name {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.fmb-metric {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--color-text);
+}
+
+.fmb-sub {
+  font-size: 0.74rem;
+  color: #64748B;
+}
+
+.fmb-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--color-border);
+}
+
+@media (max-width: 800px) {
+  .fmb-divider { display: none; }
 }

@@ -1,0 +1,1402 @@
+[
+    {
+        "route_id": "PB-44-I",
+        "trip_id": "T-008913",
+        "time": "15:53",
+        "predicted_occupancy_pct": 77.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "OL-35-O",
+        "trip_id": "T-003323",
+        "time": "16:28",
+        "predicted_occupancy_pct": 77.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-42-O",
+        "trip_id": "T-014508",
+        "time": "16:06",
+        "predicted_occupancy_pct": 77.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-42-O",
+        "trip_id": "T-014508",
+        "time": "16:06",
+        "predicted_occupancy_pct": 77.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-10-I",
+        "trip_id": "T-006028",
+        "time": "17:58",
+        "predicted_occupancy_pct": 76.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-12-I",
+        "trip_id": "T-019868",
+        "time": "17:30",
+        "predicted_occupancy_pct": 76.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "PB-25-O",
+        "trip_id": "T-005065",
+        "time": "18:53",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-37-I",
+        "trip_id": "T-018825",
+        "time": "18:09",
+        "predicted_occupancy_pct": 76.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "GL-29-I",
+        "trip_id": "T-011900",
+        "time": "19:41",
+        "predicted_occupancy_pct": 74.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (19:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "LB-48-O",
+        "trip_id": "T-010403",
+        "time": "20:15",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "GL-28-O",
+        "trip_id": "T-011882",
+        "time": "20:23",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "GL-28-O",
+        "trip_id": "T-011882",
+        "time": "20:23",
+        "predicted_occupancy_pct": 77.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "GL-28-O",
+        "trip_id": "T-011882",
+        "time": "20:23",
+        "predicted_occupancy_pct": 76.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "PB-36-O",
+        "trip_id": "T-006365",
+        "time": "21:26",
+        "predicted_occupancy_pct": 76.0,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "PB-36-O",
+        "trip_id": "T-006365",
+        "time": "21:26",
+        "predicted_occupancy_pct": 76.0,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "OL-07-O",
+        "trip_id": "T-013911",
+        "time": "06:58",
+        "predicted_occupancy_pct": 82.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.82"
+        ]
+    },
+    {
+        "route_id": "OL-35-O",
+        "trip_id": "T-006350",
+        "time": "07:48",
+        "predicted_occupancy_pct": 77.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (7:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "KCR-30-O",
+        "trip_id": "T-021911",
+        "time": "07:14",
+        "predicted_occupancy_pct": 79.0,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (7:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.79"
+        ]
+    },
+    {
+        "route_id": "LB-12-I",
+        "trip_id": "T-000237",
+        "time": "08:30",
+        "predicted_occupancy_pct": 77.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-45-O",
+        "trip_id": "T-019820",
+        "time": "08:36",
+        "predicted_occupancy_pct": 75.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "PB-22-O",
+        "trip_id": "T-022011",
+        "time": "08:52",
+        "predicted_occupancy_pct": 75.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "PB-22-O",
+        "trip_id": "T-022011",
+        "time": "08:52",
+        "predicted_occupancy_pct": 75.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-50-O",
+        "trip_id": "T-013407",
+        "time": "10:41",
+        "predicted_occupancy_pct": 77.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-26-I",
+        "trip_id": "T-016544",
+        "time": "10:07",
+        "predicted_occupancy_pct": 74.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-33-O",
+        "trip_id": "T-016761",
+        "time": "10:47",
+        "predicted_occupancy_pct": 74.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-33-O",
+        "trip_id": "T-016761",
+        "time": "10:47",
+        "predicted_occupancy_pct": 74.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "LB-41-O",
+        "trip_id": "T-016967",
+        "time": "10:35",
+        "predicted_occupancy_pct": 77.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "PB-05-I",
+        "trip_id": "T-006147",
+        "time": "11:23",
+        "predicted_occupancy_pct": 72.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.72"
+        ]
+    },
+    {
+        "route_id": "GL-18-O",
+        "trip_id": "T-013731",
+        "time": "11:38",
+        "predicted_occupancy_pct": 75.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "PB-53-O",
+        "trip_id": "T-015543",
+        "time": "11:07",
+        "predicted_occupancy_pct": 76.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-04-I",
+        "trip_id": "T-020461",
+        "time": "11:41",
+        "predicted_occupancy_pct": 72.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.72"
+        ]
+    },
+    {
+        "route_id": "KCR-14-I",
+        "trip_id": "T-001207",
+        "time": "12:39",
+        "predicted_occupancy_pct": 73.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "LB-13-I",
+        "trip_id": "T-001595",
+        "time": "12:14",
+        "predicted_occupancy_pct": 75.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-51-I",
+        "trip_id": "T-010795",
+        "time": "12:40",
+        "predicted_occupancy_pct": 76.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-04-I",
+        "trip_id": "T-020589",
+        "time": "12:19",
+        "predicted_occupancy_pct": 75.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "PB-05-I",
+        "trip_id": "T-021556",
+        "time": "12:42",
+        "predicted_occupancy_pct": 73.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "PB-05-I",
+        "trip_id": "T-021556",
+        "time": "12:42",
+        "predicted_occupancy_pct": 75.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "PB-24-I",
+        "trip_id": "T-004291",
+        "time": "14:25",
+        "predicted_occupancy_pct": 74.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "PB-24-I",
+        "trip_id": "T-004291",
+        "time": "14:25",
+        "predicted_occupancy_pct": 78.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-12-O",
+        "trip_id": "T-020626",
+        "time": "14:42",
+        "predicted_occupancy_pct": 78.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-20-I",
+        "trip_id": "T-003245",
+        "time": "15:08",
+        "predicted_occupancy_pct": 77.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-20-I",
+        "trip_id": "T-003245",
+        "time": "15:08",
+        "predicted_occupancy_pct": 77.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-37-O",
+        "trip_id": "T-015719",
+        "time": "15:17",
+        "predicted_occupancy_pct": 76.8,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-06-I",
+        "trip_id": "T-001422",
+        "time": "17:45",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "OL-35-I",
+        "trip_id": "T-008508",
+        "time": "17:04",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "OL-35-I",
+        "trip_id": "T-008508",
+        "time": "17:04",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "OL-35-I",
+        "trip_id": "T-008508",
+        "time": "17:04",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-42-I",
+        "trip_id": "T-020911",
+        "time": "17:23",
+        "predicted_occupancy_pct": 78.8,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.79"
+        ]
+    },
+    {
+        "route_id": "LB-42-I",
+        "trip_id": "T-020911",
+        "time": "17:23",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-26-I",
+        "trip_id": "T-020965",
+        "time": "17:46",
+        "predicted_occupancy_pct": 78.8,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (17:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.79"
+        ]
+    },
+    {
+        "route_id": "LB-39-O",
+        "trip_id": "T-001839",
+        "time": "18:23",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "LB-39-O",
+        "trip_id": "T-001839",
+        "time": "18:23",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "OL-07-I",
+        "trip_id": "T-012755",
+        "time": "18:21",
+        "predicted_occupancy_pct": 79.3,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.79"
+        ]
+    },
+    {
+        "route_id": "LB-32-O",
+        "trip_id": "T-016744",
+        "time": "18:09",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "OL-17-O",
+        "trip_id": "T-017043",
+        "time": "18:28",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-36-I",
+        "trip_id": "T-024808",
+        "time": "18:05",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-36-I",
+        "trip_id": "T-024808",
+        "time": "18:05",
+        "predicted_occupancy_pct": 76.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (18:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-27-I",
+        "trip_id": "T-003692",
+        "time": "19:05",
+        "predicted_occupancy_pct": 80.3,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (19:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "LB-27-I",
+        "trip_id": "T-003692",
+        "time": "19:05",
+        "predicted_occupancy_pct": 78.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (19:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-32-I",
+        "trip_id": "T-004844",
+        "time": "20:54",
+        "predicted_occupancy_pct": 79.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "KCR-30-O",
+        "trip_id": "T-016638",
+        "time": "20:19",
+        "predicted_occupancy_pct": 77.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "OL-35-I",
+        "trip_id": "T-009367",
+        "time": "21:19",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-10-I",
+        "trip_id": "T-013796",
+        "time": "21:06",
+        "predicted_occupancy_pct": 77.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "LB-10-I",
+        "trip_id": "T-013796",
+        "time": "21:06",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-51-O",
+        "trip_id": "T-017876",
+        "time": "21:43",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-10-I",
+        "trip_id": "T-017960",
+        "time": "21:35",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-10-I",
+        "trip_id": "T-017960",
+        "time": "21:35",
+        "predicted_occupancy_pct": 76.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-19-I",
+        "trip_id": "T-002457",
+        "time": "22:07",
+        "predicted_occupancy_pct": 73.8,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "PB-46-O",
+        "trip_id": "T-021300",
+        "time": "22:40",
+        "predicted_occupancy_pct": 77.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "PB-46-I",
+        "trip_id": "T-023463",
+        "time": "22:31",
+        "predicted_occupancy_pct": 73.8,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "LB-38-I",
+        "trip_id": "T-005614",
+        "time": "06:27",
+        "predicted_occupancy_pct": 76.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "PB-34-O",
+        "trip_id": "T-003561",
+        "time": "07:20",
+        "predicted_occupancy_pct": 79.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (7:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "GL-29-O",
+        "trip_id": "T-008146",
+        "time": "07:53",
+        "predicted_occupancy_pct": 74.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (7:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "PB-53-O",
+        "trip_id": "T-011540",
+        "time": "07:00",
+        "predicted_occupancy_pct": 74.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (7:00)",
+            "Capacity 60 passengers",
+            "Historical load factor 0.74"
+        ]
+    },
+    {
+        "route_id": "PB-01-O",
+        "trip_id": "T-018285",
+        "time": "07:24",
+        "predicted_occupancy_pct": 79.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (7:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "LB-04-I",
+        "trip_id": "T-000012",
+        "time": "08:30",
+        "predicted_occupancy_pct": 77.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 120 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-13-O",
+        "trip_id": "T-000342",
+        "time": "08:30",
+        "predicted_occupancy_pct": 74.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-34-O",
+        "trip_id": "T-000373",
+        "time": "08:30",
+        "predicted_occupancy_pct": 74.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-34-O",
+        "trip_id": "T-000373",
+        "time": "08:30",
+        "predicted_occupancy_pct": 74.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "LB-41-I",
+        "trip_id": "T-000779",
+        "time": "08:30",
+        "predicted_occupancy_pct": 74.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (8:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "LB-54-O",
+        "trip_id": "T-007582",
+        "time": "09:58",
+        "predicted_occupancy_pct": 70.7,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Peak hour (9:00)",
+            "Capacity 40 passengers",
+            "Historical load factor 0.71"
+        ]
+    },
+    {
+        "route_id": "LB-19-O",
+        "trip_id": "T-009053",
+        "time": "10:05",
+        "predicted_occupancy_pct": 79.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "PB-03-O",
+        "trip_id": "T-022608",
+        "time": "10:03",
+        "predicted_occupancy_pct": 76.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "LB-37-I",
+        "trip_id": "T-023178",
+        "time": "10:42",
+        "predicted_occupancy_pct": 79.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "LB-49-O",
+        "trip_id": "T-024237",
+        "time": "10:13",
+        "predicted_occupancy_pct": 79.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "LB-49-O",
+        "trip_id": "T-024237",
+        "time": "10:13",
+        "predicted_occupancy_pct": 79.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.8"
+        ]
+    },
+    {
+        "route_id": "PB-40-I",
+        "trip_id": "T-021999",
+        "time": "11:03",
+        "predicted_occupancy_pct": 77.1,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.77"
+        ]
+    },
+    {
+        "route_id": "OL-07-I",
+        "trip_id": "T-005126",
+        "time": "12:26",
+        "predicted_occupancy_pct": 78.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.79"
+        ]
+    },
+    {
+        "route_id": "OL-07-I",
+        "trip_id": "T-005126",
+        "time": "12:26",
+        "predicted_occupancy_pct": 76.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "KCR-14-O",
+        "trip_id": "T-022281",
+        "time": "12:16",
+        "predicted_occupancy_pct": 75.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 60 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "KCR-14-O",
+        "trip_id": "T-022281",
+        "time": "12:16",
+        "predicted_occupancy_pct": 78.9,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.79"
+        ]
+    },
+    {
+        "route_id": "PB-33-O",
+        "trip_id": "T-000991",
+        "time": "13:59",
+        "predicted_occupancy_pct": 75.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-10-O",
+        "trip_id": "T-001157",
+        "time": "13:16",
+        "predicted_occupancy_pct": 75.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-37-I",
+        "trip_id": "T-003814",
+        "time": "13:28",
+        "predicted_occupancy_pct": 75.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-37-I",
+        "trip_id": "T-003814",
+        "time": "13:28",
+        "predicted_occupancy_pct": 75.5,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.76"
+        ]
+    },
+    {
+        "route_id": "LB-50-O",
+        "trip_id": "T-015074",
+        "time": "14:22",
+        "predicted_occupancy_pct": 77.6,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.78"
+        ]
+    },
+    {
+        "route_id": "OL-07-I",
+        "trip_id": "T-024528",
+        "time": "14:41",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-02-O",
+        "trip_id": "T-001804",
+        "time": "15:40",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "PB-43-I",
+        "trip_id": "T-017005",
+        "time": "15:13",
+        "predicted_occupancy_pct": 75.2,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 120 passengers",
+            "Historical load factor 0.75"
+        ]
+    },
+    {
+        "route_id": "LB-54-O",
+        "trip_id": "T-017855",
+        "time": "15:14",
+        "predicted_occupancy_pct": 78.4,
+        "crowding_risk": false,
+        "risk_probability": 0.45,
+        "risk_category": "High",
+        "supporting_factors": [
+            "Off-peak window",
+            "Capacity 40 passengers",
+            "Historical load factor 0.78"
+        ]
+    }
+]

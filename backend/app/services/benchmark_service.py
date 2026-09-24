@@ -6,7 +6,8 @@ import logging
 from typing import List, Dict, Any
 from datetime import datetime
 import uuid
-from backend.app.database.supabase_client import get_supabase_client
+from backend.app.database.engine import SessionLocal
+from backend.app.database.models import PerformanceBenchmark
 
 logger = logging.getLogger(__name__)
 
@@ -43,23 +44,34 @@ _BENCHMARKS: List[Dict[str, Any]] = [
     }
 ]
 
+def _benchmark_to_dict(bm: PerformanceBenchmark) -> Dict[str, Any]:
+    return {
+        "id": str(bm.id),
+        "operation": bm.operation,
+        "dataset_size": bm.dataset_size,
+        "duration_seconds": bm.duration_seconds,
+        "throughput_rps": bm.throughput_rps,
+        "memory_mb": bm.memory_mb,
+        "timestamp": bm.timestamp.isoformat() if bm.timestamp else None,
+        "notes": bm.notes,
+    }
 
 def list_benchmarks() -> List[Dict[str, Any]]:
-    client = get_supabase_client()
-    if client:
-        try:
-            res = client.table("performance_benchmarks").select("*").order("timestamp", desc=True).execute()
-            if res.data and len(res.data) > 0:
-                return res.data
-        except Exception as e:
-            logger.warning(f"Could not load benchmarks from Supabase: {e}")
+    try:
+        with SessionLocal() as db:
+            benchmarks = db.query(PerformanceBenchmark).order_by(PerformanceBenchmark.timestamp.desc()).all()
+            if benchmarks:
+                return [_benchmark_to_dict(bm) for bm in benchmarks]
+    except Exception as e:
+        logger.warning(f"Could not load benchmarks from PostgreSQL: {e}")
     return _BENCHMARKS
 
 
 def record_benchmark(operation: str, dataset_size: int, duration_seconds: float, memory_mb: float = 0.0, notes: str = "") -> Dict[str, Any]:
     rps = (dataset_size / duration_seconds) if duration_seconds > 0 else 0.0
+    bm_id = str(uuid.uuid4())
     record = {
-        "id": str(uuid.uuid4()),
+        "id": bm_id,
         "operation": operation,
         "dataset_size": dataset_size,
         "duration_seconds": duration_seconds,
@@ -68,11 +80,22 @@ def record_benchmark(operation: str, dataset_size: int, duration_seconds: float,
         "timestamp": datetime.utcnow().isoformat(),
         "notes": notes,
     }
-    client = get_supabase_client()
-    if client:
-        try:
-            client.table("performance_benchmarks").insert(record).execute()
-        except Exception as e:
-            logger.warning(f"Could not insert benchmark in Supabase: {e}")
+    
+    try:
+        with SessionLocal() as db:
+            new_bm = PerformanceBenchmark(
+                id=bm_id,
+                operation=operation,
+                dataset_size=dataset_size,
+                duration_seconds=duration_seconds,
+                throughput_rps=round(rps, 2),
+                memory_mb=memory_mb,
+                notes=notes
+            )
+            db.add(new_bm)
+            db.commit()
+    except Exception as e:
+        logger.warning(f"Could not insert benchmark in PostgreSQL: {e}")
+        
     _BENCHMARKS.append(record)
     return record

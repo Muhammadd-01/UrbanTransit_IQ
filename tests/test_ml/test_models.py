@@ -2,7 +2,10 @@
 Tests for ML evaluation utilities and models.
 """
 
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 import numpy as np
 from python_pipeline.evaluation import evaluate_classifier, evaluate_regressor
 

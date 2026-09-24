@@ -1,0 +1,5 @@
+Model,Type,MAE,RMSE,MAPE (%),Improvement Over Baseline (%)
+Historical Mean Baseline,Baseline,1082.2,1365.6,22.97,0.0% (Reference)
+Seasonal Naive Baseline (t-7),Baseline,517.5,648.8,9.66,0.0% (Primary Baseline)
+Lagged Gradient Boosted Regressor,Advanced ML,1007.7,1168.9,19.67,+-103.7%
+SARIMA (s=7 Weekly),Advanced Time Series,1191.6,1569.2,25.51,+-164.1%

@@ -9,3 +9,5 @@ class RecommendationResponse(BaseModel):
     affected_time: Optional[str]
     expected_impact: str
     confidence_level: str
+    priority: Optional[int] = 2
+    category: Optional[str] = "CAPACITY"

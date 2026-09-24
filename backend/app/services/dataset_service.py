@@ -8,7 +8,8 @@ import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import uuid
-from backend.app.database.supabase_client import get_supabase_client
+from backend.app.database.engine import SessionLocal
+from backend.app.database.models import Dataset
 from data_generator.generate_data import main as run_generator
 
 logger = logging.getLogger(__name__)
@@ -25,16 +26,26 @@ _IN_MEMORY_DATASETS: List[Dict[str, Any]] = [
     }
 ]
 
+def _dataset_to_dict(ds: Dataset) -> Dict[str, Any]:
+    return {
+        "id": str(ds.id),
+        "name": ds.name,
+        "scale": ds.scale,
+        "status": ds.status,
+        "record_count": ds.record_count,
+        "file_path": ds.file_path,
+        "created_by": str(ds.created_by) if ds.created_by else None,
+        "created_at": ds.created_at.isoformat() if ds.created_at else None,
+    }
 
 def list_datasets() -> List[Dict[str, Any]]:
-    client = get_supabase_client()
-    if client:
-        try:
-            res = client.table("datasets").select("*").order("created_at", desc=True).execute()
-            if res.data and len(res.data) > 0:
-                return res.data
-        except Exception as e:
-            logger.warning(f"Failed to query datasets from Supabase: {e}")
+    try:
+        with SessionLocal() as db:
+            datasets = db.query(Dataset).order_by(Dataset.created_at.desc()).all()
+            if datasets:
+                return [_dataset_to_dict(ds) for ds in datasets]
+    except Exception as e:
+        logger.warning(f"Failed to query datasets from PostgreSQL: {e}")
 
     # Inspect data/raw folder for files
     raw_files = glob.glob("data/raw/*.csv")
@@ -68,12 +79,21 @@ def generate_dataset(scale: str = "small", created_by: Optional[str] = None) -> 
         "created_at": datetime.utcnow().isoformat(),
     }
 
-    client = get_supabase_client()
-    if client:
-        try:
-            client.table("datasets").insert(record).execute()
-        except Exception as e:
-            logger.warning(f"Could not record dataset in Supabase: {e}")
+    try:
+        with SessionLocal() as db:
+            new_ds = Dataset(
+                id=dataset_id,
+                name=record["name"],
+                scale=record["scale"],
+                status=record["status"],
+                record_count=record["record_count"],
+                file_path=record["file_path"],
+                created_by=record["created_by"],
+            )
+            db.add(new_ds)
+            db.commit()
+    except Exception as e:
+        logger.warning(f"Could not record dataset in PostgreSQL: {e}")
 
     _IN_MEMORY_DATASETS.append(record)
     return record
@@ -82,7 +102,7 @@ def generate_dataset(scale: str = "small", created_by: Optional[str] = None) -> 
 def upload_dataset_to_hdfs(dataset_id: str) -> Dict[str, Any]:
     """Triggers HDFS upload script."""
     logger.info(f"Uploading dataset {dataset_id} to HDFS...")
-    script_path = "hadoop/hdfs_scripts/upload_to_hdfs.sh"
+    script_path = "echo "HDFS upload stubbed""
     if os.path.exists(script_path):
         import subprocess
         res = subprocess.run(["bash", script_path], capture_output=True, text=True)

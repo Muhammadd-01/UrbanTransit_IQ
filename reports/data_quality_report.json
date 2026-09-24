@@ -1,0 +1,1032 @@
+{
+    "status": "success",
+    "total_records": 365650,
+    "valid_records": 301906,
+    "corrected_records": 35095,
+    "flagged_records": 8000,
+    "quarantined_records": 20649,
+    "issue_counts_by_type": {
+        "missing_ticket_ids": 10000,
+        "duplicate_transactions": 9999,
+        "invalid_stop_ids": 5000,
+        "unknown_passengers": 5000,
+        "duplicate_trips": 650,
+        "arrival_before_departure": 19595,
+        "impossible_travel_durations": 0,
+        "missing_vehicle_ids": 0,
+        "missing_route_ids": 3000,
+        "invalid_delays": 1500,
+        "missing_trip_ids": 3000,
+        "negative_passenger_counts": 2000,
+        "invalid_timestamps": 1000,
+        "capacity_violations": 3000,
+        "broken_stop_sequences": 0
+    },
+    "completeness_pct": 95.62,
+    "validity_pct": 82.57,
+    "consistency_pct": 91.73,
+    "overall_quality_pct": 89.97,
+    "record_level_audit": [
+        {
+            "record_id": "ROW-0",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.516928",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-1",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.516994",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-2",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517046",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-3",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517094",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-4",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517141",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-5",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517189",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-6",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517236",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-7",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517283",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-8",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517330",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-9",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517378",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-10",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517425",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-11",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517475",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-12",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517605",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-13",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517701",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-14",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517749",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-15",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517795",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-16",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517840",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-17",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.517964",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-18",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.518009",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "ROW-19",
+            "dataset": "tickets",
+            "issue_type": "missing_ticket_ids",
+            "original_value": "None",
+            "corrected_value": null,
+            "cleaning_rule": "Quarantine record with null primary key",
+            "timestamp": "2026-09-24T11:51:41.518054",
+            "final_status": "QUARANTINED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.538976",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539051",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539110",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539167",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539235",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539291",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539346",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539403",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539457",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539511",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539565",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539623",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539679",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539734",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539792",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539847",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539911",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.539970",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.540028",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "duplicate_transactions",
+            "original_value": "nan",
+            "corrected_value": null,
+            "cleaning_rule": "Deduplicate transaction ID",
+            "timestamp": "2026-09-24T11:51:41.540083",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.556583",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.556688",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.556754",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.556816",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.556896",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.556977",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557037",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557098",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557173",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557231",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557335",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557415",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557523",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557591",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557674",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557761",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557831",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.557963",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.558035",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "invalid_stop_ids",
+            "original_value": "S-9999",
+            "corrected_value": "S-0001",
+            "cleaning_rule": "Impute to nearest major terminal stop",
+            "timestamp": "2026-09-24T11:51:41.558128",
+            "final_status": "CORRECTED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0000",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.672353",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0001",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.672900",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0002",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.673323",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0003",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.673525",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0004",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.673711",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0005",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.674055",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0006",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.674291",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0007",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.674455",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0008",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.674637",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0009",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.674748",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0010",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.674958",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0011",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.675215",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0012",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.675430",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0013",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.675583",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0014",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.675738",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0015",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.675865",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0016",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.676003",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0017",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.676155",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0018",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.676657",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "nan",
+            "dataset": "tickets",
+            "issue_type": "unknown_passengers",
+            "original_value": "P-UNKNOWN-0019",
+            "corrected_value": "P-ANONYMOUS",
+            "cleaning_rule": "Assign guest passenger token",
+            "timestamp": "2026-09-24T11:51:41.677157",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000001",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000001",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852432",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000002",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000002",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852505",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000003",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000003",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852567",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000004",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000004",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852629",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000005",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000005",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852692",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000006",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000006",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852748",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000007",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000007",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852805",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000008",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000008",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852861",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000009",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000009",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852917",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000010",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000010",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.852981",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000011",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000011",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853038",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000012",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000012",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853098",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000013",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000013",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853157",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000014",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000014",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853226",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000015",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000015",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853284",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000016",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000016",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853344",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000017",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000017",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853409",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000018",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000018",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853468",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000019",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000019",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853592",
+            "final_status": "FLAGGED"
+        },
+        {
+            "record_id": "T-000020",
+            "dataset": "trips",
+            "issue_type": "duplicate_trips",
+            "original_value": "T-000020",
+            "corrected_value": null,
+            "cleaning_rule": "Drop redundant trip schedule run",
+            "timestamp": "2026-09-24T11:51:41.853719",
+            "final_status": "FLAGGED"
+        }
+    ],
+    "timestamp": "2026-09-24T11:51:42.679514"
+}

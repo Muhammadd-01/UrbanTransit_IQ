@@ -1,33 +1,201 @@
-/* VisionOS Liquid Glass Route Intelligence */
+/* Technical Light HUD Route Intelligence & Drawer — Spacious & Uncongested */
 
 .routeintel-page {
-  animation: iosPageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.route-score-box {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  padding: 18px;
-  border-radius: var(--radius-ios-sm);
-  text-align: center;
-  margin-bottom: 18px;
+.interactive-route-row {
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.interactive-route-row:hover {
+  background: rgba(13, 148, 136, 0.05) !important;
+}
+
+/* Route Drawer Modal */
+.route-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(14px);
-  box-shadow: var(--shadow-glass-card);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: drawerFadeIn 0.2s ease-out;
 }
 
-.route-score-box.score-aurora {
-  border-color: rgba(5, 150, 105, 0.35);
-  box-shadow: 0 4px 16px -4px rgba(5, 150, 105, 0.15);
+@keyframes drawerFadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.route-score-val {
-  font-size: 2.3rem;
+.route-drawer-modal {
+  width: 90%;
+  max-width: 760px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 12px;
+  box-shadow: 0 24px 64px -8px rgba(15, 23, 42, 0.2), 0 0 25px rgba(13, 148, 136, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.route-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background: #F8FAFC;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rdh-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rdh-title h3 {
+  font-size: 1.12rem;
+  color: var(--color-text);
+  font-weight: 700;
+  margin: 0;
+}
+
+.drawer-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.drawer-close-btn:hover {
+  color: var(--color-text);
+}
+
+.route-drawer-body {
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.drawer-score-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 16px 20px;
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.dss-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.dss-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #64748B;
+  letter-spacing: 0.06em;
+}
+
+.dss-val {
+  font-size: 1.15rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--text-primary);
+  font-family: var(--font-mono);
 }
 
-.route-score-val span {
-  font-size: 1rem;
-  color: var(--text-muted);
+.drawer-sections-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 680px) {
+  .drawer-sections-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.drawer-section-card {
+  padding: 18px 20px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.drawer-section-card h4 {
+  font-size: 0.90rem;
+  color: var(--color-text);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+}
+
+.stops-sequence-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.84rem;
+  color: var(--color-text-secondary);
+}
+
+.stop-num {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  background: var(--color-accent-bg);
+  border: 1px solid rgba(13, 148, 136, 0.25);
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.drawer-spec-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.84rem;
+}
+
+.dsr-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.route-drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: #F8FAFC;
+  border-top: 1px solid var(--color-border);
 }

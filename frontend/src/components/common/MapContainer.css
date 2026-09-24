@@ -1,17 +1,16 @@
-/* Apple iOS / VisionOS Crystal Light Glass Map Container */
+/* Technical Light HUD Map Container */
 
 .map-wrapper {
-  height: 440px;
-  border-radius: var(--radius-ios);
+  border-radius: var(--radius-hud);
   overflow: hidden;
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-specular);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--glass-shadow);
   position: relative;
   transition: var(--spring-transition);
 }
 
 .map-wrapper:hover {
-  border-color: rgba(5, 150, 105, 0.4);
+  border-color: var(--color-border-hover);
   box-shadow: var(--glass-shadow-hover);
 }
 
@@ -19,38 +18,47 @@
   height: 100%;
   width: 100%;
   z-index: 1;
-  background: #f1f5f9 !important;
+  background: #F1F5F9 !important;
 }
 
-/* Custom iOS Crystal Light Leaflet Controls */
+/* Custom Light HUD Leaflet Controls */
 .leaflet-bar {
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
-  border-radius: 12px !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 6px !important;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
-  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
 }
 
 .leaflet-bar a {
-  background-color: rgba(255, 255, 255, 0.92) !important;
-  color: #0f172a !important;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+  background-color: #FFFFFF !important;
+  color: var(--color-text-secondary) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  transition: var(--transition-fast);
 }
 
 .leaflet-bar a:hover {
-  background-color: #ffffff !important;
-  color: var(--accent-aurora) !important;
+  background-color: #F8FAFC !important;
+  color: var(--color-accent) !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(24px) !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
-  border-radius: 16px !important;
-  color: #0f172a !important;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
+  background: #FFFFFF !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(13, 148, 136, 0.4) !important;
+  border-radius: 8px !important;
+  color: var(--color-text) !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 0 15px rgba(13, 148, 136, 0.15) !important;
+  font-family: var(--font-sans) !important;
+  padding: 6px !important;
+}
+
+.leaflet-popup-content {
+  font-size: 0.84rem !important;
+  line-height: 1.5 !important;
+  color: var(--color-text) !important;
 }
 
 .leaflet-popup-tip {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: #FFFFFF !important;
+  border-top: 1px solid rgba(13, 148, 136, 0.4) !important;
 }

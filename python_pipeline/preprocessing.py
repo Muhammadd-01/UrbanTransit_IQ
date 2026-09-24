@@ -19,7 +19,7 @@ def remove_outliers_iqr(df, column):
     return df
 
 def clean_data(dataframes_dict):
-    """Clean all dataframes."""
+    """Clean all dataframes with fast vectorized operations."""
     cleaned = {}
     stats = {}
     
@@ -36,9 +36,9 @@ def clean_data(dataframes_dict):
         # 2. Handle missing values
         for col in df.columns:
             if pd.api.types.is_numeric_dtype(df[col]):
-                df[col] = df[col].fillna(df[col].median())
+                df[col] = df[col].fillna(df[col].median() if not df[col].empty else 0)
             else:
-                df[col] = df[col].fillna(df[col].mode()[0] if not df[col].mode().empty else "UNKNOWN")
+                df[col] = df[col].fillna("UNKNOWN")
                 
         # 3. Handle impossible values / Cap outliers
         if name == 'passenger_counts' and 'boarding_count' in df.columns:

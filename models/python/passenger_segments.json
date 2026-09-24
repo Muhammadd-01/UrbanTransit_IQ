@@ -1,0 +1,47 @@
+{
+    "method": "K-Means (k=4) on Passenger Travel Profiles",
+    "silhouette_score": 0.244,
+    "total_passengers_analyzed": 45248,
+    "segments": [
+        {
+            "segment_id": 0,
+            "name": "Daily Commercial Commuters",
+            "percentage": 25.6,
+            "count": 11606,
+            "average_frequency": 1.29,
+            "average_fare_pkr": 75.0,
+            "peak_travel_ratio": 0.567,
+            "peak_usage": "08:00 & 18:00 (Rush Hours)"
+        },
+        {
+            "segment_id": 1,
+            "name": "Student & Concession Pass Holders",
+            "percentage": 19.2,
+            "count": 8674,
+            "average_frequency": 1.71,
+            "average_fare_pkr": 75.1,
+            "peak_travel_ratio": 0.56,
+            "peak_usage": "08:00 & 18:00 (Rush Hours)"
+        },
+        {
+            "segment_id": 2,
+            "name": "Off-Peak Retail & General Public",
+            "percentage": 27.5,
+            "count": 12456,
+            "average_frequency": 3.61,
+            "average_fare_pkr": 75.2,
+            "peak_travel_ratio": 0.562,
+            "peak_usage": "08:00 & 18:00 (Rush Hours)"
+        },
+        {
+            "segment_id": 3,
+            "name": "Occasional Cash Transit Users",
+            "percentage": 27.7,
+            "count": 12512,
+            "average_frequency": 1.61,
+            "average_fare_pkr": 75.1,
+            "peak_travel_ratio": 0.564,
+            "peak_usage": "08:00 & 18:00 (Rush Hours)"
+        }
+    ]
+}

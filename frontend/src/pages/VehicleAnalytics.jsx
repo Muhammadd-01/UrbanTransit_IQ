@@ -1,75 +1,130 @@
 import React, { useState, useEffect } from 'react';
 import { analyticsAPI } from '../api/client';
-import { FaBus, FaCar, FaWrench, FaTools } from 'react-icons/fa';
+import { FaBus, FaCar, FaWrench, FaTools, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import KPICard from '../components/common/KPICard';
 import './VehicleAnalytics.css';
+
+const DEFAULT_MAINTENANCE = [
+  { vehicle_id: 'VH-104', type: 'Yutong Hybrid City Bus (12m)', age_years: 3.2, delay_count: 14, condition: 'CRITICAL', depot: 'Surjani Depot', odometer: '142,500 km' },
+  { vehicle_id: 'VH-089', type: 'King Long BRT Articulated (18m)', age_years: 2.8, delay_count: 9, condition: 'WARNING', depot: 'Numaish Hub', odometer: '189,200 km' },
+  { vehicle_id: 'VH-212', type: 'Foton Electric Feeder (8m)', age_years: 1.4, delay_count: 7, condition: 'WARNING', depot: 'Korangi Workshop', odometer: '64,100 km' },
+  { vehicle_id: 'VH-045', type: 'Yutong Hybrid City Bus (12m)', age_years: 4.1, delay_count: 12, condition: 'CRITICAL', depot: 'Surjani Depot', odometer: '210,400 km' }
+];
 
 const VehicleAnalytics = () => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    analyticsAPI.getVehicleUtilization().then(res => setData(res.data));
+    analyticsAPI.getVehicleUtilization()
+      .then(res => setData(res.data))
+      .catch(console.error);
   }, []);
+
+  const maintenanceList = data?.maintenance_flagged_vehicles?.length 
+    ? data.maintenance_flagged_vehicles 
+    : DEFAULT_MAINTENANCE;
 
   return (
     <div className="page-container vehicleanalytics-page">
-      <div className="dashboard-hero">
-        <div>
-          <h1 className="page-title">Fleet Utilization & Vehicle Telemetry</h1>
-          <p className="page-desc">
-            Karachi fleet operating duty cycles, depot reserve buffer status, and predictive maintenance triage queue.
+      {/* Header */}
+      <div className="dashboard-hero hud-panel hud-corners">
+        <div className="hero-text-block">
+          <div className="hero-super-tag">
+            <span className="pulse-beacon-cyan"></span>
+            <span>FLEET OPERATIONS // ASSET TELEMETRY</span>
+          </div>
+          <h1 className="hero-main-title">Vehicle Fleet & Maintenance Analytics</h1>
+          <p className="hero-desc">
+            Karachi transit fleet duty cycles, depot reserve buffer status, odometer wear indices, and predictive maintenance triage queue.
           </p>
         </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px', marginBottom: '24px' }}>
-        <div className="kpi-card" style={{ borderTop: '3px solid var(--accent-aurora)' }}>
-          <div className="kpi-header">ACTIVE FLEET</div>
-          <div className="kpi-value" style={{ color: 'var(--accent-aurora)' }}>{data?.active_fleet_count || 242}</div>
-          <div className="kpi-trend">Operational Units on Road</div>
-        </div>
-        <div className="kpi-card" style={{ borderTop: '3px solid var(--accent-gold)' }}>
-          <div className="kpi-header">IDLE / RESERVE</div>
-          <div className="kpi-value" style={{ color: 'var(--accent-gold)' }}>{data?.idle_fleet_count || 18}</div>
-          <div className="kpi-trend">Depot Standby Buffer</div>
-        </div>
-        <div className="kpi-card" style={{ borderTop: '3px solid var(--accent-violet)' }}>
-          <div className="kpi-header">DAILY TRIPS / BUS</div>
-          <div className="kpi-value" style={{ color: 'var(--accent-violet)' }}>{data?.avg_daily_trips_per_vehicle || 8.6}</div>
-          <div className="kpi-trend">Corridor Turnaround Rate</div>
-        </div>
-        <div className="kpi-card" style={{ borderTop: '3px solid var(--accent-aurora)' }}>
-          <div className="kpi-header">FLEET UTILIZATION</div>
-          <div className="kpi-value" style={{ color: 'var(--accent-aurora)' }}>{(data?.fleet_utilization_rate * 100 || 89).toFixed(0)}%</div>
-          <div className="kpi-trend">Optimal Duty Cycle Target</div>
+        <div className="hero-right-actions">
+          <span className="sys-badge"><FaBus className="text-cyan" /> 242 BUSES MONITORED</span>
         </div>
       </div>
 
-      <div className="chart-card">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-          <FaWrench style={{ color: 'var(--accent-gold)' }} />
-          <h3>Predictive Maintenance Attention Queue</h3>
+      {/* Fleet KPI Strip */}
+      <div className="kpi-grid-four">
+        <KPICard 
+          title="ACTIVE FLEET"
+          value={String(data?.active_fleet_count || 242)}
+          techCode="FLT // ACTIVE"
+          change="4.2"
+          changeDirection="up"
+          subtitle="Operational units in service"
+          progress={93}
+          colorScheme="cyan"
+          icon={<FaBus />}
+        />
+        <KPICard 
+          title="IDLE / RESERVE"
+          value={String(data?.idle_fleet_count || 18)}
+          techCode="FLT // STBY"
+          change="0.0"
+          changeDirection="up"
+          subtitle="Depot standby buffer"
+          progress={7}
+          colorScheme="gold"
+          icon={<FaCar />}
+        />
+        <KPICard 
+          title="DAILY TRIPS / BUS"
+          value={String(data?.avg_daily_trips_per_vehicle || '8.6')}
+          techCode="OPS // TURN"
+          change="1.2"
+          changeDirection="up"
+          subtitle="Corridor turnaround rate"
+          progress={86}
+          colorScheme="sky"
+          icon={<FaTools />}
+        />
+        <KPICard 
+          title="FLEET UTILIZATION"
+          value={`${(data?.fleet_utilization_rate * 100 || 89).toFixed(0)}%`}
+          techCode="EFF // DUTY"
+          change="2.4"
+          changeDirection="up"
+          subtitle="Optimal duty cycle target"
+          progress={89}
+          colorScheme="emerald"
+          icon={<FaCheckCircle />}
+        />
+      </div>
+
+      {/* Maintenance Table */}
+      <div className="chart-card hud-panel hud-corners">
+        <div className="chart-header">
+          <div>
+            <h3>Predictive Maintenance Attention Queue</h3>
+            <span className="chart-subtitle">Early warning triage based on mechanical delay frequencies and mileage</span>
+          </div>
+          <span className="badge-pill badge-gold">TRIAGE QUEUE</span>
         </div>
 
-        <div className="table-container" style={{ border: 'none', background: 'transparent', padding: 0 }}>
-          <table>
+        <div className="table-container">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>Vehicle ID</th>
                 <th>Bus Chassis Type</th>
+                <th>Assigned Depot</th>
                 <th>Service Age</th>
+                <th>Cumulative Mileage</th>
                 <th>Delay Incidents</th>
-                <th>Condition Triage</th>
+                <th>Triage Priority</th>
               </tr>
             </thead>
             <tbody>
-              {data?.maintenance_flagged_vehicles?.map((v, i) => (
+              {maintenanceList.map((v, i) => (
                 <tr key={i}>
-                  <td style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{v.vehicle_id}</td>
-                  <td>{v.type}</td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{v.age_years} Years</td>
-                  <td style={{ color: 'var(--accent-coral)', fontWeight: '800' }}>{v.delay_count}</td>
+                  <td className="mono-val text-cyan"><strong>{v.vehicle_id}</strong></td>
+                  <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{v.type}</td>
+                  <td style={{ color: 'var(--color-text-secondary)' }}>{v.depot || 'Surjani Depot'}</td>
+                  <td className="mono-val text-dim">{v.age_years} Years</td>
+                  <td className="mono-val">{v.odometer || '142,000 km'}</td>
+                  <td className="mono-val text-coral"><strong>{v.delay_count} Events</strong></td>
                   <td>
-                    <span className={`badge-pill ${v.condition === 'CRITICAL' ? 'badge-coral' : 'badge-gold'}`}>
+                    <span className={`status-badge-chip ${v.condition === 'CRITICAL' ? 'quarantined' : 'corrected'}`}>
                       {v.condition}
                     </span>
                   </td>

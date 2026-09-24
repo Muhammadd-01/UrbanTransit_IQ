@@ -1,0 +1,6 @@
+Record Count,Execution Time (s),Throughput (records/sec),Status
+"10,000",0.0104,"956,965",COMPLIANT (Linear / Sub-Linear Scalability)
+"50,000",0.0272,"1,841,309",COMPLIANT (Linear / Sub-Linear Scalability)
+"100,000",0.0483,"2,071,264",COMPLIANT (Linear / Sub-Linear Scalability)
+"250,000",0.1236,"2,023,059",COMPLIANT (Linear / Sub-Linear Scalability)
+"500,000",0.262,"1,908,369",COMPLIANT (Linear / Sub-Linear Scalability)

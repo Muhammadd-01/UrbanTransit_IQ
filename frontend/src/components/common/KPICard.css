@@ -1,74 +1,155 @@
-/* Apple iOS / VisionOS Crystal Light Glass KPI Card */
+/* VisionOS KPI Card */
 
 .kpi-card {
-  background: var(--glass-surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-ios);
-  padding: 22px 24px;
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-specular);
-  transition: var(--spring-transition);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   position: relative;
   overflow: hidden;
+  cursor: default;
 }
 
-.kpi-card:hover {
-  transform: translateY(-4px) scale(1.015);
-  background: var(--glass-surface-hover);
-  border-color: rgba(5, 150, 105, 0.4);
-  box-shadow: 0 20px 42px -8px rgba(15, 23, 42, 0.12), inset 0 1.5px 2px 0 rgba(255, 255, 255, 1);
-}
-
+/* Tactile Ripple / Highlight Effect */
 .kpi-card::after {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
-  transform: skewX(-20deg);
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
   pointer-events: none;
-  transition: left 0.7s ease;
 }
 
-.kpi-card:hover::after {
-  left: 150%;
+.kpi-card:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: 0s;
+}
+
+.kpi-card:active {
+  transform: scale(0.97) translateY(0) !important;
+  box-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
 }
 
 .kpi-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  color: var(--text-muted);
-  font-size: 0.76rem;
-  font-weight: 800;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.kpi-title {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+.kpi-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.kpi-tech-code {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.kpi-icon {
+  font-size: 1.1rem;
+  color: var(--color-accent);
+  background: rgba(0, 122, 255, 0.1);
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-body {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 4px;
 }
 
 .kpi-value {
-  font-size: 2.15rem;
+  font-family: var(--font-sans);
+  font-size: 2.2rem;
   font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
   letter-spacing: -0.03em;
-  margin: 8px 0;
-  color: #0f172a;
-  font-feature-settings: "tnum" 1;
+}
+
+.kpi-change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: var(--font-sans);
 }
 
 .kpi-change.up {
-  color: var(--accent-aurora);
-  font-weight: 800;
+  color: #248A3D; 
+  background: rgba(52, 199, 89, 0.2);
 }
 
 .kpi-change.down {
-  color: var(--accent-coral);
-  font-weight: 800;
+  color: #C02621; 
+  background: rgba(255, 59, 48, 0.2);
+}
+
+.kpi-change.neutral {
+  color: var(--color-text-secondary);
+  background: rgba(142, 142, 147, 0.2);
 }
 
 .kpi-subtitle {
   font-size: 0.8rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  margin-top: 4px;
 }
+
+.kpi-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.kpi-progress-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Color Schemes */
+.scheme-gold .kpi-icon { color: #D97706; background: rgba(217, 119, 6, 0.1); }
+.scheme-gold .kpi-progress-fill { background: #D97706; }
+
+.scheme-emerald .kpi-icon { color: #059669; background: rgba(5, 150, 105, 0.1); }
+.scheme-emerald .kpi-progress-fill { background: #059669; }
+
+.scheme-coral .kpi-icon { color: #E11D48; background: rgba(225, 29, 72, 0.1); }
+.scheme-coral .kpi-progress-fill { background: #E11D48; }

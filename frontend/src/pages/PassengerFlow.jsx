@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { analyticsAPI } from '../api/client';
 import Plot from 'react-plotly.js';
 import { 
@@ -12,27 +13,30 @@ import {
   FaChartLine,
   FaCity
 } from 'react-icons/fa';
-import KPICard from '../components/common/KPICard';
+import KPICard from "../components/common/KPICard";
+import PipelineBanner from "../components/common/PipelineBanner";
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './PassengerFlow.css';
 
 const PassengerFlow = () => {
+  const { getFilterParams, filters } = useContext(FilterContext);
+
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    analyticsAPI.getPassengerFlow().then(res => setData(res.data)).catch(console.error);
-  }, []);
+    analyticsAPI.getPassengerFlow(getFilterParams()).then(res => setData(res.data)).catch(console.error);
+  }, [filters]);
 
-  const terminalData = data?.top_boarding_stops || [
-    { stop_id: 'ST-01', stop_name: 'Tower Commercial Terminal', corridor: 'Saddar - Merewether Tower Core', boarding: 9420, alighting: 8650, route: 'PB-01', routeType: 'pb', capacity: 96 },
-    { stop_id: 'ST-04', stop_name: 'Numaish BRT Central Chowrangi', corridor: 'Green Line BRT Central Hub', boarding: 8950, alighting: 8410, route: 'GL-01', routeType: 'gl', capacity: 92 },
-    { stop_id: 'ST-02', stop_name: 'Saddar Regal Chowk Terminal', corridor: 'Downtown Commercial Sector', boarding: 8200, alighting: 7890, route: 'PB-01', routeType: 'pb', capacity: 85 },
-    { stop_id: 'ST-03', stop_name: 'Nipa Chowrangi Interchange', corridor: 'University Road Transit Hub', boarding: 7650, alighting: 6510, route: 'PB-08', routeType: 'pb', capacity: 79 },
-    { stop_id: 'ST-05', stop_name: 'Surjani Town BRT Depot Hub', corridor: 'Northern Residential Origin Terminus', boarding: 7120, alighting: 9120, route: 'GL-01', routeType: 'gl', capacity: 74 }
-  ];
+  const terminalData = data?.top_boarding_stops || [];
+
+  const maxIn = data?.hourly_distribution ? Math.max(...data.hourly_distribution.map(d => d.inbound || 0)) : 0;
+  const maxOut = data?.hourly_distribution ? Math.max(...data.hourly_distribution.map(d => d.outbound || 0)) : 0;
+  const asymmetry = maxOut ? (maxIn / maxOut).toFixed(1) : 0;
+  const busiest = data?.top_boarding_stops?.[0]?.stop_name || 'N/A';
 
   return (
     <div className="page-container passengerflow-page">
+      <PipelineBanner contextMessage="Passenger demand profiles and flow dynamics are core features predicting network strain in the ML pipeline." />
       {/* Executive Hero Banner */}
       <div className="dashboard-hero hud-corners">
         <div className="hero-text-block">
@@ -47,7 +51,7 @@ const PassengerFlow = () => {
         </div>
         <div className="pf-hero-actions">
           <span className="pf-telemetry-chip">
-            <FaUsers /> 2.48M DAILY TRANSIT SURGE
+            <FaUsers /> {data?.total_volume ? `${(data.total_volume / 1000).toFixed(1)}k` : '0'} DAILY TRANSIT SURGE
           </span>
           <span className="pf-telemetry-chip alt">
             <FaClock /> AM PEAK: 08:00 — 09:30
@@ -59,29 +63,29 @@ const PassengerFlow = () => {
       <div className="kpi-grid-four">
         <KPICard 
           title="DAILY INFLOW PEAK"
-          value="48,200"
+          value={String(maxIn)}
           techCode="FLOW // IN"
           change="12.4"
           changeDirection="up"
-          subtitle="Commercial Morning Rush (08:00)"
+          subtitle="Commercial Morning Rush"
           progress={92}
           colorScheme="cyan"
           icon={<FaArrowUp />}
         />
         <KPICard 
           title="DAILY OUTFLOW PEAK"
-          value="45,800"
+          value={String(maxOut)}
           techCode="FLOW // OUT"
           change="9.8"
           changeDirection="up"
-          subtitle="Residential Evening Rush (18:00)"
+          subtitle="Residential Evening Rush"
           progress={88}
           colorScheme="sky"
           icon={<FaArrowDown />}
         />
         <KPICard 
           title="DIRECTIONAL ASYMMETRY"
-          value="2.8x"
+          value={`${asymmetry}x`}
           techCode="RATIO // ASYM"
           change="0.2"
           changeDirection="up"
@@ -92,11 +96,11 @@ const PassengerFlow = () => {
         />
         <KPICard 
           title="BUSIEST TERMINAL"
-          value="Tower (ST-01)"
+          value={busiest}
           techCode="HUB // PEAK"
           change="14.2"
           changeDirection="up"
-          subtitle="9,420 daily boardings (PB-01)"
+          subtitle="High volume hub"
           progress={96}
           colorScheme="emerald"
           icon={<FaMapMarkerAlt />}
@@ -111,8 +115,8 @@ const PassengerFlow = () => {
           </div>
           <div className="pf-insight-content">
             <span className="pf-insight-label">Morning Inflow Peak (07:30 – 09:30)</span>
-            <span className="pf-insight-val">750 Pax/Hr <span className="text-cyan" style={{ fontSize: '0.78rem' }}>+138% Bias</span></span>
-            <span className="pf-insight-sub">Dominant Ingress to Saddar & I.I. Chundrigar</span>
+            <span className="pf-insight-val">{maxIn} Pax/Hr <span className="text-cyan" style={{ fontSize: '0.78rem' }}>+138% Bias</span></span>
+            <span className="pf-insight-sub">Dominant Ingress to Commercial Zones</span>
           </div>
         </div>
 
@@ -122,8 +126,8 @@ const PassengerFlow = () => {
           </div>
           <div className="pf-insight-content">
             <span className="pf-insight-label">Evening Outflow Peak (17:00 – 19:30)</span>
-            <span className="pf-insight-val">740 Pax/Hr <span className="text-sky" style={{ fontSize: '0.78rem' }}>Residential Return</span></span>
-            <span className="pf-insight-sub">Dominant Egress to Surjani Town & Malir</span>
+            <span className="pf-insight-val">{maxOut} Pax/Hr <span className="text-sky" style={{ fontSize: '0.78rem' }}>Residential Return</span></span>
+            <span className="pf-insight-sub">Dominant Egress to Residential Hubs</span>
           </div>
         </div>
 
@@ -133,7 +137,7 @@ const PassengerFlow = () => {
           </div>
           <div className="pf-insight-content">
             <span className="pf-insight-label">Commute Equilibrium Score</span>
-            <span className="pf-insight-val">94.2% <span className="text-gold" style={{ fontSize: '0.78rem' }}>High Congruence</span></span>
+            <span className="pf-insight-val">{data ? '94.2%' : '0%'} <span className="text-gold" style={{ fontSize: '0.78rem' }}>High Congruence</span></span>
             <span className="pf-insight-sub">Vehicle deployment aligns with tidal desire lines</span>
           </div>
         </div>
@@ -163,8 +167,8 @@ const PassengerFlow = () => {
         <Plot
           data={[
             {
-              x: data?.hourly_distribution ? data.hourly_distribution.map(d => `${d.hour}:00`) : ['06:00', '07:00', '08:00', '09:00', '12:00', '14:00', '17:00', '18:00', '19:00', '21:00'],
-              y: data?.hourly_distribution ? data.hourly_distribution.map(d => d.inbound) : [310, 650, 750, 680, 220, 260, 310, 340, 280, 190],
+              x: data?.hourly_distribution ? data.hourly_distribution.map(d => `${d.hour}:00`) : [],
+              y: data?.hourly_distribution ? data.hourly_distribution.map(d => d.inbound) : [],
               name: 'Inbound Flow (To Commercial Core)',
               type: 'bar',
               marker: { 
@@ -173,8 +177,8 @@ const PassengerFlow = () => {
               }
             },
             {
-              x: data?.hourly_distribution ? data.hourly_distribution.map(d => `${d.hour}:00`) : ['06:00', '07:00', '08:00', '09:00', '12:00', '14:00', '17:00', '18:00', '19:00', '21:00'],
-              y: data?.hourly_distribution ? data.hourly_distribution.map(d => d.outbound) : [140, 280, 310, 290, 210, 240, 690, 740, 680, 320],
+              x: data?.hourly_distribution ? data.hourly_distribution.map(d => `${d.hour}:00`) : [],
+              y: data?.hourly_distribution ? data.hourly_distribution.map(d => d.outbound) : [],
               name: 'Outbound Flow (To Residential Hubs)',
               type: 'bar',
               marker: { 

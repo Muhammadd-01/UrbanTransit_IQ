@@ -1,24 +1,9 @@
 import axios from 'axios';
-import {
-  mockKPIs,
-  mockSummary,
-  mockPassengerFlow,
-  mockODMatrix,
-  mockDelays,
-  mockRoutePerformance,
-  mockVehicleUtilization,
-  mockDualPipeline,
-  mockDataQuality,
-  mockForecast,
-  mockClusters,
-  mockAnomalies,
-  mockRecommendations,
-  mockDatasets,
-} from './mockData';
+import { toast } from 'react-toastify';
 
 const client = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
-  timeout: 4000,
+  timeout: 120000, // Increased to 120s for 2M record ML pipelines
 });
 
 client.interceptors.request.use((config) => {
@@ -29,128 +14,22 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
-// Resilient Offline Interceptor: Never crashes the UI on network errors
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If backend 401 unauthorized, redirect to login
     if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       window.location.href = '/login';
-      return Promise.reject(error);
+    } else if (error.code === 'ERR_NETWORK') {
+      toast.error("Network Error: Could not connect to the backend server.");
+    } else if (error.response && error.response.status >= 500) {
+      toast.error("Server Error: The system encountered an unexpected issue.");
+    } else if (error.response && error.response.data && error.response.data.detail) {
+      toast.error(error.response.data.detail);
+    } else {
+      toast.error("An unexpected error occurred while fetching data.");
     }
-
-    // If Network Error (backend booting, port conflict, offline mode, or unreachable)
-    if (!error.response || error.code === 'ECONNABORTED' || error.message === 'Network Error') {
-      const url = error.config?.url || '';
-      console.warn(`[UrbanTransit IQ] Live backend offline or connecting on ${url}. Serving high-fidelity crystal fallback.`);
-
-      if (url.includes('/api/dashboard/kpis')) {
-        return Promise.resolve({ data: mockKPIs, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/dashboard/summary')) {
-        return Promise.resolve({ data: mockSummary, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/analytics/passenger-flow')) {
-        return Promise.resolve({ data: mockPassengerFlow, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/analytics/od-matrix')) {
-        return Promise.resolve({ data: mockODMatrix, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/analytics/delays')) {
-        return Promise.resolve({ data: mockDelays, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/analytics/route-performance')) {
-        return Promise.resolve({ data: mockRoutePerformance, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/analytics/vehicle-utilization')) {
-        return Promise.resolve({ data: mockVehicleUtilization, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/comparison/dual-pipeline')) {
-        return Promise.resolve({ data: mockDualPipeline, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/quality/summary')) {
-        return Promise.resolve({ data: mockDataQuality, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/quality/audits')) {
-        return Promise.resolve({ data: mockDataQuality.audits, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/forecasting/demand')) {
-        return Promise.resolve({ data: mockForecast, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/clustering/routes')) {
-        return Promise.resolve({ data: mockClusters, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/anomalies/detect')) {
-        return Promise.resolve({ data: mockAnomalies, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/recommendations')) {
-        return Promise.resolve({ data: mockRecommendations, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/datasets')) {
-        return Promise.resolve({ data: mockDatasets, status: 200, statusText: 'OK (Offline Fallback)' });
-      }
-      if (url.includes('/api/simulations/run')) {
-        return Promise.resolve({
-          data: {
-            scenario_name: 'Simulated Intervention',
-            results: {
-              baseline: { current_avg_occupancy: 0.88, current_wait_time_minutes: 14.5 },
-              simulated: { SIMULATED_avg_occupancy: 0.72, SIMULATED_wait_time_minutes: 8.2 },
-              is_simulated: true,
-              caveats: ['Assumes constant road capacity and linear elasticity.']
-            }
-          },
-          status: 200,
-          statusText: 'OK (Offline Fallback)'
-        });
-      }
-      if (url.includes('/api/predictions/delay')) {
-        return Promise.resolve({
-          data: {
-            predicted_delay: 7.4,
-            severity: 'Moderate',
-            confidence: 0.89,
-            model_used: 'Gradient Boosted Trees (Offline Fallback)',
-            historical_context: 'Typical evening peak delay on Shahrah-e-Faisal.'
-          },
-          status: 200,
-          statusText: 'OK (Offline Fallback)'
-        });
-      }
-      if (url.includes('/api/auth/login')) {
-        const body = JSON.parse(error.config?.data || '{}');
-        const isEval = body.email === 'evaluator@urbantransit.iq';
-        return Promise.resolve({
-          data: {
-            access_token: 'mock-jwt-token-offline-fallback',
-            token_type: 'bearer',
-            user: {
-              id: '00000000-0000-0000-0000-000000000001',
-              email: body.email || 'affan@urbantransit.iq',
-              full_name: isEval ? 'Competition Evaluator' : 'Muhammad Affan',
-              role: isEval ? 'analyst' : 'admin',
-              is_active: true
-            }
-          },
-          status: 200,
-          statusText: 'OK (Offline Fallback)'
-        });
-      }
-      if (url.includes('/api/auth/me')) {
-        return Promise.resolve({
-          data: {
-            id: '00000000-0000-0000-0000-000000000001',
-            email: 'affan@urbantransit.iq',
-            full_name: 'Muhammad Affan',
-            role: 'admin',
-            is_active: true
-          },
-          status: 200,
-          statusText: 'OK (Offline Fallback)'
-        });
-      }
-    }
-
     return Promise.reject(error);
   }
 );
@@ -251,3 +130,11 @@ export const sparkJobsAPI = {
 };
 
 export default client;
+export const pipelineAPI = {
+  executePipeline: (type) => client.post(`/api/pipeline/execute?pipeline_type=${type}`),
+  getStatus: () => client.get('/api/pipeline/status'),
+};
+
+export const liveComparisonAPI = {
+  getLiveComparison: () => client.get('/api/pipeline/compare')
+};

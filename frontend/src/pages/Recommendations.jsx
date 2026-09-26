@@ -4,6 +4,7 @@ import { FaLightbulb, FaCheck, FaArrowRight, FaShieldAlt, FaBolt, FaExclamationT
 import { useNavigate } from 'react-router-dom';
 import KPICard from '../components/common/KPICard';
 import './Recommendations.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const Recommendations = () => {
   const [recs, setRecs] = useState([]);
@@ -15,43 +16,11 @@ const Recommendations = () => {
       .catch(console.error);
   }, []);
 
-  const defaultRecs = [
-    {
-      priority: 1,
-      recommendation: 'Inject +2 Reserve Feeder Buses on Route PB-01 during Morning Peak',
-      reason: 'Average passenger load exceeds 94.0% capacity between 07:45 and 09:15 PKT with 16.4m dwell delays at Regal Chowk.',
-      expected_impact: 'Reduces station dwell time by 4.2 minutes and curtails platform overcrowding by ~18.5%.',
-      affected_route: 'PB-01',
-      affected_time: '07:45–09:15 PKT',
-      confidence_level: 'HIGH (96.4%)',
-      evidence_metric: 'Load Factor: 94.2% • Delay Z-Score: +2.84'
-    },
-    {
-      priority: 2,
-      recommendation: 'Compress Green Line BRT Headway from 4.5m to 3.5m during Evening Egress',
-      reason: 'Surjani Depot outbound flow surges to 9,120 passengers/hour between 17:30 and 19:30 PKT.',
-      expected_impact: 'Eliminates platform queue spillover at Numaish station and boosts fleet revenue by ~12.0%.',
-      affected_route: 'GL-01',
-      affected_time: '17:30–19:30 PKT',
-      confidence_level: 'HIGH (94.8%)',
-      evidence_metric: 'Terminal Volume: 9,120 Pax/hr • Headway Variance: +1.2m'
-    },
-    {
-      priority: 3,
-      recommendation: 'Signal Retiming Coordination at Korangi Crossing Interchange',
-      reason: 'Intersection delay causes cumulative vehicle bunching for Route PB-08 with 0.42 bunching index.',
-      expected_impact: 'Prevents 14,200 passenger-minutes of delay daily and regularizes headway distribution.',
-      affected_route: 'PB-08',
-      affected_time: 'All Day Operations',
-      confidence_level: 'MODERATE (89.2%)',
-      evidence_metric: 'Bunching Index: 0.42 • Headway Delta: 4.8m'
-    }
-  ];
-
-  const displayRecs = recs.length > 0 ? recs : defaultRecs;
+  const displayRecs = recs;
 
   return (
     <div className="page-container recommendations-page">
+      <PipelineBanner contextMessage="Automated recommendations are powered by deep ML intelligence and historical inference." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -71,6 +40,9 @@ const Recommendations = () => {
 
       {/* Recommendations Feed */}
       <div className="recommendations-list">
+        {displayRecs.length === 0 && (
+          <div style={{padding: '20px', color: '#64748B'}}>No recommendations available at this time.</div>
+        )}
         {displayRecs.map((r, i) => (
           <div 
             key={i} 

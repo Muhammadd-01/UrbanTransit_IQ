@@ -27,11 +27,9 @@ export const AuthProvider = ({ children }) => {
           }
         })
         .catch(() => {
-          // If offline or mock token, keep stored user
-          if (!storedUser) {
-            localStorage.removeItem('token');
-            setUser(null);
-          }
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
         })
         .finally(() => setLoading(false));
     } else {
@@ -42,31 +40,32 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res = await authAPI.login(email, password);
-      const token = res.data.access_token || res.data.token || 'mock-dev-token-2026';
+      const token = res.data.access_token || res.data.token;
+      const resolveRole = (em) => {
+        if (em.includes('admin') || em.includes('affan')) return 'admin';
+        if (em.includes('executer') || em.includes('exec')) return 'executer';
+        if (em.includes('operator') || em.includes('dispatch')) return 'operator';
+        return 'analyst';
+      };
+
+      const resolveName = (em, r) => {
+        if (em === 'affan@urbantransit.iq') return 'Muhammad Affan';
+        if (r === 'admin') return 'System Administrator';
+        if (r === 'executer') return 'Executive Director';
+        if (r === 'operator') return 'Transit Operations Controller';
+        return 'Transit Operations Analyst';
+      };
+
       const userData = res.data.user || {
         email,
-        full_name: email.split('@')[0],
-        role: email.includes('admin') || email.includes('affan') ? 'admin' : 'analyst'
+        full_name: resolveName(email, resolveRole(email)),
+        role: resolveRole(email)
       };
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
       return { success: true };
     } catch (err) {
-      // Offline fallback for seamless demo if backend is restarting
-      if (email && password) {
-        const role = email.includes('admin') || email.includes('affan') ? 'admin' : 'analyst';
-        const fallbackUser = {
-          id: 'dev-user-01',
-          email,
-          full_name: email === 'affan@urbantransit.iq' ? 'Muhammad Affan' : 'Competition Evaluator',
-          role
-        };
-        localStorage.setItem('token', 'dev-offline-token');
-        localStorage.setItem('user', JSON.stringify(fallbackUser));
-        setUser(fallbackUser);
-        return { success: true, fallback: true };
-      }
       throw err;
     }
   };

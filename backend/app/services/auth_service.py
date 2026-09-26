@@ -5,26 +5,58 @@ Authentication and user management service with PostgreSQL and local fallback.
 import logging
 from typing import Optional, Dict, Any
 from datetime import datetime
+from config.settings import settings
 from backend.app.database.engine import SessionLocal
 from backend.app.database.models import User
 from backend.app.utils.security import hash_password, verify_password
 
 logger = logging.getLogger(__name__)
 
-# Default in-memory user registry for development/demo mode
+# Default in-memory user registry for development/demo mode conforming to SRS roles:
+# 1. Admin, 2. Executer, 3. Analyst, 4. Operator
 _DEV_USERS: Dict[str, Dict[str, Any]] = {
-    "affan@urbantransit.iq": {
+    settings.ADMIN_EMAIL: {
         "id": "00000000-0000-0000-0000-000000000001",
-        "email": "affan@urbantransit.iq",
-        "full_name": "Muhammad Affan",
+        "email": settings.ADMIN_EMAIL,
+        "full_name": settings.ADMIN_FULL_NAME,
+        "hashed_password": hash_password(settings.ADMIN_PASSWORD),
+        "role": "admin",
+        "is_active": True,
+        "created_at": datetime.utcnow().isoformat(),
+        "last_login": None,
+    },
+    "admin@urbantransit.iq": {
+        "id": "00000000-0000-0000-0000-000000000002",
+        "email": "admin@urbantransit.iq",
+        "full_name": "System Administrator",
         "hashed_password": hash_password("UrbanTransit2026!"),
         "role": "admin",
         "is_active": True,
         "created_at": datetime.utcnow().isoformat(),
         "last_login": None,
     },
+    "executer@urbantransit.iq": {
+        "id": "00000000-0000-0000-0000-000000000003",
+        "email": "executer@urbantransit.iq",
+        "full_name": "Executive Director",
+        "hashed_password": hash_password("UrbanTransit2026!"),
+        "role": "executer",
+        "is_active": True,
+        "created_at": datetime.utcnow().isoformat(),
+        "last_login": None,
+    },
+    "analyst@urbantransit.iq": {
+        "id": "00000000-0000-0000-0000-000000000004",
+        "email": "analyst@urbantransit.iq",
+        "full_name": "Transit Operations Analyst",
+        "hashed_password": hash_password("UrbanTransit2026!"),
+        "role": "analyst",
+        "is_active": True,
+        "created_at": datetime.utcnow().isoformat(),
+        "last_login": None,
+    },
     "evaluator@urbantransit.iq": {
-        "id": "00000000-0000-0000-0000-000000000002",
+        "id": "00000000-0000-0000-0000-000000000005",
         "email": "evaluator@urbantransit.iq",
         "full_name": "Competition Evaluator",
         "hashed_password": hash_password("UrbanTransit2026!"),
@@ -32,7 +64,17 @@ _DEV_USERS: Dict[str, Dict[str, Any]] = {
         "is_active": True,
         "created_at": datetime.utcnow().isoformat(),
         "last_login": None,
-    }
+    },
+    "operator@urbantransit.iq": {
+        "id": "00000000-0000-0000-0000-000000000006",
+        "email": "operator@urbantransit.iq",
+        "full_name": "Transit Operations Controller",
+        "hashed_password": hash_password("UrbanTransit2026!"),
+        "role": "operator",
+        "is_active": True,
+        "created_at": datetime.utcnow().isoformat(),
+        "last_login": None,
+    },
 }
 
 

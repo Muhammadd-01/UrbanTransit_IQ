@@ -5,6 +5,7 @@ import { FaChartLine, FaCalendarAlt, FaCheckCircle, FaBrain, FaWaveSquare } from
 import KPICard from '../components/common/KPICard';
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './Forecasting.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const Forecasting = () => {
   const [horizon, setHorizon] = useState(14);
@@ -27,6 +28,7 @@ const Forecasting = () => {
 
   return (
     <div className="page-container forecasting-page">
+      <PipelineBanner contextMessage="Demand forecasts are generated using the same underlying 2M+ records." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -132,7 +134,7 @@ const Forecasting = () => {
       <div className="kpi-grid-four">
         <KPICard 
           title="MEAN ABSOLUTE ERROR"
-          value={forecastData?.metrics?.mae ? String(forecastData.metrics.mae) : '112.4'}
+          value={forecastData?.metrics?.mae ? String(forecastData.metrics.mae) : 'N/A'}
           techCode="MAE // PAX"
           change="8.4"
           changeDirection="down"
@@ -143,7 +145,7 @@ const Forecasting = () => {
         />
         <KPICard 
           title="ROOT MEAN SQUARED ERROR"
-          value={forecastData?.metrics?.rmse ? String(forecastData.metrics.rmse) : '142.1'}
+          value={forecastData?.metrics?.rmse ? String(forecastData.metrics.rmse) : 'N/A'}
           techCode="RMSE // DEV"
           change="6.2"
           changeDirection="down"
@@ -154,11 +156,11 @@ const Forecasting = () => {
         />
         <KPICard 
           title="MAPE ACCURACY"
-          value={`${forecastData?.metrics?.mape || '6.8'}%`}
+          value={forecastData?.metrics?.mape ? `${forecastData.metrics.mape}%` : 'N/A'}
           techCode="MAPE // PCT"
           change="2.1"
           changeDirection="down"
-          subtitle="Overall precision rating: 93.2%"
+          subtitle="Overall precision rating"
           progress={93.2}
           colorScheme="sky"
           icon={<FaCheckCircle />}

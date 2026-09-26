@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import FilterBar from './FilterBar';
-import BackgroundParticles from '../common/BackgroundParticles';
 import './Layout.css';
 
 const Layout = () => {
@@ -11,7 +10,6 @@ const Layout = () => {
 
   return (
     <div className="layout" style={{ position: 'relative' }}>
-      <BackgroundParticles />
       <Sidebar 
         isCollapsed={isSidebarCollapsed} 
         toggleSidebar={() => setIsSidebarCollapsed(prev => !prev)} 

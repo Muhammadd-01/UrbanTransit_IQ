@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = 'dev_secret_key_change_in_production'
     JWT_ALGORITHM: str = 'HS256'
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ADMIN_EMAIL: str = 'affan@urbantransit.iq'
+    ADMIN_PASSWORD: str = 'UrbanTransit2026!'
+    ADMIN_FULL_NAME: str = 'Muhammad Affan'
 
     # Spark
     SPARK_MASTER: str = 'local[*]'

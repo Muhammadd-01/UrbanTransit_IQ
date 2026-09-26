@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { FilterProvider } from './contexts/FilterContext';
+import { PipelineProvider } from './contexts/PipelineContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './components/layout/Layout';
@@ -31,7 +32,8 @@ function App() {
   return (
     <AuthProvider>
       <FilterProvider>
-        <Routes>
+        <PipelineProvider>
+          <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Login />} />
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -54,6 +56,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
           </Route>
         </Routes>
+        </PipelineProvider>
         <ToastContainer 
           position="bottom-right" 
           autoClose={4000} 

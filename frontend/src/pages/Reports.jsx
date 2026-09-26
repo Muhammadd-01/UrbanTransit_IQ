@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaFilePdf, FaDownload, FaFileCsv, FaChartPie, FaShieldAlt, FaBalanceScale, FaCheckCircle } from 'react-icons/fa';
 import './Reports.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const Reports = () => {
   const [downloadMsg, setDownloadMsg] = useState('');
@@ -19,21 +20,28 @@ const Reports = () => {
     setTimeout(() => setDownloadMsg(''), 4000);
   };
 
-  const handleExportQuality = () => {
-    const csvContent = "record_id,affected_column,original_value,cleaning_rule,corrected_value,status\nREC-001,passenger_count,-4,Clamp Negative,0,CORRECTED\nREC-002,dwell_time,142,3-Sigma Flag,142,FLAGGED\nREC-003,route_id,NULL,Drop Null Foreign Key,ISOLATED,QUARANTINED\nREC-004,timestamp,2026-14-99,Timestamp Parse Error,NULL,QUARANTINED";
-    triggerDownload('urbantransit_quality_audit_ledger.csv', csvContent, 'text/csv');
+  const handleExportQuality = async () => {
+    try {
+      const { exportAPI } = await import('../api/client');
+      const res = await exportAPI.exportData({ type: 'quality_audit' });
+      triggerDownload('urbantransit_quality_audit_ledger.csv', res.data, 'text/csv');
+    } catch (e) {
+      console.error(e);
+      setDownloadMsg('Export failed.');
+      setTimeout(() => setDownloadMsg(''), 4000);
+    }
   };
 
-  const handleExportBenchmark = () => {
-    const jsonContent = JSON.stringify({
-      benchmark: "UrbanTransit IQ Dual-Pipeline Reconciliation",
-      agreement_rate: 88.0,
-      test_cases_count: 100,
-      spark_mllib_gbt_f1: 0.838,
-      python_xgboost_f1: 0.846,
-      generated_at: new Date().toISOString()
-    }, null, 2);
-    triggerDownload('dual_pipeline_benchmark_reconciliation.json', jsonContent, 'application/json');
+  const handleExportBenchmark = async () => {
+    try {
+      const { exportAPI } = await import('../api/client');
+      const res = await exportAPI.exportResults({ type: 'benchmark' });
+      triggerDownload('dual_pipeline_benchmark_reconciliation.json', res.data, 'application/json');
+    } catch (e) {
+      console.error(e);
+      setDownloadMsg('Export failed.');
+      setTimeout(() => setDownloadMsg(''), 4000);
+    }
   };
 
   const handleExportExecutive = () => {
@@ -42,6 +50,7 @@ const Reports = () => {
 
   return (
     <div className="page-container reports-page">
+      <PipelineBanner contextMessage="Compliance and performance reports generated strictly from verified ML-audited datasets." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">

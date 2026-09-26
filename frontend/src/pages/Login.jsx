@@ -12,7 +12,10 @@ import {
   FaBolt,
   FaCity,
   FaSun,
-  FaMoon
+  FaMoon,
+  FaBriefcase,
+  FaChartLine,
+  FaBus
 } from 'react-icons/fa';
 import Logo from '../components/common/Logo';
 import BackgroundParticles from '../components/common/BackgroundParticles';
@@ -27,6 +30,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [role, setRole] = useState('analyst');
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -38,6 +42,14 @@ const Login = () => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
@@ -64,6 +76,11 @@ const Login = () => {
         }, 1200);
       } else {
         await login(email, password);
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
+        } else {
+          localStorage.removeItem('rememberedEmail');
+        }
         navigate('/');
       }
     } catch (err) {
@@ -83,6 +100,11 @@ const Login = () => {
     setError('');
     try {
       await login(demoEmail, demoPassword);
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', demoEmail);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
       navigate('/');
     } catch (err) {
       setError('Quick login failed. Ensure backend server is active on port 8000.');
@@ -216,15 +238,30 @@ const Login = () => {
               </div>
             </div>
 
+            {!isRegister && (
+              <div className="form-group remember-me-group" style={{ flexDirection: 'row', alignItems: 'center', marginTop: '10px', gap: '8px', cursor: 'pointer', display: 'flex' }}>
+                <input 
+                  type="checkbox" 
+                  id="rememberMeCheckbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: 'var(--primary-glow)' }}
+                />
+                <label htmlFor="rememberMeCheckbox" style={{ cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 0, textTransform: 'none', letterSpacing: 'normal' }}>
+                  Remember my email
+                </label>
+              </div>
+            )}
+
             {isRegister && (
               <div className="form-group fade-in-up">
                 <label>SECURITY ROLE ENTITLEMENT</label>
                 <div className="input-group">
                   <FaShieldAlt className="input-icon" />
                   <select value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="analyst">Transit Operations Analyst</option>
-                    <option value="admin">System Administrator</option>
-                    <option value="viewer">Executive Observer / Viewer</option>
+                    <option value="analyst">Analyst (Operations & Intelligence)</option>
+                    <option value="executer">Executer (Executive Director / Observer)</option>
+                    <option value="operator">Operator (Transit & Fleet Controller)</option>
                   </select>
                 </div>
               </div>
@@ -244,39 +281,57 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Quick Demo Sign-Ins */}
-          <div className="quick-demo-section">
-            <div className="divider">
-              <span>ONE-CLICK EVALUATOR ACCESS</span>
-            </div>
-            <div className="demo-buttons-grid">
-              <button
-                type="button"
-                className="demo-btn admin-demo"
-                onClick={() => handleQuickDemo('affan@urbantransit.iq', 'UrbanTransit2026!')}
-                title="Login as Lead Architect & Administrator"
-              >
-                <FaBolt className="demo-icon bolt" />
-                <div className="demo-meta">
-                  <strong>Muhammad Affan</strong>
-                  <small>Lead Architect (Admin)</small>
-                </div>
-              </button>
+          {/* Quick Demo Sign-Ins for SRS Roles (Only shown on Sign In tab) */}
+          {!isRegister && (
+            <div className="quick-demo-section">
+              <div className="divider">
+                <span>ONE-CLICK ROLE ACCESS</span>
+              </div>
+              <p className="admin-direct-hint">
+                <strong>Admin:</strong> Log in directly using your email and password above.
+              </p>
+              <div className="demo-buttons-grid roles-three-grid">
+                <button
+                  type="button"
+                  className="demo-btn exec-demo"
+                  onClick={() => handleQuickDemo('executer@urbantransit.iq', 'UrbanTransit2026!')}
+                  title="Login as Executer (Executive Director)"
+                >
+                  <FaBriefcase className="demo-icon executer" />
+                  <div className="demo-meta">
+                    <strong>Executer</strong>
+                    <small>Executive Director</small>
+                  </div>
+                </button>
 
-              <button
-                type="button"
-                className="demo-btn eval-demo"
-                onClick={() => handleQuickDemo('evaluator@urbantransit.iq', 'UrbanTransit2026!')}
-                title="Login as Competition Evaluator"
-              >
-                <FaShieldAlt className="demo-icon shield" />
-                <div className="demo-meta">
-                  <strong>Evaluator Panel</strong>
-                  <small>Competition Juror (Analyst)</small>
-                </div>
-              </button>
+                <button
+                  type="button"
+                  className="demo-btn eval-demo"
+                  onClick={() => handleQuickDemo('analyst@urbantransit.iq', 'UrbanTransit2026!')}
+                  title="Login as Analyst (Transit Operations Analyst)"
+                >
+                  <FaChartLine className="demo-icon analyst" />
+                  <div className="demo-meta">
+                    <strong>Analyst</strong>
+                    <small>Operations Analyst</small>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  className="demo-btn operator-demo"
+                  onClick={() => handleQuickDemo('operator@urbantransit.iq', 'UrbanTransit2026!')}
+                  title="Login as Operator (Transit Operations Controller)"
+                >
+                  <FaBus className="demo-icon operator" />
+                  <div className="demo-meta">
+                    <strong>Operator</strong>
+                    <small>Fleet Controller</small>
+                  </div>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Live Footprint Ticker */}

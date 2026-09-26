@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { qualityAPI } from '../api/client';
 import Plot from 'react-plotly.js';
 import { FaCheckCircle, FaExclamationTriangle, FaShieldAlt, FaArrowRight, FaDatabase, FaFilter } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './DataQuality.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const DataQuality = () => {
+  const { getFilterParams, filters } = useContext(FilterContext);
+
   const [report, setReport] = useState(null);
   const [auditList, setAuditList] = useState([]);
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -15,7 +19,7 @@ const DataQuality = () => {
   useEffect(() => {
     qualityAPI.getReport('ds-karachi-sample-01').then(res => setReport(res.data)).catch(console.error);
     qualityAPI.getAudit('ds-karachi-sample-01').then(res => setAuditList(res.data)).catch(console.error);
-  }, []);
+  }, [filters]);
 
   const filteredAudit = auditList.filter(a => {
     const matchesStatus = statusFilter === 'ALL' || a.status === statusFilter;
@@ -28,6 +32,7 @@ const DataQuality = () => {
 
   return (
     <div className="page-container dataquality-page">
+      <PipelineBanner contextMessage="Quality audit across the full 2M+ record dataset guarantees clean training data." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -106,45 +111,45 @@ const DataQuality = () => {
       <div className="kpi-grid-four">
         <KPICard 
           title="VALID (CLEAN)"
-          value="98.4%"
+          value={report?.valid_percentage ? `${report.valid_percentage}%` : 'N/A'}
           techCode="TIER // 01"
           change="0.2"
           changeDirection="up"
-          subtitle="2,022,120 Passed All Rules"
-          progress={98.4}
+          subtitle="Passed All Rules"
+          progress={report?.valid_percentage || 0}
           colorScheme="cyan"
           icon={<FaCheckCircle />}
         />
         <KPICard 
           title="CORRECTED (IMPUTED)"
-          value="0.6%"
+          value={report?.corrected_percentage ? `${report.corrected_percentage}%` : 'N/A'}
           techCode="TIER // 02"
           change="0.1"
           changeDirection="down"
-          subtitle="12,330 Negative/Null Fixed"
-          progress={12}
+          subtitle="Negative/Null Fixed"
+          progress={report?.corrected_percentage || 0}
           colorScheme="gold"
           icon={<FaShieldAlt />}
         />
         <KPICard 
           title="FLAGGED ANOMALIES"
-          value="0.7%"
+          value={report?.flagged_percentage ? `${report.flagged_percentage}%` : 'N/A'}
           techCode="TIER // 03"
           change="0.2"
           changeDirection="down"
-          subtitle="14,385 Kept with Metadata Tag"
-          progress={14}
+          subtitle="Kept with Metadata Tag"
+          progress={report?.flagged_percentage || 0}
           colorScheme="sky"
           icon={<FaExclamationTriangle />}
         />
         <KPICard 
           title="QUARANTINED"
-          value="0.3%"
+          value={report?.quarantined_percentage ? `${report.quarantined_percentage}%` : 'N/A'}
           techCode="TIER // 04"
           change="0.05"
           changeDirection="down"
-          subtitle="6,165 Isolated from ML Training"
-          progress={6}
+          subtitle="Isolated from ML Training"
+          progress={report?.quarantined_percentage || 0}
           colorScheme="coral"
           icon={<FaExclamationTriangle />}
         />
@@ -194,14 +199,14 @@ const DataQuality = () => {
           </div>
           <Plot
             data={[{
-              x: ['Completeness', 'Consistency', 'Validity', 'Overall Quality'],
-              y: [98.4, 99.1, 97.4, 98.3],
+              x: report?.dimensions ? Object.keys(report.dimensions) : [],
+              y: report?.dimensions ? Object.values(report.dimensions) : [],
               type: 'bar',
               marker: { 
                 color: ['#67E8D5', '#38BDF8', '#FBBF24', '#4ADE80'],
                 line: { color: 'rgba(255, 255, 255, 0.1)', width: 1 }
               },
-              text: ['98.4%', '99.1%', '97.4%', '98.3%'],
+              text: report?.dimensions ? Object.values(report.dimensions).map(v => `${v}%`) : [],
               textposition: 'auto',
               textfont: { family: "'IBM Plex Mono', monospace", color: '#07090C' }
             }]}
@@ -226,8 +231,8 @@ const DataQuality = () => {
           </div>
           <Plot
             data={[{
-              labels: ['Missing Values', 'Duplicate Taps', 'Delay Outliers', 'Negative Counts', 'Broken FK Refs'],
-              values: [42, 24, 18, 11, 5],
+              labels: report?.issue_distribution ? Object.keys(report.issue_distribution) : [],
+              values: report?.issue_distribution ? Object.values(report.issue_distribution) : [],
               type: 'pie',
               hole: 0.58,
               marker: { 

@@ -1,36 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { clusteringAPI } from '../api/client';
 import { FaMagic, FaProjectDiagram, FaCheckCircle, FaRoute } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './Clustering.css';
-
-const DEFAULT_CLUSTERS = [
-  {
-    name: 'High-Density Trunk Super-Corridors',
-    description: 'High passenger capacity corridors connecting residential peripheries with the commercial central business district.',
-    centroid: { avg_demand: 48200, avg_occupancy: 0.92, punctuality: 82.4 },
-    members: ['PB-01', 'GL-01', 'PB-02', 'PB-03']
-  },
-  {
-    name: 'Industrial Commuter & Port Connectors',
-    description: 'Medium-frequency routes servicing shift workers traveling between Korangi Industrial, Landhi, and SITE.',
-    centroid: { avg_demand: 34100, avg_occupancy: 0.84, punctuality: 86.8 },
-    members: ['PB-08', 'PB-09', 'LB-04', 'LB-05']
-  },
-  {
-    name: 'Coastal & Suburb Feeder Network',
-    description: 'Longer distance, low-frequency feeder branches servicing coastal communities and outlying university clusters.',
-    centroid: { avg_demand: 18400, avg_occupancy: 0.68, punctuality: 91.2 },
-    members: ['LB-14', 'LB-15', 'FD-01', 'FD-02']
-  }
-];
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const Clustering = () => {
-  const [clusters, setClusters] = useState(DEFAULT_CLUSTERS);
-  const [silhouette, setSilhouette] = useState(0.684);
+  const { getFilterParams, filters } = useContext(FilterContext);
+
+  const [clusters, setClusters] = useState([]);
+  const [silhouette, setSilhouette] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    clusteringAPI.getRouteClusters()
+    clusteringAPI.getRouteClusters(getFilterParams())
       .then(res => {
         if (res.data?.clusters?.length) {
           setClusters(res.data.clusters);
@@ -39,11 +23,13 @@ const Clustering = () => {
           setSilhouette(res.data.silhouette_score);
         }
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="page-container clustering-page">
+      <PipelineBanner contextMessage="Passenger segments derived directly from the trained historical dataset." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -65,13 +51,17 @@ const Clustering = () => {
 
       {/* Cluster Grid */}
       <div className="clusters-grid">
-        {clusters.map((c, i) => (
+        {loading && <div style={{padding: '20px'}}>Loading clusters...</div>}
+        {!loading && clusters.length === 0 && (
+          <div style={{padding: '20px', color: '#64748B'}}>No clusters found.</div>
+        )}
+        {!loading && clusters.map((c, i) => (
           <div key={i} className="chart-card hud-panel hud-corners cluster-card">
             <div className="cluster-card-top">
               <span className="badge-pill badge-aurora">
                 CLUSTER GROUP #{i + 1}
               </span>
-              <span className="cluster-k-tag mono-val text-dim">K = 3</span>
+              <span className="cluster-k-tag mono-val text-dim">K = {clusters.length}</span>
             </div>
 
             <h3 className="cluster-title">{c.name}</h3>
@@ -81,15 +71,15 @@ const Clustering = () => {
               <span className="ccb-label">CENTROID COORDINATES:</span>
               <div className="ccb-row">
                 <span className="ccb-stat-name">Avg Daily Demand:</span>
-                <strong className="mono-val">{c.centroid?.avg_demand?.toLocaleString()} Pax</strong>
+                <strong className="mono-val">{c.centroid?.avg_demand?.toLocaleString() || 0} Pax</strong>
               </div>
               <div className="ccb-row">
                 <span className="ccb-stat-name">Avg Occupancy:</span>
-                <strong className="mono-val text-cyan">{(c.centroid?.avg_occupancy * 100).toFixed(0)}%</strong>
+                <strong className="mono-val text-cyan">{c.centroid?.avg_occupancy != null ? (c.centroid.avg_occupancy * 100).toFixed(0) : 0}%</strong>
               </div>
               <div className="ccb-row">
                 <span className="ccb-stat-name">Punctuality Score:</span>
-                <strong className="mono-val text-gold">{c.centroid?.punctuality}%</strong>
+                <strong className="mono-val text-gold">{c.centroid?.punctuality || 0}%</strong>
               </div>
             </div>
 

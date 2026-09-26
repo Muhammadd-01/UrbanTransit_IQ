@@ -100,17 +100,25 @@ def generate_db_data():
         if (chunk + chunk_size) % 500000 == 0:
             logger.info(f"  ... inserted {chunk + chunk_size:,} tickets")
 
-    # 9. Passenger Counts (100,000)
-    logger.info("Generating 100,000 Passenger Counts...")
-    p_counts = [(str(uuid.uuid4()), f"S-{(i%200)+1:04d}", f"R-{(i%50)+1:03d}", "outbound", base_date + timedelta(minutes=i*10), random.randint(1,10), random.randint(1,10), random.randint(10,50)) for i in range(100000)]
-    for i in range(0, 100000, 10000):
-        execute_values(cur, "INSERT INTO passenger_counts (id, stop_id, route_id, direction, timestamp, boarding, alighting, load) VALUES %s", p_counts[i:i+10000])
+    # 9. Passenger Counts (2,000,000)
+    logger.info("Generating 2,000,000 Passenger Counts...")
+    for chunk_start in range(0, 2000000, 50000):
+        chunk_end = min(chunk_start + 50000, 2000000)
+        p_counts = [(str(uuid.uuid4()), f"S-{(i%200)+1:04d}", f"R-{(i%50)+1:03d}", "outbound", base_date + timedelta(minutes=i*5), random.randint(1,10), random.randint(1,10), random.randint(10,50)) for i in range(chunk_start, chunk_end)]
+        execute_values(cur, "INSERT INTO passenger_counts (id, stop_id, route_id, direction, timestamp, boarding, alighting, load) VALUES %s", p_counts)
+        conn.commit()
+        if (chunk_end) % 500000 == 0:
+            logger.info(f"  ... inserted {chunk_end:,} passenger_counts")
 
-    # 10. Delays (50,000)
-    logger.info("Generating 50,000 Delays...")
-    delays = [(str(uuid.uuid4()), f"T-{(i%10000)+1:06d}", f"R-{(i%50)+1:03d}", f"S-{(i%200)+1:04d}", random.uniform(5.0, 30.0), "traffic", "heavy_congestion", base_date + timedelta(hours=i), i%2==0) for i in range(50000)]
-    for i in range(0, 50000, 10000):
-        execute_values(cur, "INSERT INTO delays (id, trip_id, route_id, stop_id, delay_minutes, delay_category, cause, timestamp, is_peak) VALUES %s", delays[i:i+10000])
+    # 10. Delays (500,000)
+    logger.info("Generating 500,000 Delays...")
+    for chunk_start in range(0, 500000, 50000):
+        chunk_end = min(chunk_start + 50000, 500000)
+        delays = [(str(uuid.uuid4()), f"T-{(i%10000)+1:06d}", f"R-{(i%50)+1:03d}", f"S-{(i%200)+1:04d}", random.uniform(5.0, 30.0), "traffic", "heavy_congestion", base_date + timedelta(hours=i), i%2==0) for i in range(chunk_start, chunk_end)]
+        execute_values(cur, "INSERT INTO delays (id, trip_id, route_id, stop_id, delay_minutes, delay_category, cause, timestamp, is_peak) VALUES %s", delays)
+        conn.commit()
+        if (chunk_end) % 100000 == 0:
+            logger.info(f"  ... inserted {chunk_end:,} delays")
 
     # 11. GPS Events (50,000)
     logger.info("Generating 50,000 GPS Events...")

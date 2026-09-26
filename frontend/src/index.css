@@ -12,7 +12,7 @@
   --color-panel: rgba(255, 255, 255, 0.45);
   --color-panel-elevated: rgba(255, 255, 255, 0.65);
   --color-panel-hover: rgba(255, 255, 255, 0.85);
-  --glass-blur: blur(40px) saturate(200%);
+  --glass-blur: blur(14px) saturate(160%);
   
   /* Borders (Frost effect) */
   --color-border: rgba(255, 255, 255, 0.6);
@@ -531,7 +531,7 @@ input, select, textarea, button {
   --color-panel: rgba(14, 20, 36, 0.65);
   --color-panel-elevated: rgba(22, 32, 56, 0.78);
   --color-panel-hover: rgba(28, 42, 74, 0.88);
-  --glass-blur: blur(40px) saturate(220%);
+  --glass-blur: blur(14px) saturate(180%);
 
   /* Neon-Infused Borders */
   --color-border: rgba(255, 255, 255, 0.12);

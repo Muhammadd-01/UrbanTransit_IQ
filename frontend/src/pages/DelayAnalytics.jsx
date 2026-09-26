@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { predictionsAPI } from '../api/client';
 import { FaClock, FaCheckCircle, FaExclamationCircle, FaBrain, FaSlidersH, FaBolt, FaCheck } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './DelayAnalytics.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const DelayAnalytics = () => {
+  const { getFilterParams, filters } = useContext(FilterContext);
+
   const [routeId, setRouteId] = useState('PB-01');
   const [hour, setHour] = useState(8);
   const [passengerLoad, setPassengerLoad] = useState(58);
@@ -12,6 +16,15 @@ const DelayAnalytics = () => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [latency, setLatency] = useState(null);
+  const [delayData, setDelayData] = useState(null);
+
+  React.useEffect(() => {
+    import('../api/client').then(({ analyticsAPI }) => {
+      analyticsAPI.getDelays(getFilterParams())
+        .then(res => setDelayData(res.data))
+        .catch(console.error);
+    });
+  }, []);
 
   const handlePredict = async (e) => {
     e.preventDefault();
@@ -38,6 +51,7 @@ const DelayAnalytics = () => {
 
   return (
     <div className="page-container delayanalytics-page">
+      <PipelineBanner contextMessage="Model predicts delay probabilities by correlating telemetry with historical delay events." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -60,7 +74,7 @@ const DelayAnalytics = () => {
       <div className="kpi-grid-five">
         <KPICard 
           title="AVG NETWORK DELAY"
-          value="5.8 min"
+          value={delayData?.avg_delay ? `${delayData.avg_delay} min` : 'N/A'}
           techCode="LAT // AVG"
           change="1.4"
           changeDirection="down"
@@ -70,30 +84,30 @@ const DelayAnalytics = () => {
           icon={<FaClock />}
         />
         <KPICard 
-          title="MEDIAN (P50) DELAY"
-          value="4.2 min"
-          techCode="LAT // P50"
+          title="TOTAL DELAYS"
+          value={delayData?.total_delays ? String(delayData.total_delays) : 'N/A'}
+          techCode="LAT // TOT"
           change="0.8"
           changeDirection="down"
-          subtitle="50% of trips under 4.2m"
+          subtitle="System-wide delay events"
           progress={24}
           colorScheme="emerald"
           icon={<FaCheckCircle />}
         />
         <KPICard 
-          title="P90 TAIL DELAY"
-          value="11.4 min"
+          title="TOP CAUSE"
+          value={delayData?.top_causes?.[0]?.cause || 'N/A'}
           techCode="LAT // P90"
           change="2.1"
           changeDirection="down"
-          subtitle="90th percentile threshold"
+          subtitle="Leading delay reason"
           progress={64}
           colorScheme="gold"
           icon={<FaExclamationCircle />}
         />
         <KPICard 
           title="P95 SEVERE TAIL"
-          value="16.8 min"
+          value="N/A"
           techCode="LAT // P95"
           change="3.4"
           changeDirection="down"
@@ -104,12 +118,12 @@ const DelayAnalytics = () => {
         />
         <KPICard 
           title="ON-TIME RELIABILITY"
-          value="87.4%"
+          value="N/A"
           techCode="SLO // REL"
           change="2.1"
           changeDirection="up"
           subtitle="Trips within 5m schedule"
-          progress={87.4}
+          progress={0}
           colorScheme="cyan"
           icon={<FaCheck />}
         />

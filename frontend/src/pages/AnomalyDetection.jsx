@@ -3,69 +3,22 @@ import { anomalyAPI } from '../api/client';
 import { FaExclamationTriangle, FaShieldAlt, FaCrosshairs, FaClock, FaRoute, FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './AnomalyDetection.css';
-
-const DEFAULT_ANOMALIES = [
-  {
-    type: 'Abnormal Headway & Vehicle Bunching',
-    category: 'HEADWAY',
-    severity: 'CRITICAL',
-    score: 0.94,
-    record_id: 'EVT-BUNCH-081',
-    route_id: 'PB-01',
-    stop_id: 'ST-02 (Regal Chowk)',
-    timestamp: 'Today, 08:24:12 PKT',
-    magnitude: 'Headway: 1.2 min (Scheduled: 6.5 min)',
-    detection_method: '3-Sigma Headway Delta (Z = +3.82)',
-    explanation: 'Two Peoples Bus Line 1 vehicles arrived with an interval of only 72 seconds at Saddar Regal Chowk.',
-    recommended_action: 'Hold trailing vehicle at Numaish for 3.5 minutes to restore headway equilibrium.'
-  },
-  {
-    type: 'Passenger Volume Surge',
-    category: 'SURGE',
-    severity: 'MODERATE',
-    score: 0.82,
-    record_id: 'EVT-SURGE-104',
-    route_id: 'GL-01',
-    stop_id: 'ST-04 (Numaish Interchange)',
-    timestamp: 'Today, 08:10:45 PKT',
-    magnitude: '+142% Boarding Spike (4,820 Pax/hr)',
-    detection_method: 'Isolation Forest (Ensemble Trees = 100)',
-    explanation: 'Sudden boarding surge at Numaish terminal exceeding 99th percentile historical envelope.',
-    recommended_action: 'Deploy depot reserve shuttle from Surjani to absorb outbound platform crowding.'
-  },
-  {
-    type: 'GPS Coordinate Telemetry Drift',
-    category: 'TELEMETRY',
-    severity: 'LOW',
-    score: 0.68,
-    record_id: 'EVT-DRIFT-022',
-    route_id: 'PB-08',
-    stop_id: 'ST-06 (Korangi Crossing)',
-    timestamp: 'Today, 07:54:19 PKT',
-    magnitude: 'Coordinate Delta: 480m off corridor spine',
-    detection_method: 'Spatial Bounding Geofence Rule 07',
-    explanation: 'Vehicle 142 emitted GPS coordinates outside designated road geometry boundary.',
-    recommended_action: 'Audit onboard AVL unit antenna and verify road detour status on Korangi Causeway.'
-  }
-];
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const AnomalyDetection = () => {
-  const [anomalies, setAnomalies] = useState(DEFAULT_ANOMALIES);
+  const [anomalies, setAnomalies] = useState([]);
   const [selectedCat, setSelectedCat] = useState('ALL');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     anomalyAPI.detect()
       .then(res => {
         if (res.data?.anomalies?.length) {
-          // Merge with rich fields
-          const merged = res.data.anomalies.map((a, idx) => ({
-            ...DEFAULT_ANOMALIES[idx % DEFAULT_ANOMALIES.length],
-            ...a
-          }));
-          setAnomalies(merged);
+          setAnomalies(res.data.anomalies);
         }
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const filtered = selectedCat === 'ALL' 
@@ -74,6 +27,7 @@ const AnomalyDetection = () => {
 
   return (
     <div className="page-container anomalydetection-page">
+      <PipelineBanner contextMessage="Anomalies detected here are cross-referenced with ML predictions for robust outlier isolation." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -106,7 +60,7 @@ const AnomalyDetection = () => {
         />
         <KPICard 
           title="BUNCHING EVENTS"
-          value="4"
+          value={String(anomalies.filter(a => a.category === 'HEADWAY').length)}
           techCode="BUNCH // CNT"
           change="1"
           changeDirection="down"
@@ -117,7 +71,7 @@ const AnomalyDetection = () => {
         />
         <KPICard 
           title="PASSENGER SURGES"
-          value="2"
+          value={String(anomalies.filter(a => a.category === 'SURGE').length)}
           techCode="SURGE // CNT"
           change="0"
           changeDirection="up"
@@ -128,7 +82,7 @@ const AnomalyDetection = () => {
         />
         <KPICard 
           title="DETECTION LATENCY"
-          value="840ms"
+          value="N/A"
           techCode="LAT // DET"
           change="12"
           changeDirection="down"

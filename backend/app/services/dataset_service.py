@@ -102,7 +102,7 @@ def generate_dataset(scale: str = "small", created_by: Optional[str] = None) -> 
 def upload_dataset_to_hdfs(dataset_id: str) -> Dict[str, Any]:
     """Triggers HDFS upload script."""
     logger.info(f"Uploading dataset {dataset_id} to HDFS...")
-    script_path = "echo "HDFS upload stubbed""
+    script_path = "hadoop/hdfs_scripts/upload_to_hdfs.sh"
     if os.path.exists(script_path):
         import subprocess
         res = subprocess.run(["bash", script_path], capture_output=True, text=True)

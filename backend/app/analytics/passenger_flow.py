@@ -1,3 +1,4 @@
+from backend.app.analytics.db_filters import apply_global_filters
 """
 Passenger flow intelligence module analyzing boarding, alighting, and directional volumes from data.
 Supports dynamic filtering by route_id, direction, date, and hour.
@@ -29,6 +30,8 @@ def analyze_passenger_flow(filters: Optional[Dict[str, Any]] = None) -> Dict[str
     logger.info(f"Running passenger flow SQL analytics with filters: {filters}")
 
     with SessionLocal() as db:
+        original_query = db.query
+        db.query = lambda *args, **kwargs: apply_global_filters(original_query(*args, **kwargs), filters)
         query = db.query(PassengerCount)
         
         # Apply filters

@@ -92,9 +92,9 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
           <FaExchangeAlt className="nav-icon" />
           <span className="nav-text">What-If Simulation</span>
         </NavLink>
-        <NavLink to="/model-comparison" title="Spark vs Python ML Reconciliation">
+        <NavLink to="/model-comparison" title="Spark vs Python Pipeline Consensus">
           <FaShieldAlt className="nav-icon" />
-          <span className="nav-text">Model Comparison</span>
+          <span className="nav-text">Pipeline Consensus</span>
         </NavLink>
 
         {/* Platform Group */}

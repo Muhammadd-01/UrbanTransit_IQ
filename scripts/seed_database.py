@@ -161,16 +161,13 @@ def seed_database(scale="competition"):
         except Exception as e:
             logger.error(f"Failed loading {table_name}: {e}")
 
-    # Create default user for admin access
+    # Seed all 4 SRS roles
     try:
-        with engine.begin() as conn:
-            conn.execute(text(
-                "INSERT INTO users (id, email, full_name, role, is_active) "
-                "VALUES ('00000000-0000-0000-0000-000000000001', 'affan@urbantransit.iq', 'Muhammad Affan', 'admin', true) "
-                "ON CONFLICT (email) DO NOTHING"
-            ))
+        from backend.app.database.engine import seed_srs_users
+        seed_srs_users()
+        logger.info("Successfully verified and seeded all 4 SRS user accounts.")
     except Exception as e:
-        logger.warning(f"Could not insert default user: {e}")
+        logger.warning(f"Could not seed SRS users: {e}")
         
     elapsed = time.time() - total_start_time
     logger.info("=" * 60)

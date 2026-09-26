@@ -67,6 +67,12 @@
   letter-spacing: 0.04em;
 }
 
+.pipeline-result-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .pipeline-spec-list {
   display: flex;
   flex-direction: column;
@@ -83,6 +89,10 @@
   border-radius: 6px;
   font-size: 0.84rem;
   gap: 14px;
+}
+
+[data-theme="dark"] .spec-row {
+  background: rgba(15, 23, 42, 0.4);
 }
 
 .spec-label {
@@ -124,4 +134,291 @@
   background: rgba(217, 119, 6, 0.10);
   color: var(--color-warning);
   border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+/* ==========================================================================
+   Verdict Box — Plain Language Prediction Summary
+   ========================================================================== */
+
+.verdict-box {
+  padding: 18px 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.verdict-box.delayed {
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.verdict-box.on-time {
+  background: rgba(22, 163, 74, 0.06);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .verdict-box.delayed {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+[data-theme="dark"] .verdict-box.on-time {
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.35);
+}
+
+.verdict-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verdict-icon {
+  font-size: 1.2rem;
+}
+
+.verdict-label {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.verdict-box.delayed .verdict-label {
+  color: #DC2626;
+}
+
+.verdict-box.on-time .verdict-label {
+  color: #16A34A;
+}
+
+.verdict-confidence {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .verdict-confidence {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.verdict-text {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.verdict-action {
+  font-size: 0.82rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  margin: 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   Raw Data Strip — Input Features Display
+   ========================================================================== */
+
+.raw-data-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(0, 122, 255, 0.04);
+  border: 1px solid rgba(0, 122, 255, 0.12);
+  border-radius: 8px;
+}
+
+[data-theme="dark"] .raw-data-strip {
+  background: rgba(0, 122, 255, 0.08);
+  border-color: rgba(0, 122, 255, 0.2);
+}
+
+.rds-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rds-items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.rds-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+[data-theme="dark"] .rds-item {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.rds-key {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rds-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   Explainer Box — How This Works
+   ========================================================================== */
+
+.explainer-box {
+  display: flex;
+  gap: 18px;
+  padding: 22px 26px !important;
+}
+
+.explainer-icon-wrap {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-accent-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.explainer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.explainer-content h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.explainer-content > p {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.explainer-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.explainer-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.explainer-step div strong {
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.explainer-step div p {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Comparison Insight Box
+   ========================================================================== */
+
+.comparison-insight-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  background: rgba(0, 122, 255, 0.05);
+  border: 1px solid rgba(0, 122, 255, 0.15);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+[data-theme="dark"] .comparison-insight-box {
+  background: rgba(0, 122, 255, 0.1);
+  border-color: rgba(0, 122, 255, 0.25);
+}
+
+.insight-icon {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-accent-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.insight-content h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.insight-content p {
+  font-size: 0.84rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.6;
 }

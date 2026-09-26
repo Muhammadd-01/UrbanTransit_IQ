@@ -76,7 +76,7 @@ const InteractiveParticleWave = ({ isDark }) => {
   // Adjust scene fog dynamically on theme change
   useEffect(() => {
     if (scene) {
-      scene.fog = new THREE.Fog(isDark ? '#070913' : '#F8FAFC', 10, 48);
+      scene.fog = new THREE.Fog(isDark ? '#070913' : '#F5F5F7', isDark ? 10 : 20, isDark ? 48 : 65);
     }
   }, [scene, isDark]);
 
@@ -151,12 +151,12 @@ const InteractiveParticleWave = ({ isDark }) => {
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color={isDark ? '#00F0FF' : '#007AFF'}
-        size={0.13}
+        color={isDark ? '#00F0FF' : '#005CE6'}
+        size={isDark ? 0.13 : 0.20}
         sizeAttenuation={true}
         depthWrite={false}
-        opacity={isDark ? 0.65 : 0.45}
-        blending={THREE.AdditiveBlending}
+        opacity={isDark ? 0.70 : 0.85}
+        blending={isDark ? THREE.AdditiveBlending : THREE.NormalBlending}
       />
     </Points>
   );

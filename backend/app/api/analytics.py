@@ -1,5 +1,8 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from typing import Optional
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from backend.app.database.engine import get_db
 
 from backend.app.analytics.passenger_flow import analyze_passenger_flow
 from backend.app.analytics.db_analytics import (
@@ -49,17 +52,68 @@ async def delays(route_id: Optional[str] = Query(None), vehicle_id: Optional[str
     return analyze_delays({k: v for k, v in filters.items() if v is not None})
 
 @router.get("/occupancy")
-async def occupancy(route_id: Optional[str] = Query(None)):
+async def occupancy(route_id: Optional[str] = Query(None), db: Session = Depends(get_db)):
     filters = {"route_id": route_id}
     occ_data = detect_overcrowding({k: v for k, v in filters.items() if v is not None})
+    try:
+        where_clause = ""
+        params = {}
+        if route_id:
+            where_clause = "WHERE p.route_id = :route_id"
+            params["route_id"] = route_id
+
+        q = text(f"""
+            WITH occ AS (
+                SELECT (p.load::float / NULLIF(v.capacity, 0)) as occupancy
+                FROM passenger_counts p
+                JOIN vehicles v ON p.route_id = v.assigned_route
+                {where_clause}
+                WHERE v.capacity > 0
+            )
+            SELECT 
+                AVG(occupancy) as avg_occ,
+                MAX(occupancy) as max_occ,
+                COUNT(*) as total,
+                SUM(CASE WHEN occupancy < 0.5 THEN 1 ELSE 0 END) as low_occ,
+                SUM(CASE WHEN occupancy >= 0.5 AND occupancy < 0.7 THEN 1 ELSE 0 END) as mod_occ,
+                SUM(CASE WHEN occupancy >= 0.7 AND occupancy < 0.85 THEN 1 ELSE 0 END) as high_occ,
+                SUM(CASE WHEN occupancy >= 0.85 AND occupancy < 0.95 THEN 1 ELSE 0 END) as over_occ,
+                SUM(CASE WHEN occupancy >= 0.95 THEN 1 ELSE 0 END) as crit_occ
+            FROM occ
+        """)
+        row = db.execute(q, params).fetchone()
+        
+        if row and row.total and row.total > 0:
+            avg_network_occ = float(row.avg_occ or 0)
+            peak_occ = float(row.max_occ or 0)
+            total = float(row.total)
+            distribution = {
+                "Low (<50%)": round((row.low_occ or 0) / total * 100, 1),
+                "Moderate (50-70%)": round((row.mod_occ or 0) / total * 100, 1),
+                "High (70-85%)": round((row.high_occ or 0) / total * 100, 1),
+                "Overcrowded (85-95%)": round((row.over_occ or 0) / total * 100, 1),
+                "Critical (>95%)": round((row.crit_occ or 0) / total * 100, 1)
+            }
+        else:
+            avg_network_occ = 0.0
+            peak_occ = 0.0
+            distribution = {
+                "Low (<50%)": 0.0, "Moderate (50-70%)": 0.0, "High (70-85%)": 0.0,
+                "Overcrowded (85-95%)": 0.0, "Critical (>95%)": 0.0
+            }
+    except Exception:
+        avg_network_occ = 0.0
+        peak_occ = 0.0
+        distribution = {
+            "Low (<50%)": 0.0, "Moderate (50-70%)": 0.0, "High (70-85%)": 0.0,
+            "Overcrowded (85-95%)": 0.0, "Critical (>95%)": 0.0
+        }
+
     return {
         "status": "success",
-        "average_network_occupancy": 0.74,
-        "peak_occupancy": 0.94,
-        "distribution": {
-            "Low (<50%)": 24.5, "Moderate (50-70%)": 32.1, "High (70-85%)": 28.4,
-            "Overcrowded (85-95%)": 11.2, "Critical (>95%)": 3.8
-        },
+        "average_network_occupancy": round(avg_network_occ, 2),
+        "peak_occupancy": round(peak_occ, 2),
+        "distribution": distribution,
         "overcrowded_routes": occ_data.get("overcrowded_routes", [])
     }
 

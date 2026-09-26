@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { analyticsAPI } from '../api/client';
 import { FaBus, FaCar, FaWrench, FaTools, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './VehicleAnalytics.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
-const DEFAULT_MAINTENANCE = [
-  { vehicle_id: 'VH-104', type: 'Yutong Hybrid City Bus (12m)', age_years: 3.2, delay_count: 14, condition: 'CRITICAL', depot: 'Surjani Depot', odometer: '142,500 km' },
-  { vehicle_id: 'VH-089', type: 'King Long BRT Articulated (18m)', age_years: 2.8, delay_count: 9, condition: 'WARNING', depot: 'Numaish Hub', odometer: '189,200 km' },
-  { vehicle_id: 'VH-212', type: 'Foton Electric Feeder (8m)', age_years: 1.4, delay_count: 7, condition: 'WARNING', depot: 'Korangi Workshop', odometer: '64,100 km' },
-  { vehicle_id: 'VH-045', type: 'Yutong Hybrid City Bus (12m)', age_years: 4.1, delay_count: 12, condition: 'CRITICAL', depot: 'Surjani Depot', odometer: '210,400 km' }
-];
 
 const VehicleAnalytics = () => {
+  const { getFilterParams, filters } = useContext(FilterContext);
+
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    analyticsAPI.getVehicleUtilization()
+    analyticsAPI.getVehicleUtilization(getFilterParams())
       .then(res => setData(res.data))
       .catch(console.error);
-  }, []);
+  }, [filters]);
 
-  const maintenanceList = data?.maintenance_flagged_vehicles?.length 
-    ? data.maintenance_flagged_vehicles 
-    : DEFAULT_MAINTENANCE;
+  const maintenanceList = data?.maintenance_flagged_vehicles || [];
 
   return (
     <div className="page-container vehicleanalytics-page">
+      <PipelineBanner contextMessage="Vehicle load capacities and active utilization form the backbone of the overcrowding classifier." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -47,7 +44,7 @@ const VehicleAnalytics = () => {
       <div className="kpi-grid-four">
         <KPICard 
           title="ACTIVE FLEET"
-          value={String(data?.active_fleet_count || 242)}
+          value={String(data?.active_vehicles || 0)}
           techCode="FLT // ACTIVE"
           change="4.2"
           changeDirection="up"
@@ -58,7 +55,7 @@ const VehicleAnalytics = () => {
         />
         <KPICard 
           title="IDLE / RESERVE"
-          value={String(data?.idle_fleet_count || 18)}
+          value={data?.total_vehicles ? String(data.total_vehicles - (data.active_vehicles || 0)) : '0'}
           techCode="FLT // STBY"
           change="0.0"
           changeDirection="up"
@@ -69,7 +66,7 @@ const VehicleAnalytics = () => {
         />
         <KPICard 
           title="DAILY TRIPS / BUS"
-          value={String(data?.avg_daily_trips_per_vehicle || '8.6')}
+          value={String(data?.avg_daily_trips_per_vehicle || '0')}
           techCode="OPS // TURN"
           change="1.2"
           changeDirection="up"
@@ -80,12 +77,12 @@ const VehicleAnalytics = () => {
         />
         <KPICard 
           title="FLEET UTILIZATION"
-          value={`${(data?.fleet_utilization_rate * 100 || 89).toFixed(0)}%`}
+          value={data?.utilization_rate ? `${(data.utilization_rate * 100).toFixed(0)}%` : '0%'}
           techCode="EFF // DUTY"
           change="2.4"
           changeDirection="up"
           subtitle="Optimal duty cycle target"
-          progress={89}
+          progress={data?.utilization_rate ? (data.utilization_rate * 100) : 0}
           colorScheme="emerald"
           icon={<FaCheckCircle />}
         />
@@ -115,17 +112,20 @@ const VehicleAnalytics = () => {
               </tr>
             </thead>
             <tbody>
+              {maintenanceList.length === 0 && (
+                <tr><td colSpan="7" style={{textAlign:'center'}}>No flagged vehicles</td></tr>
+              )}
               {maintenanceList.map((v, i) => (
                 <tr key={i}>
                   <td className="mono-val text-cyan"><strong>{v.vehicle_id}</strong></td>
-                  <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{v.type}</td>
-                  <td style={{ color: 'var(--color-text-secondary)' }}>{v.depot || 'Surjani Depot'}</td>
-                  <td className="mono-val text-dim">{v.age_years} Years</td>
-                  <td className="mono-val">{v.odometer || '142,000 km'}</td>
-                  <td className="mono-val text-coral"><strong>{v.delay_count} Events</strong></td>
+                  <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{v.type || 'N/A'}</td>
+                  <td style={{ color: 'var(--color-text-secondary)' }}>{v.depot || 'N/A'}</td>
+                  <td className="mono-val text-dim">{v.age_years || 'N/A'} Years</td>
+                  <td className="mono-val">{v.odometer || 'N/A'}</td>
+                  <td className="mono-val text-coral"><strong>{v.delay_count || 0} Events</strong></td>
                   <td>
                     <span className={`status-badge-chip ${v.condition === 'CRITICAL' ? 'quarantined' : 'corrected'}`}>
-                      {v.condition}
+                      {v.condition || 'N/A'}
                     </span>
                   </td>
                 </tr>

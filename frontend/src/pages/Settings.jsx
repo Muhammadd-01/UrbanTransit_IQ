@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { settingsAPI } from '../api/client';
 import { FaSlidersH, FaServer, FaMicrochip, FaUsers, FaDatabase, FaBolt, FaHdd, FaSave } from 'react-icons/fa';
 import './Settings.css';
 
 const Settings = () => {
+  const { getFilterParams, filters } = useContext(FilterContext);
+
   const [thresholds, setThresholds] = useState(null);
 
   useEffect(() => {
-    settingsAPI.getThresholds()
+    settingsAPI.getThresholds(getFilterParams())
       .then(res => setThresholds(res.data))
       .catch(console.error);
-  }, []);
+  }, [filters]);
 
   return (
     <div className="page-container settings-page">

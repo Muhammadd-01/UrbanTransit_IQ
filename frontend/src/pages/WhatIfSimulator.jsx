@@ -3,6 +3,7 @@ import { simulationsAPI } from '../api/client';
 import { FaExchangeAlt, FaShieldAlt, FaSlidersH, FaBolt, FaArrowDown, FaArrowUp, FaCheckCircle } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './WhatIfSimulator.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const WhatIfSimulator = () => {
   const [routeId, setRouteId] = useState('PB-01');
@@ -29,22 +30,7 @@ const WhatIfSimulator = () => {
       setResults(res.data.results);
     } catch (e) {
       console.error(e);
-      // High fidelity fallback calculation
-      setResults({
-        baseline: {
-          current_avg_occupancy: 0.94,
-          current_wait_time_minutes: 14.8,
-          current_avg_delay: 16.4,
-          bottlenecks: 3
-        },
-        simulated: {
-          SIMULATED_avg_occupancy: Math.max(0.65, 0.94 - (vehicleCount * 0.08) - (frequencyMod * 0.002)),
-          SIMULATED_wait_time_minutes: Math.max(5.2, 14.8 - (vehicleCount * 2.2) - (frequencyMod * 0.08)),
-          SIMULATED_avg_delay: Math.max(6.1, 16.4 - (vehicleCount * 2.5) - (frequencyMod * 0.1)),
-          SIMULATED_bottlenecks: Math.max(1, 3 - Math.floor(vehicleCount / 2))
-        },
-        caveats: ['Assumes constant road capacity and linear passenger elasticity.']
-      });
+      alert('Simulation failed to run on the backend.');
     } finally {
       setLoading(false);
     }
@@ -52,6 +38,7 @@ const WhatIfSimulator = () => {
 
   return (
     <div className="page-container whatif-page">
+      <PipelineBanner contextMessage="Counterfactual scenarios are simulated using the baseline model trained on historical data." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">

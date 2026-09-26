@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { FilterContext } from '../contexts/FilterContext';
 import { analyticsAPI } from '../api/client';
 import Plot from 'react-plotly.js';
 import { 
@@ -14,26 +15,47 @@ import {
 import KPICard from '../components/common/KPICard';
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './ODAnalysis.css';
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const ODAnalysis = () => {
+  const { getFilterParams, filters } = useContext(FilterContext);
+
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    analyticsAPI.getODMatrix().then(res => setData(res.data)).catch(console.error);
+    analyticsAPI.getODMatrix(getFilterParams()).then(res => {
+      const rawMatrix = res.data?.matrix || [];
+      if (!rawMatrix.length) {
+        setData(res.data);
+        return;
+      }
+      
+      const zoneSet = new Set();
+      rawMatrix.forEach(entry => {
+        if (entry.origin) zoneSet.add(entry.origin);
+        if (entry.destination) zoneSet.add(entry.destination);
+      });
+      const zones = Array.from(zoneSet);
+      
+      const matrix = zones.map(origin => 
+        zones.map(dest => {
+          const entry = rawMatrix.find(m => m.origin === origin && m.destination === dest);
+          return entry ? entry.volume : 0;
+        })
+      );
+      
+      const top_corridors = [...rawMatrix].sort((a, b) => b.volume - a.volume).slice(0, 5);
+      
+      setData({ zones, matrix, top_corridors });
+    }).catch(console.error);
   }, []);
 
-  const zones = data?.zones || ['Saddar', 'Clifton', 'Gulshan', 'Korangi', 'Nazimabad', 'Malir', 'SITE', 'Lyari'];
-
-  const corridors = data?.top_corridors || [
-    { origin: 'Gulshan-e-Iqbal', destination: 'Saddar Commercial Core', volume: 48200, dominant_route: 'PB-01', routeType: 'pb', share: 27 },
-    { origin: 'Surjani Town BRT', destination: 'Numaish Interchange', volume: 44100, dominant_route: 'GL-01', routeType: 'gl', share: 24 },
-    { origin: 'Korangi Industrial', destination: 'Saddar Commercial Core', volume: 38900, dominant_route: 'PB-08', routeType: 'pb', share: 21 },
-    { origin: 'Malir Cantonment', destination: 'Tower Terminal', volume: 32400, dominant_route: 'PB-01', routeType: 'pb', share: 18 },
-    { origin: 'Nazimabad Central', destination: 'SITE Industrial Area', volume: 29800, dominant_route: 'LB-04', routeType: 'lb', share: 16 }
-  ];
+  const zones = data?.zones || [];
+  const corridors = data?.top_corridors || [];
 
   return (
     <div className="page-container odanalysis-page">
+      <PipelineBanner contextMessage="Origin-Destination patterns from millions of records help train spatial clustering models." />
       {/* Executive Hero Banner */}
       <div className="dashboard-hero hud-corners">
         <div className="hero-text-block">
@@ -157,16 +179,7 @@ const ODAnalysis = () => {
         <div className="od-heatmap-wrapper">
           <Plot
             data={[{
-              z: data?.matrix || [
-                [1200, 4500, 6800, 3100, 5200, 2400, 4100, 2900],
-                [4800, 1100, 3200, 4200, 2800, 1900, 2200, 1500],
-                [7100, 3400, 1800, 4900, 6100, 5800, 3900, 2100],
-                [3400, 4100, 4700, 1400, 3200, 6200, 5100, 1800],
-                [5400, 2900, 6200, 3100, 1300, 2800, 4800, 3400],
-                [2600, 2100, 5900, 6400, 2900, 1600, 2700, 1200],
-                [4200, 2300, 3800, 5200, 4700, 2800, 1100, 3100],
-                [3100, 1600, 2200, 1900, 3500, 1300, 3200, 900]
-              ],
+              z: data?.matrix || [],
               x: zones,
               y: zones,
               type: 'heatmap',

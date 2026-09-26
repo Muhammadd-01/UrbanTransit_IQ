@@ -3,16 +3,11 @@ import { datasetsAPI } from '../api/client';
 import { FaDatabase, FaPlay, FaHdd, FaCheckCircle, FaSpinner, FaBolt, FaTerminal, FaCogs } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './DataManagement.css';
-
-const SPARK_JOBS = [
-  { id: 'spark_delay_prediction_042', name: 'MLlib Delay Batch Scoring', status: 'COMPLETED', input: '2,184,291 records', partitions: 48, duration: '18.42s', output: '217,431 predictions' },
-  { id: 'spark_feature_agg_108', name: 'Karachi Corridor Feature Matrix', status: 'COMPLETED', input: '2,055,000 records', partitions: 32, duration: '12.18s', output: '110 route aggregations' },
-  { id: 'spark_od_matrix_calc_003', name: '8x8 Zonal Passenger Trip Exchange', status: 'COMPLETED', input: '1,840,110 records', partitions: 24, duration: '9.64s', output: '64 OD exchange cells' },
-  { id: 'spark_anomaly_isolation_019', name: '3-Sigma Temporal Drift Telemetry', status: 'COMPLETED', input: '260,000 delay logs', partitions: 16, duration: '4.85s', output: '18 detected outliers' }
-];
+import PipelineBanner from '../components/common/PipelineBanner';
 
 const DataManagement = () => {
   const [datasets, setDatasets] = useState([]);
+  const [sparkJobs, setSparkJobs] = useState([]);
   const [scale, setScale] = useState('competition');
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -27,8 +22,19 @@ const DataManagement = () => {
     }
   };
 
+  const fetchSparkJobs = async () => {
+    try {
+      const { sparkJobsAPI } = await import('../api/client');
+      const res = await sparkJobsAPI.list();
+      setSparkJobs(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
     fetchDatasets();
+    fetchSparkJobs();
   }, []);
 
   const handleGenerate = async () => {
@@ -60,6 +66,7 @@ const DataManagement = () => {
 
   return (
     <div className="page-container datamanagement-page">
+      <PipelineBanner contextMessage="Synthetic datasets generated match the distribution profile of the ML pipeline data." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
@@ -204,7 +211,7 @@ const DataManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {SPARK_JOBS.map((j, i) => (
+              {sparkJobs.map((j, i) => (
                 <tr key={i}>
                   <td className="mono-val text-cyan"><strong>{j.id}</strong></td>
                   <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{j.name}</td>

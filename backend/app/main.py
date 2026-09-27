@@ -48,11 +48,15 @@ app.include_router(export.router, prefix="/api/export", tags=["export"])
 @app.on_event("startup")
 async def startup_event():
     logger.info(f"Starting application in {settings.EXECUTION_MODE} mode")
-    from backend.app.database.engine import init_db
+    from backend.app.database.mongo import init_mongo_indexes, check_mongo_connection
     try:
-        init_db()
+        if check_mongo_connection():
+            logger.info("MongoDB connection verified. Initializing indexes...")
+            init_mongo_indexes()
+        else:
+            logger.warning("MongoDB ping failed. Ensure MongoDB is running on port 27017.")
     except Exception as e:
-        logger.error(f"Failed to initialize database: {e}")
+        logger.error(f"Failed to initialize MongoDB: {e}")
         
     if settings.EXECUTION_MODE == "COMPETITION":
         verify_competition_mode()

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from "react";
 import { FilterContext } from '../contexts/FilterContext';
 import { analyticsAPI } from '../api/client';
 import { FaRoute, FaCheckCircle, FaExclamationTriangle, FaStar, FaTimes, FaBus, FaClock, FaMapMarkerAlt, FaUsers } from 'react-icons/fa';
@@ -22,7 +22,14 @@ const RouteIntelligence = () => {
             route_id: r.route || 'N/A',
             route_name: `Route ${r.route || 'N/A'}`,
             trips: r.trip_count || 0,
-            avg_delay: r.avg_delay != null ? `${r.avg_delay.toFixed(1)}m` : 'N/A'
+            daily_volume: r.daily_volume != null ? r.daily_volume.toLocaleString() : 'N/A',
+            avg_delay: r.avg_delay != null ? `${r.avg_delay.toFixed(1)}m` : 'N/A',
+            on_time: r.on_time_pct != null ? `${r.on_time_pct.toFixed(1)}%` : 'N/A',
+            load_factor_val: r.load_factor || 0,
+            load_factor_str: r.load_factor != null ? `${r.load_factor}%` : 'N/A',
+            headway: r.headway != null ? `${r.headway}m` : 'N/A',
+            bunching: r.bunching || 'LOW',
+            composite_score: r.composite_score || 0
           })));
         }
       })

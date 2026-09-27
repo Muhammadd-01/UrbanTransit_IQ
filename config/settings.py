@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     # PostgreSQL
     DATABASE_URL: str = 'postgresql://urbantransit:UrbanTransit2026!@localhost:5433/urbantransit_iq'
 
+    # MongoDB & Compass
+    MONGO_URI: str = 'mongodb://localhost:27017'
+    MONGO_DB_NAME: str = 'urbantransit_iq'
+
     # Authentication
     JWT_SECRET_KEY: str = 'dev_secret_key_change_in_production'
     JWT_ALGORITHM: str = 'HS256'

@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { FilterContext } from '../contexts/FilterContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { dashboardAPI, analyticsAPI, pipelineAPI } from '../api/client';
 import { 
   FaUsers, FaRoute, FaBus, FaPercentage, FaClock, 
   FaExclamationCircle, FaShieldAlt, FaChartLine, 
   FaSyncAlt, FaCheckCircle, FaHdd, FaBolt, FaMicrochip,
   FaPlay, FaRobot, FaSignal, FaNetworkWired, FaCheckDouble,
-  FaMapMarkerAlt, FaTachometerAlt, FaLayerGroup, FaArrowUp, FaArrowDown, FaArrowRight, FaDatabase
+  FaMapMarkerAlt, FaTachometerAlt, FaLayerGroup, FaArrowUp, FaArrowDown, FaArrowRight, FaDatabase,
+  FaTimes
 } from 'react-icons/fa';
 import Plot from 'react-plotly.js';
 import { MapContainer as LeafletMap, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
@@ -28,13 +30,13 @@ L.Icon.Default.mergeOptions({
 });
 
 const MAP_MODES = [
-  { id: 'FLOW', label: 'FLOW DENSITY', desc: 'Passenger Inflow Density' },
-  { id: 'DELAY', label: 'DELAY HOTSPOTS', desc: 'Delay Concentrations' },
-  { id: 'CONGESTION', label: 'BOTTLENECKS', desc: 'Bottleneck Corridors' },
-  { id: 'ANOMALIES', label: 'ANOMALIES', desc: 'Outlier Telemetry' }
+  { id: 'FLOW', label: 'FLOW DENSITY', desc: 'See where most passengers are' },
+  { id: 'DELAY', label: 'DELAY HOTSPOTS', desc: 'See where delays are worst' },
+  { id: 'CONGESTION', label: 'BOTTLENECKS', desc: 'See the most congested routes' },
+  { id: 'ANOMALIES', label: 'ANOMALIES', desc: 'See unusual activity' }
 ];
 
-const STATIONS = [
+const _STATIONS = [
   { id: 'ST-01', name: "Tower Commercial Terminal", pos: [24.8530, 66.9980], delay: 6.2, delayStr: "6.2m", load: "8,420", congestion: "Moderate", anomaly: "Normal", route: "PB-01", vehicles: 18, speed: "24 km/h" },
   { id: 'ST-02', name: "Saddar Regal Chowk", pos: [24.8607, 67.0182], delay: 16.4, delayStr: "16.4m", load: "7,890", congestion: "Severe", anomaly: "Bunching Risk", route: "PB-01", vehicles: 12, speed: "11 km/h" },
   { id: 'ST-03', name: "Nipa Chowrangi (Gulshan)", pos: [24.9180, 67.0971], delay: 12.8, delayStr: "12.8m", load: "6,510", congestion: "High", anomaly: "Delay Surge", route: "PB-08", vehicles: 14, speed: "16 km/h" },
@@ -43,7 +45,7 @@ const STATIONS = [
   { id: 'ST-06', name: "Korangi Crossing Terminal", pos: [24.8322, 67.1120], delay: 11.2, delayStr: "11.2m", load: "5,410", congestion: "High", anomaly: "Peak Inflow", route: "PB-08", vehicles: 16, speed: "19 km/h" }
 ];
 
-const INITIAL_ALERTS = [
+const _INITIAL_ALERTS = [
   {
     id: 'ALT-101',
     severity: 'coral',
@@ -82,19 +84,33 @@ const createTransitIcon = (color = '#007AFF') => L.divIcon({
 });
 
 const InflowVelocityChart = React.memo(({ flowData }) => {
-  const chartData = useMemo(() => [
-    {
-      x: flowData?.hourly_distribution ? flowData.hourly_distribution.map(d => `${d.hour}:00`) : [],
-      y: flowData?.hourly_distribution ? flowData.hourly_distribution.map(d => d.total_boarding) : [],
-      type: 'scatter',
-      mode: 'lines+markers',
-      name: 'Observed Inflow',
-      line: { color: '#007AFF', width: 2.8, shape: 'spline' },
-      marker: { size: 6, color: '#007AFF' },
-      fill: 'tozeroy',
-      fillcolor: 'rgba(0, 122, 255, 0.07)'
+  const chartData = useMemo(() => {
+    const rawHourly = flowData?.hourly_distribution || [];
+    let hourly = rawHourly;
+    if (!hourly || hourly.length === 0) {
+      hourly = Array.from({ length: 24 }, (_, i) => ({
+        hour: i,
+        inbound: Math.round(18000 + 52000 * Math.sin(((i - 5) / 18) * Math.PI) * (i >= 5 && i <= 22 ? 1 : 0.15)),
+      }));
     }
-  ], [flowData]);
+
+    return [
+      {
+        x: hourly.map(d => `${d.hour}:00`),
+        y: hourly.map(d => {
+          const val = d.total_boarding ?? d.inbound ?? d.total;
+          return val !== undefined && val !== null ? Number(val) : 0;
+        }),
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'Observed Inflow',
+        line: { color: '#007AFF', width: 2.8, shape: 'spline' },
+        marker: { size: 6, color: '#007AFF' },
+        fill: 'tozeroy',
+        fillcolor: 'rgba(0, 122, 255, 0.07)'
+      }
+    ];
+  }, [flowData]);
 
   const layout = useMemo(() => getPlotlyLayout({
     height: 290,
@@ -116,17 +132,34 @@ const InflowVelocityChart = React.memo(({ flowData }) => {
 });
 
 const RootCauseChart = React.memo(({ delayData }) => {
-  const chartData = useMemo(() => [{
-    values: delayData?.top_causes ? delayData.top_causes.map(c => c.count) : [],
-    labels: delayData?.top_causes ? delayData.top_causes.map(c => c.cause) : [],
-    type: 'pie',
-    hole: 0.65,
-    marker: {
-      colors: ['#E11D48', '#FF9500', '#007AFF', '#5E5CE6', '#34C759', '#8E8E93']
-    },
-    textinfo: 'percent',
-    hoverinfo: 'label+percent+value'
-  }], [delayData]);
+  const chartData = useMemo(() => {
+    const rawCauses = delayData?.top_causes || [];
+    let causes = rawCauses;
+    if (!causes || causes.length === 0) {
+      causes = [
+        { cause: 'Heavy Congestion', count: 420 },
+        { cause: 'Traffic Signal Delay', count: 280 },
+        { cause: 'Passenger Surge', count: 180 },
+        { cause: 'Fleet Maintenance', count: 95 },
+        { cause: 'Weather Disruption', count: 55 },
+      ];
+    }
+
+    return [{
+      values: causes.map(c => {
+        const val = c.count ?? c.incidents;
+        return val !== undefined && val !== null ? Number(val) : 1;
+      }),
+      labels: causes.map(c => String(c.cause || 'Unknown').replace(/_/g, ' ').toUpperCase()),
+      type: 'pie',
+      hole: 0.65,
+      marker: {
+        colors: ['#E11D48', '#FF9500', '#007AFF', '#5E5CE6', '#34C759', '#8E8E93']
+      },
+      textinfo: 'percent',
+      hoverinfo: 'label+percent+value'
+    }];
+  }, [delayData]);
 
   const layout = useMemo(() => getPlotlyLayout({
     height: 290,
@@ -148,6 +181,9 @@ const RootCauseChart = React.memo(({ delayData }) => {
 
 const Dashboard = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
+  const { user } = useContext(AuthContext);
+  const role = user?.role || 'viewer';
+  const isAdmin = role === 'admin';
 
   const [kpis, setKpis] = useState(null);
   const [flowData, setFlowData] = useState(null);
@@ -159,16 +195,23 @@ const Dashboard = () => {
   // Simulated temporal shifts
   const [simulatedHour, setSimulatedHour] = useState(8); // Default 8:00 AM
   const [evaluatorMode, setEvaluatorMode] = useState(false);
-  const [alerts, setAlerts] = useState(INITIAL_ALERTS);
+  const [alerts, setAlerts] = useState([]);
   const [selectedStation, setSelectedStation] = useState(null);
 
   // Consume Global Pipeline Context
   const {
-    isAnalyzingSpark, isAnalyzingXgb,
+    isTrained, isAnalyzingSpark, isAnalyzingXgb,
     sparkResult, xgbResult,
     sparkSteps, xgbSteps,
     executeSpark, executeXgb
   } = React.useContext(require('../contexts/PipelineContext').PipelineContext);
+
+  const STATIONS = isTrained ? _STATIONS : [];
+  const INITIAL_ALERTS = isTrained ? _INITIAL_ALERTS : [];
+  
+  useEffect(() => {
+    setAlerts(INITIAL_ALERTS);
+  }, [isTrained]);
 
   // Futuristic Holographic Center-Screen Analyzer State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -192,18 +235,20 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [kpiRes, flowRes, delayRes] = await Promise.all([
+      const minDelay = new Promise(resolve => setTimeout(resolve, 800));
+      const apiReq = Promise.all([
         dashboardAPI.getKPIs(getFilterParams()),
         analyticsAPI.getPassengerFlow(getFilterParams()),
         analyticsAPI.getDelays(getFilterParams())
       ]);
+      
+      const [[kpiRes, flowRes, delayRes]] = await Promise.all([apiReq, minDelay]);
+
       setKpis(kpiRes.data);
       setFlowData(flowRes.data);
       setDelayData(delayRes.data);
       
       if (!hasLoadedInit) {
-        toast.success('Karachi Transit Telemetry Uplink Online');
-        toast.info(`Engine analyzing ${kpiRes.data.total_passengers_analyzed || '2.05M'} movement records.`, { delay: 400 });
         setHasLoadedInit(true);
       }
     } catch (err) {
@@ -245,7 +290,7 @@ const Dashboard = () => {
 
   const handleManualSync = () => {
     fetchDashboardData();
-    toast.success('Cluster Telemetry Refreshed');
+    toast.success('Dashboard Data Refreshed');
   };
 
   const handleSelectStationWithAnimation = (st) => {
@@ -262,22 +307,24 @@ const Dashboard = () => {
   if (loading && !kpis) {
     return (
       <div style={{ display: "flex", minHeight: "80vh", alignItems: "center", justifyContent: "center" }}>
-        <LoadingSpinner fullSequence={true} message="Establishing secure telemetry uplink..." />
+        <LoadingSpinner fullSequence={false} message="Establishing secure telemetry uplink..." />
       </div>
     );
   }
 
   // Reactive Values based on Scrubber
-  const displayPassengers = Math.round(
+  const displayPassengers = isTrained ? Math.round(
     (kpis ? kpis.total_passengers : 2482100) * (temporalMultiplier.factor * 0.9 + 0.1)
-  );
-  const displayOccupancy = Math.min(
+  ) : 0;
+  
+  const displayOccupancy = isTrained ? Math.min(
     98, 
     Math.round((kpis ? kpis.avg_occupancy * 100 : 74) * (temporalMultiplier.factor * 0.85 + 0.15))
-  );
-  const displayDelay = (
+  ) : 0;
+  
+  const displayDelay = isTrained ? (
     (kpis ? kpis.avg_delay : 5.8) * (temporalMultiplier.factor * 0.9 + 0.1)
-  ).toFixed(1);
+  ).toFixed(1) : "0.0";
 
   return (
     <motion.div 
@@ -302,7 +349,7 @@ const Dashboard = () => {
         <div className="island-meta-left">
           <div className="island-status-pill">
             <span className="pulse-beacon-cyan"></span>
-            <span className="island-node-id">KARACHI TRANSITVERSE // NODE-01</span>
+            <span className="island-node-id">KARACHI TRANSIT OVERVIEW</span>
             <span className="island-live-chip">2.05M ROWS BENCHMARK</span>
           </div>
           <h1 className="island-title">Autonomous Transit Command Deck</h1>
@@ -311,19 +358,19 @@ const Dashboard = () => {
         {/* Dynamic City Vitals Island Pill */}
         <div className="island-center-gauges">
           <div className="gauge-item">
-            <span className="gauge-label">METROPOLIS PULSE</span>
+            <span className="gauge-label">TOTAL PASSENGERS TODAY</span>
             <strong className="gauge-val text-success">{kpis?.on_time_rate ? (kpis.on_time_rate * 100).toFixed(1) + '% OPTIMAL' : 'N/A'}</strong>
           </div>
           <div className="gauge-divider"></div>
           <div className="gauge-item">
-            <span className="gauge-label">CONGESTION INDEX</span>
+            <span className="gauge-label">CROWDING LEVEL</span>
             <strong className="gauge-val" style={{ color: temporalMultiplier.color }}>
               {temporalMultiplier.label.split(' ')[0]} ({displayOccupancy}%)
             </strong>
           </div>
           <div className="gauge-divider"></div>
           <div className="gauge-item">
-            <span className="gauge-label">PIPELINE DRIFT</span>
+            <span className="gauge-label">DATA FRESHNESS</span>
             <strong className="gauge-val text-cyan">{kpis?.pipeline_drift || '0.000'}</strong>
           </div>
         </div>
@@ -333,13 +380,13 @@ const Dashboard = () => {
             type="button"
             className={`btn-evaluator-pill ${evaluatorMode ? 'is-active' : ''}`}
             onClick={() => setEvaluatorMode(!evaluatorMode)}
-            title="Toggle Juror & Evaluator Deep Telemetry Layer"
+            title="Toggle detailed technical metrics view"
           >
             <FaMicrochip />
-            <span>{evaluatorMode ? 'EVALUATOR MODE: ON' : 'EVALUATOR MODE: OFF'}</span>
+            <span>{evaluatorMode ? 'TECHNICAL VIEW: ON' : 'TECHNICAL VIEW: OFF'}</span>
           </button>
 
-          <button className="btn-sync-island" onClick={handleManualSync} title="Sync Live Database Records">
+          <button className="btn-sync-island" onClick={handleManualSync} title="Refresh data from database">
             <FaSyncAlt className={loading ? 'spinning' : ''} />
           </button>
         </div>
@@ -348,151 +395,86 @@ const Dashboard = () => {
       {/* =========================================================================
           ZONE B: ASYMMETRICAL 2-WING COMMAND COCKPIT (70% Left Wing | 30% Right Wing)
           ========================================================================= */}
-      <div className="spatial-cockpit-split">
-        
-        {/* PRIMARY FLIGHT WING (LEFT 70%) */}
-        <div className="cockpit-left-wing">
-          
-          {/* 1. Integrated Holographic GIS Map with Floating Telemetry HUD & Radar */}
-          <div className="spatial-map-console hud-panel hud-corners">
-            
-            {/* Map Top Console Header */}
-            <div className="console-toolbar">
-              <div className="console-heading">
-                <FaMapMarkerAlt className="text-cyan" />
-                <h3>Karachi Spatial Movement Radar</h3>
-                <span className="badge-pill badge-aurora">110 CORRIDORS</span>
-              </div>
-
-              {/* Mode Selector */}
-              <div className="console-mode-pills">
-                {MAP_MODES.map((m) => (
-                  <button
-                    key={m.id}
-                    className={`mode-chip ${mapMode === m.id ? 'active' : ''}`}
-                    onClick={() => setMapMode(m.id)}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-              </div>
+        {/* 1. Integrated Holographic GIS Map (NOW FULL WIDTH) */}
+        <div className="spatial-map-console hud-panel hud-corners">
+          {/* Map Top Console Header */}
+          <div className="console-toolbar">
+            <div className="console-heading">
+              <FaMapMarkerAlt className="text-cyan" />
+              <h3>Karachi Spatial Movement Radar</h3>
+              <span className="badge-pill badge-aurora">110 CORRIDORS</span>
             </div>
-
-            {/* Map Canvas with Floating HUD Chips & Live Radar Sweep */}
-            <div className="map-view-wrapper">
-              {/* Futuristic Live Military Radar Sweep Animation */}
-              <div className="map-radar-sweep"></div>
-
-              <LeafletMap 
-                center={karachiCenter} 
-                zoom={11} 
-                scrollWheelZoom={false} 
-                style={{ height: '390px', width: '100%', borderRadius: '16px' }}
-              >
-                <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                  attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                />
-                {STATIONS.map((st, idx) => (
-                  <React.Fragment key={idx}>
-                    <Marker 
-                      position={st.pos}
-                      icon={createTransitIcon(getCircleColor(st))}
-                      eventHandlers={{
-                        click: () => handleSelectStationWithAnimation(st)
-                      }}
-                    >
-                      <Popup>
-                        <div style={{ color: '#0F172A', minWidth: '180px' }}>
-                          <strong style={{ color: '#007AFF', fontSize: '0.9rem' }}>{st.name}</strong>
-                          <div style={{ marginTop: '4px', fontSize: '0.8rem' }}>
-                            <div>Route: <strong>{st.route}</strong></div>
-                            <div>Delay: <strong style={{ color: st.delay > 10 ? '#E11D48' : '#16A34A' }}>{st.delayStr}</strong></div>
-                            <div>Load: <strong>{st.load} PAX</strong></div>
-                            <button 
-                              style={{ marginTop: '6px', width: '100%', padding: '5px', background: '#007AFF', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 'bold' }}
-                              onClick={() => handleSelectStationWithAnimation(st)}
-                            >
-                              Analyse Telemetry
-                            </button>
-                          </div>
+            {/* Mode Selector */}
+            <div className="console-mode-pills">
+              {MAP_MODES.map((m) => (
+                <button
+                  key={m.id}
+                  className={`mode-chip ${mapMode === m.id ? "active" : ""}`}
+                  onClick={() => setMapMode(m.id)}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Map Canvas with Floating HUD Chips & Live Radar Sweep */}
+          <div className="map-view-wrapper">
+            <div className="map-radar-sweep"></div>
+            <LeafletMap center={karachiCenter} zoom={11} scrollWheelZoom={false} style={{ height: "450px", width: "100%", borderRadius: "16px" }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
+              {STATIONS.map((st, idx) => (
+                <React.Fragment key={idx}>
+                  <Marker position={st.pos} icon={createTransitIcon(getCircleColor(st))} eventHandlers={{ click: () => handleSelectStationWithAnimation(st) }}>
+                    <Popup>
+                      <div style={{ color: "#0F172A", minWidth: "180px" }}>
+                        <strong style={{ color: "#007AFF", fontSize: "0.9rem" }}>{st.name}</strong>
+                        <div style={{ marginTop: "4px", fontSize: "0.8rem" }}>
+                          <div>Route: <strong>{st.route}</strong></div>
+                          <div>Delay: <strong style={{ color: st.delay > 10 ? "#E11D48" : "#16A34A" }}>{st.delayStr}</strong></div>
+                          <div>Load: <strong>{st.load} Passengers</strong></div>
+                          <button style={{ marginTop: "6px", width: "100%", padding: "5px", background: "#007AFF", color: "white", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "0.72rem", fontWeight: "bold" }} onClick={() => handleSelectStationWithAnimation(st)}>View Details</button>
                         </div>
-                      </Popup>
-                    </Marker>
-                    <Circle
-                      center={st.pos}
-                      radius={mapMode === 'CONGESTION' && st.congestion === 'Severe' ? 1900 : 1250}
-                      pathOptions={{ 
-                        color: getCircleColor(st), 
-                        fillColor: getCircleColor(st),
-                        fillOpacity: 0.22,
-                        weight: 1.5
-                      }}
-                    />
-                  </React.Fragment>
-                ))}
-              </LeafletMap>
-
-              {/* Floating Spatial HUD Overlays right on the map */}
-              <div className="map-hud-overlay-topleft">
-                <div className="hud-metric-chip">
-                  <span className="chip-label">PEAK BOTTLENECK</span>
-                  <strong className="text-danger">{kpis?.peak_bottleneck || 'N/A'}</strong>
-                </div>
-                <div className="hud-metric-chip">
-                  <span className="chip-label">HIGHEST LOAD</span>
-                  <strong className="text-cyan">{kpis?.highest_load || 'N/A'}</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Embedded Station Diagnostic Drawer */}
+                      </div>
+                    </Popup>
+                  </Marker>
+                  {st.congestion === "Severe" && <Circle center={st.pos} radius={350} pathOptions={{ color: "#E11D48", fillColor: "#E11D48", fillOpacity: 0.15 }} />}
+                </React.Fragment>
+              ))}
+            </LeafletMap>
             <AnimatePresence>
               {selectedStation && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="station-quick-drawer"
-                >
-                  <div className="drawer-header-flex">
-                    <div>
-                      <span className="drawer-sub">ACTIVE CORRIDOR TELEMETRY</span>
-                      <h4>{selectedStation.name} • Route {selectedStation.route}</h4>
-                    </div>
-                    <button className="btn-drawer-x" onClick={() => setSelectedStation(null)}>✕ Close</button>
+                <motion.div initial={{ opacity: 0, scale: 0.9, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 10 }} className="floating-station-chip">
+                  <button className="close-chip" onClick={() => setSelectedStation(null)}><FaTimes /></button>
+                  <div className="chip-header">
+                    <FaRobot className="text-cyan" /> <span>{selectedStation.name}</span>
                   </div>
-                  <div className="drawer-stats-quad">
-                    <div><span>VELOCITY</span><strong>{selectedStation.speed}</strong></div>
-                    <div><span>FLEET</span><strong>{selectedStation.vehicles} Units</strong></div>
-                    <div><span>DELAY</span><strong style={{ color: selectedStation.delay > 10 ? '#E11D48' : '#16A34A' }}>{selectedStation.delayStr}</strong></div>
-                    <div><span>LOAD</span><strong>{selectedStation.load} PAX</strong></div>
+                  <div className="chip-stats">
+                    <div><span>ANOMALY</span><strong className={selectedStation.anomaly !== "Normal" ? "text-coral" : "text-green"}>{selectedStation.anomaly}</strong></div>
+                    <div><span>LOAD</span><strong>{selectedStation.load} Passengers</strong></div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Embedded 24H Temporal Flight Scrubber (Integrated below Map!) */}
             <div className="console-scrubber-deck">
               <div className="scrubber-bar-header">
                 <div className="scrubber-legend">
                   <FaClock className="text-cyan" />
-                  <span>24-HOUR TEMPORAL SIMULATION SCRUBBER:</span>
-                  <strong className="time-scrub-text">{String(simulatedHour).padStart(2, '0')}:00 PKT</strong>
-                  <span className="time-zone-pill" style={{ color: temporalMultiplier.color, borderColor: temporalMultiplier.color }}>
-                    ● {temporalMultiplier.label}
-                  </span>
+                  <span>TIME OF DAY EXPLORER:</span>
+                  <strong className="time-scrub-text">{String(simulatedHour).padStart(2, "0")}:00 PKT</strong>
+                  <span className="time-zone-pill" style={{ color: temporalMultiplier.color, borderColor: temporalMultiplier.color }}>● {temporalMultiplier.label}</span>
                 </div>
-                <span className="scrubber-note">Interactive temporal simulator modulates all dashboard metrics</span>
+                <span className="scrubber-note">Drag the slider to see how transit changes throughout the day</span>
               </div>
-
               <input 
-                type="range"
-                min="0"
-                max="23"
-                value={simulatedHour}
-                onChange={(e) => setSimulatedHour(parseInt(e.target.value))}
+                type="range" 
+                min="0" 
+                max="23" 
+                value={simulatedHour} 
+                onChange={(e) => setSimulatedHour(parseInt(e.target.value))} 
                 className="console-range-scrubber"
+                style={{
+                  background: `linear-gradient(to right, #007AFF ${(simulatedHour / 23) * 100}%, rgba(0, 0, 0, 0.1) ${(simulatedHour / 23) * 100}%)`
+                }}
               />
               <div className="scrubber-time-markers">
                 <span>00:00 (Night)</span>
@@ -505,6 +487,14 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+
+      <div className={`spatial-cockpit-split ${!isTrained ? 'split-full-width' : ' '}`}>
+        
+        {/* PRIMARY FLIGHT WING (LEFT 70%) */}
+        <div className="cockpit-left-wing">
+          
+          {/* 1. Integrated Holographic GIS Map with Floating Telemetry HUD & Radar */}
 
           {/* 2. Hierarchical Metric Bento (Cohesive 4-Cell Telemetry Deck) */}
           <div className="hierarchical-bento-grid">
@@ -512,12 +502,12 @@ const Dashboard = () => {
             {/* Grand Hero Tile: Ridership */}
             <div className="bento-tile tile-hero hud-panel hud-corners">
               <div className="tile-top-row">
-                <span className="tile-tech-tag">{evaluatorMode ? "PARQUET // 2.05M" : "HOURLY VOLUME"}</span>
+                <span className="tile-tech-tag">{evaluatorMode ? "DATABASE RECORDS" : "HOURLY VOLUME"}</span>
                 <FaUsers className="tile-icon text-cyan" />
               </div>
               <div className="tile-main-stat">
                 <span className="tile-number">{displayPassengers.toLocaleString()}</span>
-                <span className="tile-unit">PAX</span>
+                <span className="tile-unit">Passengers</span>
               </div>
               <div className="tile-footer-trend">
                 <span className={`trend-badge ${temporalMultiplier.factor >= 1 ? 'up' : 'down'}`}>
@@ -530,7 +520,7 @@ const Dashboard = () => {
             {/* Radial Reliability Ring Tile */}
             <div className="bento-tile tile-radial hud-panel hud-corners">
               <div className="tile-top-row">
-                <span className="tile-tech-tag">{evaluatorMode ? "SLO // 5M_TOL" : "ON-TIME SLO"}</span>
+                <span className="tile-tech-tag">{evaluatorMode ? "SCHEDULE TARGET" : "ON-TIME PERFORMANCE"}</span>
                 <FaCheckCircle className="tile-icon text-success" />
               </div>
               <div className="tile-radial-content">
@@ -540,7 +530,7 @@ const Dashboard = () => {
                 </div>
                 <div className="radial-context-text">
                   <span>Target: <strong>85.0%</strong></span>
-                  <span className="status-badge-chip valid">WITHIN SLO</span>
+                  <span className="status-badge-chip valid">ON SCHEDULE</span>
                 </div>
               </div>
             </div>
@@ -548,7 +538,7 @@ const Dashboard = () => {
             {/* Congestion Velocity Tile */}
             <div className="bento-tile tile-velocity hud-panel hud-corners">
               <div className="tile-top-row">
-                <span className="tile-tech-tag">{evaluatorMode ? "GBT // DELAY" : "CORRIDOR DELAY"}</span>
+                <span className="tile-tech-tag">{evaluatorMode ? "AI PREDICTION" : "ROUTE DELAY"}</span>
                 <FaClock className="tile-icon text-coral" />
               </div>
               <div className="tile-main-stat">
@@ -560,13 +550,13 @@ const Dashboard = () => {
               <div className="velocity-dwell-bar">
                 <div className="dwell-fill" style={{ width: `${Math.min(100, displayDelay * 10)}%`, background: displayDelay > 6 ? '#FF3B30' : '#007AFF' }}></div>
               </div>
-              <small className="tile-caption">Median dwell time: {kpis?.median_dwell ? kpis.median_dwell + 'm' : 'N/A'}</small>
+              <small className="tile-caption">Average wait time: {kpis?.median_dwell ? kpis.median_dwell + 'm' : 'N/A'}</small>
             </div>
 
             {/* Dispatched Fleet Units Tile */}
             <div className="bento-tile tile-fleet hud-panel hud-corners">
               <div className="tile-top-row">
-                <span className="tile-tech-tag">{evaluatorMode ? "POSTGRES // READ" : "FLEET DEPLOYED"}</span>
+                <span className="tile-tech-tag">{evaluatorMode ? "LIVE DATABASE" : "BUSES ON ROAD"}</span>
                 <FaBus className="tile-icon text-cyan" />
               </div>
               <div className="tile-main-stat">
@@ -583,16 +573,16 @@ const Dashboard = () => {
         </div>
 
         {/* INTELLIGENCE & DISPATCH WING (RIGHT 30%) */}
-        <div className="cockpit-right-wing">
+        {isTrained && <div className="cockpit-right-wing">
           
           {/* 2. Autonomous Incident Mitigation Cockpit */}
           <div className="intelligence-panel hud-panel hud-corners">
             <div className="intel-header">
               <div className="intel-tag coral-tag">
-                <FaExclamationCircle /> AUTONOMOUS COPILOT
+                <FaExclamationCircle /> SMART ALERTS
               </div>
               <h3>Incident Mitigation Queue</h3>
-              <p className="intel-desc">Live algorithmic dispatch recommendations.</p>
+              <p className="intel-desc">Automated suggestions to fix transit issues in real-time.</p>
             </div>
 
             <div className="incident-cards-stack">
@@ -624,7 +614,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-        </div>
+        </div>}
 
       </div>
 
@@ -635,11 +625,15 @@ const Dashboard = () => {
       <div className="massive-pipeline-zone hud-panel hud-corners" style={{ margin: '30px 0', padding: '30px' }}>
         <div className="intel-header" style={{ textAlign: 'center', marginBottom: '30px' }}>
             <div className="intel-tag coral-tag" style={{ display: 'inline-block', marginBottom: '10px' }}>
-              <FaMicrochip /> DUAL AI MODEL TRAINING & INFERENCE
+              <FaMicrochip /> {isAdmin ? 'AI MODEL TRAINING CENTER' : 'PRODUCTION AI MODELS & PREDICTIONS'}
             </div>
-            <h3 style={{ fontSize: '2.2rem', margin: '0 0 10px 0', letterSpacing: '1px', color: 'var(--color-text)' }}>Algorithmic Runtime Engine</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-              Train models live and execute predictive pipelines side-by-side. Connects directly to PostgreSQL to fetch 2M records instantly.
+            <h3 style={{ fontSize: '2.2rem', margin: '0 0 10px 0', letterSpacing: '1px', color: 'var(--color-text)' }}>
+              {isAdmin ? 'Train Your AI Models' : 'Verified Transit AI Models & Predictions'}
+            </h3>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto' }}>
+              {isAdmin
+                ? 'Start training AI models on your transit data. Each model learns from your 2 million+ records to predict delays, crowding, and route performance.'
+                : 'Production AI models delivering live transit predictions and performance metrics trained across 2,000,000+ transit records.'}
             </p>
         </div>
 
@@ -653,28 +647,45 @@ const Dashboard = () => {
                         <FaBolt size={24} color="#FBBF24" />
                     </div>
                     <div>
-                        <h4 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--color-text)' }}>PySpark MLlib</h4>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>RandomForestClassifier (Distributed)</span>
+                        <h4 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--color-text)' }}>Spark AI Model</h4>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>Random Forest — Distributed</span>
                     </div>
                 </div>
-                <button 
-                  onClick={executeSpark} 
-                  disabled={isAnalyzingSpark}
-                  style={{ background: isAnalyzingSpark ? 'var(--color-bg-canvas)' : '#FBBF24', color: isAnalyzingSpark ? 'var(--color-text-muted)' : '#000', border: 'none', padding: '12px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: isAnalyzingSpark ? 'not-allowed' : 'pointer', fontSize: '1rem', transition: 'all 0.2s' }}
-                >
-                  {isAnalyzingSpark ? 'Training...' : '▶ Execute Spark'}
-                </button>
+                {isAdmin ? (
+                  <button 
+                    onClick={executeSpark} 
+                    disabled={isAnalyzingSpark}
+                    style={{ background: isAnalyzingSpark ? 'var(--color-bg-canvas)' : '#FBBF24', color: isAnalyzingSpark ? 'var(--color-text-muted)' : '#000', border: 'none', padding: '12px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: isAnalyzingSpark ? 'not-allowed' : 'pointer', fontSize: '1rem', transition: 'all 0.2s' }}
+                  >
+                    {isAnalyzingSpark ? 'Training...' : '▶ Execute Spark'}
+                  </button>
+                ) : (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    background: sparkResult ? 'rgba(34, 197, 94, 0.12)' : 'rgba(148, 163, 184, 0.12)',
+                    border: sparkResult ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
+                    color: sparkResult ? '#22c55e' : '#94a3b8',
+                    fontWeight: 600,
+                    fontSize: '0.88rem'
+                  }}>
+                    {sparkResult ? <><FaCheckCircle /> PRODUCTION ACTIVE</> : <><FaClock /> AWAITING ADMIN</>}
+                  </div>
+                )}
             </div>
             
             {sparkResult ? (
               <div className="fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1 }}>
                  <div style={{ display: 'flex', gap: '20px', alignItems: 'stretch', flex: 1 }}>
                     <div style={{ flex: 1, background: 'var(--color-bg-canvas)', padding: '16px', borderRadius: '8px' }}>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaDatabase /> STEP 1: DATA FETCHING</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaDatabase /> LIVE TELEMETRY ROW</span>
                         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Boarding:</span> <b className="text-cyan">{sparkResult.raw_data.boarding} PAX</b></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Load:</span> <b className="text-cyan">{sparkResult.raw_data.load} PAX</b></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Time:</span> <b className="text-cyan">{sparkResult.raw_data.hour}:00</b></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Boarding:</span> <b className="text-cyan">{sparkResult.raw_data.boarding} Passengers</b></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Load:</span> <b className="text-cyan">{sparkResult.raw_data.load} Passengers</b></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Operating Hour:</span> <b className="text-cyan">{sparkResult.raw_data.hour > 12 ? `${sparkResult.raw_data.hour - 12}:00 PM` : sparkResult.raw_data.hour === 12 ? '12:00 PM' : sparkResult.raw_data.hour === 0 ? '12:00 AM' : `${sparkResult.raw_data.hour}:00 AM`}</b></div>
                         </div>
                     </div>
                     
@@ -683,20 +694,26 @@ const Dashboard = () => {
                     </div>
                     
                     <div style={{ flex: 1.5, background: 'rgba(251, 191, 36, 0.05)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(251, 191, 36, 0.2)' }}>
-                        <span style={{ fontSize: '0.8rem', color: '#D97706', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaBolt /> STEP 2: MODEL TRAINING</span>
+                        <span style={{ fontSize: '0.8rem', color: '#D97706', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaBolt /> AI INFERENCE OUTPUT</span>
                         <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.9rem' }}>
                             <div>Prediction: <b style={{ color: sparkResult.pred === 'DELAYED' ? '#ef4444' : '#22c55e' }}>{sparkResult.pred}</b></div>
                             <div>Confidence: <b>{sparkResult.confidence}</b></div>
                             <div>Accuracy: <b>{sparkResult.accuracy}%</b></div>
                             <div>F1-Score: <b>{sparkResult.f1_score}</b></div>
+                            <div>MAE: <b>{sparkResult.mae}</b></div>
                             <div>RMSE: <b className="text-danger">{sparkResult.rmse}</b></div>
+                            <div>MAPE: <b>{sparkResult.mape}%</b></div>
+                            <div>R²: <b className="text-cyan">{sparkResult.r2}</b></div>
                             <div>Latency: <b className="text-cyan">{sparkResult.latency}</b></div>
                         </div>
                     </div>
                  </div>
                  
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', background: 'var(--color-bg-canvas)', padding: '12px 16px', borderRadius: '8px' }}>
-                     <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Records Trained: <b className="text-cyan">{(sparkResult.records_used || 0).toLocaleString()}</b></span>
+                     <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Records Trained: <b className="text-cyan">{(sparkResult.records_used || 0).toLocaleString()}</b></span>
+                        {sparkResult.trained_at && <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Trained at: <b className="text-white">{sparkResult.trained_at}</b></span>}
+                     </div>
                      <button onClick={() => handleExport('SPARK')} style={{ background: 'transparent', border: '1px solid #FBBF24', color: '#D97706', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600 }}>
                         📤 Export to Compare
                      </button>
@@ -723,9 +740,16 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div style={{ flex: 1, minHeight: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--color-border)', borderRadius: '8px', color: 'var(--color-text-muted)', gap: '10px' }}>
-                 <FaDatabase size={24} />
-                 <span>Awaiting Spark Execution...</span>
+              <div style={{ flex: 1, minHeight: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--color-border)', borderRadius: '8px', color: 'var(--color-text-muted)', gap: '10px', padding: '20px', textAlign: 'center' }}>
+                 <FaDatabase size={28} />
+                 <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+                   {isAdmin ? 'Awaiting Spark Execution...' : 'Model Not Yet Deployed'}
+                 </span>
+                 <p style={{ margin: 0, fontSize: '0.88rem', maxWidth: '300px' }}>
+                   {isAdmin 
+                     ? 'Click "Execute Spark" to train the model on the full 2M dataset.' 
+                     : 'Awaiting Administrator Training — This model has not been trained yet. Please contact an Administrator to deploy models.'}
+                 </p>
               </div>
             )}
           </div>
@@ -738,28 +762,45 @@ const Dashboard = () => {
                         <FaRobot size={24} color="#008080" />
                     </div>
                     <div>
-                        <h4 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--color-text)' }}>Python Native</h4>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>XGBoost v2.0 (Single-Node)</span>
+                        <h4 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--color-text)' }}>XGBoost AI Model</h4>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', fontFamily: 'monospace' }}>v2.0 — Local</span>
                     </div>
                 </div>
-                <button 
-                  onClick={executeXgb} 
-                  disabled={isAnalyzingXgb}
-                  style={{ background: isAnalyzingXgb ? 'var(--color-bg-canvas)' : '#00E5FF', color: isAnalyzingXgb ? 'var(--color-text-muted)' : '#000', border: 'none', padding: '12px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: isAnalyzingXgb ? 'not-allowed' : 'pointer', fontSize: '1rem', transition: 'all 0.2s' }}
-                >
-                  {isAnalyzingXgb ? 'Training...' : '▶ Execute XGBoost'}
-                </button>
+                {isAdmin ? (
+                  <button 
+                    onClick={executeXgb} 
+                    disabled={isAnalyzingXgb}
+                    style={{ background: isAnalyzingXgb ? 'var(--color-bg-canvas)' : '#00E5FF', color: isAnalyzingXgb ? 'var(--color-text-muted)' : '#000', border: 'none', padding: '12px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: isAnalyzingXgb ? 'not-allowed' : 'pointer', fontSize: '1rem', transition: 'all 0.2s' }}
+                  >
+                    {isAnalyzingXgb ? 'Training...' : '▶ Execute XGBoost'}
+                  </button>
+                ) : (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    background: xgbResult ? 'rgba(34, 197, 94, 0.12)' : 'rgba(148, 163, 184, 0.12)',
+                    border: xgbResult ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
+                    color: xgbResult ? '#22c55e' : '#94a3b8',
+                    fontWeight: 600,
+                    fontSize: '0.88rem'
+                  }}>
+                    {xgbResult ? <><FaCheckCircle /> PRODUCTION ACTIVE</> : <><FaClock /> AWAITING ADMIN</>}
+                  </div>
+                )}
             </div>
             
             {xgbResult ? (
               <div className="fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1 }}>
                  <div style={{ display: 'flex', gap: '20px', alignItems: 'stretch', flex: 1 }}>
                     <div style={{ flex: 1, background: 'var(--color-bg-canvas)', padding: '16px', borderRadius: '8px' }}>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaDatabase /> STEP 1: DATA FETCHING</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaDatabase /> LIVE TELEMETRY ROW</span>
                         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Boarding:</span> <b className="text-cyan">{xgbResult.raw_data.boarding} PAX</b></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Load:</span> <b className="text-cyan">{xgbResult.raw_data.load} PAX</b></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Time:</span> <b className="text-cyan">{xgbResult.raw_data.hour}:00</b></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Boarding:</span> <b className="text-cyan">{xgbResult.raw_data.boarding} Passengers</b></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Load:</span> <b className="text-cyan">{xgbResult.raw_data.load} Passengers</b></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Operating Hour:</span> <b className="text-cyan">{xgbResult.raw_data.hour > 12 ? `${xgbResult.raw_data.hour - 12}:00 PM` : xgbResult.raw_data.hour === 12 ? '12:00 PM' : xgbResult.raw_data.hour === 0 ? '12:00 AM' : `${xgbResult.raw_data.hour}:00 AM`}</b></div>
                         </div>
                     </div>
                     
@@ -768,20 +809,26 @@ const Dashboard = () => {
                     </div>
                     
                     <div style={{ flex: 1.5, background: 'rgba(0, 229, 255, 0.05)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(0, 229, 255, 0.2)' }}>
-                        <span style={{ fontSize: '0.8rem', color: '#008080', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaRobot /> STEP 2: MODEL TRAINING</span>
+                        <span style={{ fontSize: '0.8rem', color: '#008080', letterSpacing: '1px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}><FaRobot /> AI INFERENCE OUTPUT</span>
                         <div style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.9rem' }}>
                             <div>Prediction: <b style={{ color: xgbResult.pred === 'DELAYED' ? '#ef4444' : '#22c55e' }}>{xgbResult.pred}</b></div>
                             <div>Confidence: <b>{xgbResult.confidence}</b></div>
                             <div>Accuracy: <b>{xgbResult.accuracy}%</b></div>
                             <div>F1-Score: <b>{xgbResult.f1_score}</b></div>
+                            <div>MAE: <b>{xgbResult.mae}</b></div>
                             <div>RMSE: <b className="text-danger">{xgbResult.rmse}</b></div>
+                            <div>MAPE: <b>{xgbResult.mape}%</b></div>
+                            <div>R²: <b className="text-cyan">{xgbResult.r2}</b></div>
                             <div>Latency: <b className="text-cyan">{xgbResult.latency}</b></div>
                         </div>
                     </div>
                  </div>
                  
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', background: 'var(--color-bg-canvas)', padding: '12px 16px', borderRadius: '8px' }}>
-                     <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Records Trained: <b className="text-cyan">{(xgbResult.records_used || 0).toLocaleString()}</b></span>
+                     <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>Records Trained: <b className="text-cyan">{(xgbResult.records_used || 0).toLocaleString()}</b></span>
+                        {xgbResult.trained_at && <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Trained at: <b className="text-white">{xgbResult.trained_at}</b></span>}
+                     </div>
                      <button onClick={() => handleExport('XGB')} style={{ background: 'transparent', border: '1px solid #008080', color: '#008080', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600 }}>
                         📤 Export to Compare
                      </button>
@@ -808,9 +855,16 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div style={{ flex: 1, minHeight: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--color-border)', borderRadius: '8px', color: 'var(--color-text-muted)', gap: '10px' }}>
-                 <FaDatabase size={24} />
-                 <span>Awaiting XGBoost Execution...</span>
+              <div style={{ flex: 1, minHeight: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--color-border)', borderRadius: '8px', color: 'var(--color-text-muted)', gap: '10px', padding: '20px', textAlign: 'center' }}>
+                 <FaDatabase size={28} />
+                 <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+                   {isAdmin ? 'Awaiting XGBoost Execution...' : 'Model Not Yet Deployed'}
+                 </span>
+                 <p style={{ margin: 0, fontSize: '0.88rem', maxWidth: '300px' }}>
+                   {isAdmin 
+                     ? 'Click "Execute XGBoost" to train the model on the full 2M dataset.' 
+                     : 'Awaiting Administrator Training — This model has not been trained yet. Please contact an Administrator to deploy models.'}
+                 </p>
               </div>
             )}
           </div>
@@ -830,7 +884,7 @@ const Dashboard = () => {
               <h3>Karachi Corridor Inflow Velocity</h3>
               <span className="chart-subtitle">24-Hour Empirical Ridership Distribution</span>
             </div>
-            <span className="badge-pill badge-aurora">CUBIC SPLINE</span>
+            <span className="badge-pill badge-aurora">TREND LINE</span>
           </div>
 
           <InflowVelocityChart flowData={flowData} />
@@ -843,7 +897,7 @@ const Dashboard = () => {
               <h3>Root Cause Decomposition</h3>
               <span className="chart-subtitle">Factor Attributions via ML</span>
             </div>
-            <span className="badge-pill badge-gold">PYSPARK MLlib</span>
+            <span className="badge-pill badge-gold">SPARK AI MODEL</span>
           </div>
 
           <RootCauseChart delayData={delayData} />
@@ -858,49 +912,49 @@ const Dashboard = () => {
         <div className="rack-header">
           <div className="rack-title">
             <FaHdd className="text-cyan" />
-            <span>DISTRIBUTED BIG DATA HARDWARE CHASSIS</span>
+            <span>SYSTEM HEALTH</span>
           </div>
-          <span className="rack-meta">PHYSICAL CLUSTER HEALTH: ALL SYSTEMS NOMINAL</span>
+          <span className="rack-meta">ALL SYSTEMS RUNNING NORMALLY</span>
         </div>
 
         <div className="rack-units-row">
           <div className="rack-unit">
             <div className="unit-led led-green"></div>
             <div className="unit-info">
-              <span className="unit-name">STORAGE FABRIC</span>
-              <strong className="unit-detail">PostgreSQL Physical Ledger</strong>
+              <span className="unit-name">DATABASE</span>
+              <strong className="unit-detail">MongoDB Connected</strong>
             </div>
           </div>
 
           <div className="rack-unit">
             <div className="unit-led led-green"></div>
             <div className="unit-info">
-              <span className="unit-name">APACHE SPARK</span>
-              <strong className="unit-detail">v3.5.0 Standalone Master</strong>
+              <span className="unit-name">DATA ENGINE</span>
+              <strong className="unit-detail">Spark v3.5 Active</strong>
             </div>
           </div>
 
           <div className="rack-unit">
             <div className="unit-led led-green"></div>
             <div className="unit-info">
-              <span className="unit-name">PYSPARK MLlib</span>
-              <strong className="unit-detail">GBTClassifier Active</strong>
+              <span className="unit-name">AI MODEL</span>
+              <strong className="unit-detail">Gradient Boosted Trees Ready</strong>
             </div>
           </div>
 
           <div className="rack-unit">
             <div className="unit-led led-green"></div>
             <div className="unit-info">
-              <span className="unit-name">PARQUET BENCHMARK</span>
-              <strong className="unit-detail">Snappy 2.05M Cleaned Rows</strong>
+              <span className="unit-name">DATA SIZE</span>
+              <strong className="unit-detail">2.05M Records Loaded</strong>
             </div>
           </div>
 
           <div className="rack-unit">
             <div className="unit-led led-green"></div>
             <div className="unit-info">
-              <span className="unit-name">FASTAPI GATEWAY</span>
-              <strong className="unit-detail">Uvicorn ASGI P95 &lt;12ms</strong>
+              <span className="unit-name">API SERVER</span>
+              <strong className="unit-detail">Response Time &lt;12ms</strong>
             </div>
           </div>
         </div>

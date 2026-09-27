@@ -21,27 +21,35 @@ const AnomalyDetection = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const getCategory = (a) => {
+    if (a.category) return a.category;
+    const t = (a.type || '').toLowerCase();
+    if (t.includes('headway') || t.includes('bunching')) return 'HEADWAY';
+    if (t.includes('surge') || t.includes('spike')) return 'SURGE';
+    return 'TELEMETRY';
+  };
+
   const filtered = selectedCat === 'ALL' 
     ? anomalies 
-    : anomalies.filter(a => a.category === selectedCat);
+    : anomalies.filter(a => getCategory(a) === selectedCat);
 
   return (
     <div className="page-container anomalydetection-page">
-      <PipelineBanner contextMessage="Anomalies detected here are cross-referenced with ML predictions for robust outlier isolation." />
+      <PipelineBanner contextMessage="Train the AI to automatically detect unusual transit patterns and alert operators to potential problems." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>UNSUPERVISED MACHINE LEARNING // INCIDENT ISOLATION</span>
+            <span>UNUSUAL ACTIVITY DETECTION — SPOTTING PROBLEMS EARLY</span>
           </div>
           <h1 className="hero-main-title">Anomaly Detection & Telemetry Outliers</h1>
           <p className="hero-desc">
-            Isolation Forest algorithms and 3-Sigma statistical z-score detectors actively monitoring headway degradation, passenger surges, and spatial telemetry drift.
+            The AI continuously monitors all routes for unusual patterns — sudden passenger surges, buses arriving too close together, or unexpected delays — so problems can be fixed before they get worse.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaShieldAlt className="text-cyan" /> ISOLATION FOREST: ACTIVE</span>
+          <span className="sys-badge"><FaShieldAlt className="text-cyan" /> AI MONITORING: ACTIVE</span>
         </div>
       </div>
 
@@ -50,43 +58,43 @@ const AnomalyDetection = () => {
         <KPICard 
           title="ACTIVE INCIDENTS"
           value={String(anomalies.length)}
-          techCode="OUT // ACTIVE"
+          techCode="Active"
           change="2"
           changeDirection="down"
-          subtitle="Filtered from 260K delay logs"
+          subtitle="Detected from all recorded trips"
           progress={18}
           colorScheme="coral"
           icon={<FaExclamationTriangle />}
         />
         <KPICard 
-          title="BUNCHING EVENTS"
-          value={String(anomalies.filter(a => a.category === 'HEADWAY').length)}
-          techCode="BUNCH // CNT"
+          title="BUSES TOO CLOSE"
+          value={String(anomalies.filter(a => getCategory(a) === 'HEADWAY').length)}
+          techCode="Bunching"
           change="1"
           changeDirection="down"
-          subtitle="Headways &lt; 2.0 min"
+          subtitle="Two buses arriving within 2 minutes of each other"
           progress={25}
           colorScheme="gold"
           icon={<FaRoute />}
         />
         <KPICard 
-          title="PASSENGER SURGES"
-          value={String(anomalies.filter(a => a.category === 'SURGE').length)}
-          techCode="SURGE // CNT"
+          title="SUDDEN PASSENGER SPIKES"
+          value={String(anomalies.filter(a => getCategory(a) === 'SURGE').length)}
+          techCode="Spikes"
           change="0"
           changeDirection="up"
-          subtitle="&gt;3.0 Z-score boardings"
+          subtitle="Unusually high boarding at a stop"
           progress={40}
           colorScheme="sky"
           icon={<FaCrosshairs />}
         />
         <KPICard 
-          title="DETECTION LATENCY"
+          title="DETECTION SPEED"
           value="N/A"
-          techCode="LAT // DET"
+          techCode="Speed"
           change="12"
           changeDirection="down"
-          subtitle="Stream telemetry evaluation"
+          subtitle="How quickly unusual events are spotted"
           progress={95}
           colorScheme="cyan"
           icon={<FaClock />}
@@ -97,8 +105,8 @@ const AnomalyDetection = () => {
       <div className="chart-card hud-panel hud-corners">
         <div className="audit-controls-header">
           <div>
-            <h3>Active Operational Anomaly Stream</h3>
-            <span className="chart-subtitle">Real-time incident feed classified by multi-dimensional telemetry detection</span>
+            <h3>Live Unusual Activity Feed</h3>
+            <span className="chart-subtitle">Unusual events detected by AI, sorted by severity</span>
           </div>
 
           <div className="audit-chip-group">
@@ -108,27 +116,29 @@ const AnomalyDetection = () => {
                 onClick={() => setSelectedCat(cat)}
                 className={`filter-chip-btn ${selectedCat === cat ? 'active' : ''}`}
               >
-                {cat}
+                {cat === 'HEADWAY' ? 'TIMING GAPS' : cat === 'SURGE' ? 'SUDDEN SPIKES' : cat === 'TELEMETRY' ? 'SENSOR DATA' : cat}
               </button>
             ))}
           </div>
         </div>
 
         <div className="anomaly-cards-list">
-          {filtered.map((a, i) => (
+          {filtered.map((a, i) => {
+            const severity = a.severity || (a.score > 0.8 ? 'CRITICAL' : 'MODERATE');
+            return (
             <div 
               key={i} 
               className="hud-panel anomaly-item-card"
               style={{
-                borderLeft: a.severity === 'CRITICAL' 
+                borderLeft: severity === 'CRITICAL' 
                   ? '3px solid var(--color-danger)' 
-                  : (a.severity === 'MODERATE' ? '3px solid var(--color-warning)' : '3px solid var(--color-accent)')
+                  : (severity === 'MODERATE' ? '3px solid var(--color-warning)' : '3px solid var(--color-accent)')
               }}
             >
               <div className="aic-header">
                 <div className="aic-title-block">
-                  <span className={`status-badge-chip ${a.severity === 'CRITICAL' ? 'quarantined' : (a.severity === 'MODERATE' ? 'corrected' : 'valid')}`}>
-                    {a.severity}
+                  <span className={`status-badge-chip ${severity === 'CRITICAL' ? 'quarantined' : (severity === 'MODERATE' ? 'corrected' : 'valid')}`}>
+                    {severity}
                   </span>
                   <h4 className="aic-title">{a.type}</h4>
                 </div>
@@ -137,34 +147,35 @@ const AnomalyDetection = () => {
 
               <div className="aic-spec-grid">
                 <div className="aic-spec">
-                  <span className="aic-label">AFFECTED CORRIDOR:</span>
-                  <strong className="mono-val">{a.route_id}</strong>
+                  <span className="aic-label">AFFECTED ROUTE:</span>
+                  <strong className="mono-val">{a.route_id || 'N/A'}</strong>
                 </div>
                 <div className="aic-spec">
                   <span className="aic-label">LOCATION:</span>
-                  <span className="text-cyan">{a.stop_id}</span>
+                  <span className="text-cyan">{a.stop_id || 'N/A'}</span>
                 </div>
                 <div className="aic-spec">
                   <span className="aic-label">TIMESTAMP:</span>
                   <span className="mono-val text-dim">{a.timestamp}</span>
                 </div>
                 <div className="aic-spec">
-                  <span className="aic-label">DETECTION METHOD:</span>
-                  <span className="mono-val text-gold">{a.detection_method}</span>
+                  <span className="aic-label">HOW IT WAS DETECTED:</span>
+                  <span className="mono-val text-gold">{a.detection_method || 'Isolation Forest'}</span>
                 </div>
               </div>
 
               <div className="aic-narrative">
                 <p><strong>Incident Telemetry:</strong> {a.explanation}</p>
-                <div className="aic-mag mono-val text-coral">MAGNITUDE: {a.magnitude}</div>
+                <div className="aic-mag mono-val text-coral">MAGNITUDE: {a.magnitude || a.score || 0}</div>
               </div>
 
               <div className="aic-remedy-box">
-                <span className="aic-remedy-title">RECOMMENDED OPERATIONAL INVESTIGATION:</span>
-                <p>{a.recommended_action}</p>
+                <span className="aic-remedy-title">SUGGESTED ACTION:</span>
+                <p>{a.recommended_action || a.explanation || 'Investigate further'}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

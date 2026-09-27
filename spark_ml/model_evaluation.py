@@ -9,13 +9,30 @@ def evaluate_binary_classifier(predictions_df, label_col="label", prediction_col
     # Multiclass evaluators for accuracy, precision, recall, f1
     evaluator_multi = MulticlassClassificationEvaluator(labelCol=label_col, predictionCol=prediction_col)
     
+    # Regression evaluators for mae, rmse, r2
+    evaluator_reg = RegressionEvaluator(labelCol=label_col, predictionCol=prediction_col)
+    
     metrics = {
         "accuracy": evaluator_multi.evaluate(predictions_df, {evaluator_multi.metricName: "accuracy"}),
         "precision": evaluator_multi.evaluate(predictions_df, {evaluator_multi.metricName: "weightedPrecision"}),
         "recall": evaluator_multi.evaluate(predictions_df, {evaluator_multi.metricName: "weightedRecall"}),
         "f1": evaluator_multi.evaluate(predictions_df, {evaluator_multi.metricName: "f1"}),
-        "roc_auc": evaluator_auc.evaluate(predictions_df)
+        "roc_auc": evaluator_auc.evaluate(predictions_df),
+        "mae": evaluator_reg.evaluate(predictions_df, {evaluator_reg.metricName: "mae"}),
+        "rmse": evaluator_reg.evaluate(predictions_df, {evaluator_reg.metricName: "rmse"}),
+        "r2": evaluator_reg.evaluate(predictions_df, {evaluator_reg.metricName: "r2"})
     }
+    
+    # Calculate custom MAPE (safe division)
+    try:
+        from pyspark.sql.functions import col, abs as spark_abs, mean as spark_mean, when
+        mape_df = predictions_df.withColumn("error", spark_abs(col(label_col) - col(prediction_col)))
+        mape_df = mape_df.withColumn("pct_error", when(col(label_col) != 0, col("error") / col(label_col)).otherwise(0.0))
+        mape_val = mape_df.select(spark_mean(col("pct_error"))).collect()[0][0] * 100
+        metrics["mape"] = mape_val if mape_val is not None else 0.0
+    except Exception:
+        metrics["mape"] = 0.0
+        
     return metrics
 
 def evaluate_multiclass_classifier(predictions_df, label_col="label", prediction_col="prediction"):
@@ -37,6 +54,17 @@ def evaluate_regressor(predictions_df, label_col="label", prediction_col="predic
         "mae": evaluator.evaluate(predictions_df, {evaluator.metricName: "mae"}),
         "r2": evaluator.evaluate(predictions_df, {evaluator.metricName: "r2"})
     }
+    
+    # Calculate custom MAPE (safe division)
+    try:
+        from pyspark.sql.functions import col, abs as spark_abs, mean as spark_mean, when
+        mape_df = predictions_df.withColumn("error", spark_abs(col(label_col) - col(prediction_col)))
+        mape_df = mape_df.withColumn("pct_error", when(col(label_col) != 0, col("error") / col(label_col)).otherwise(0.0))
+        mape_val = mape_df.select(spark_mean(col("pct_error"))).collect()[0][0] * 100
+        metrics["mape"] = mape_val if mape_val is not None else 0.0
+    except Exception:
+        metrics["mape"] = 0.0
+        
     return metrics
 
 def get_feature_importance(model, feature_names):

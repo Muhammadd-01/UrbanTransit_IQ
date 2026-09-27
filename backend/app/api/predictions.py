@@ -33,62 +33,71 @@ DELAY_COLS_PATH = os.path.join(MODEL_DIR, "delay_feature_cols.joblib")
 FORECAST_JSON_PATH = os.path.join(MODEL_DIR, "forecast_14day_projection.json")
 CROWDING_JSON_PATH = os.path.join(MODEL_DIR, "predictions/crowding_risk_predictions.json")
 
-# In-memory caches for fast inference
-_DELAY_MODEL = None
-_DELAY_COLS = None
+TRAINED_DIR = os.path.join(BASE_DIR, "backend/trained_models")
+XGB_PATH = os.path.join(TRAINED_DIR, "xgb_model.joblib")
+SPARK_PATH = os.path.join(TRAINED_DIR, "spark_model.joblib")
+
 _PREDICTION_HISTORY: List[Dict[str, Any]] = []
 
 def get_delay_model():
-    global _DELAY_MODEL, _DELAY_COLS
-    if _DELAY_MODEL is None and os.path.exists(DELAY_MODEL_PATH):
+    if os.path.exists(XGB_PATH):
         try:
-            _DELAY_MODEL = joblib.load(DELAY_MODEL_PATH)
-            if os.path.exists(DELAY_COLS_PATH):
-                _DELAY_COLS = joblib.load(DELAY_COLS_PATH)
-            else:
-                _DELAY_COLS = [
-                    "hour", "day_of_week", "month", "weekend_indicator",
-                    "peak_indicator", "route_distance", "historical_delay",
-                    "historical_demand", "occupancy_percentage"
-                ]
-            logger.info("Successfully loaded trained delay prediction model.")
-        except Exception as e:
-            logger.error(f"Failed to load delay prediction model: {e}")
-    return _DELAY_MODEL, _DELAY_COLS
+            return joblib.load(XGB_PATH), ["boarding", "alighting", "load", "hour"], "XGBoost (2M Pipeline)"
+        except Exception:
+            pass
+    if os.path.exists(SPARK_PATH):
+        try:
+            return joblib.load(SPARK_PATH), ["boarding", "alighting", "load", "hour"], "Random Forest (2M Pipeline)"
+        except Exception:
+            pass
+    if os.path.exists(DELAY_MODEL_PATH):
+        try:
+            m = joblib.load(DELAY_MODEL_PATH)
+            cols = joblib.load(DELAY_COLS_PATH) if os.path.exists(DELAY_COLS_PATH) else [
+                "hour", "day_of_week", "month", "weekend_indicator",
+                "peak_indicator", "route_distance", "historical_delay",
+                "historical_demand", "occupancy_percentage"
+            ]
+            return m, cols, "GradientBoostedTrees_v1.0"
+        except Exception:
+            pass
+    return None, None, "Heuristic_Fallback"
 
-# Pre-load on startup
-get_delay_model()
 
 @router.post("/delay", response_model=DelayPredictionResponse)
 async def predict_delay(request: DelayPredictionRequest):
-    model, feature_cols = get_delay_model()
+    model, feature_cols, model_name = get_delay_model()
     
-    # Feature calculation from request
     is_peak = request.is_peak or (request.hour in [7, 8, 9, 17, 18, 19])
-    weekend_indicator = 1 if request.day_of_week in [4, 5] else 0  # Fri/Sat
-    occupancy_pct = (request.passenger_load / 50.0) * 100.0  # standard transit bus cap 50
+    weekend_indicator = 1 if request.day_of_week in [4, 5] else 0
+    occupancy_pct = (request.passenger_load / 50.0) * 100.0
     historical_demand = request.passenger_load * 1.15
-    
-    features_dict = {
-        "hour": float(request.hour),
-        "day_of_week": float(request.day_of_week),
-        "month": float(datetime.now().month),
-        "weekend_indicator": float(weekend_indicator),
-        "peak_indicator": 1.0 if is_peak else 0.0,
-        "route_distance": float(request.distance),
-        "historical_delay": float(request.historical_delay),
-        "historical_demand": float(historical_demand),
-        "occupancy_percentage": float(occupancy_pct)
-    }
     
     predicted_delay = 0.0
     confidence = 0.85
-    model_name = "GradientBoostedTrees_v1.0"
     
     if model is not None and feature_cols is not None:
         try:
-            input_df = pd.DataFrame([{col: features_dict.get(col, 0.0) for col in feature_cols}])
-            # Probabilities of class 0 (on-time) and 1 (delayed)
+            if feature_cols == ["boarding", "alighting", "load", "hour"]:
+                boarding = float(request.passenger_load * 0.4)
+                alighting = float(request.passenger_load * 0.3)
+                load = float(request.passenger_load)
+                hour = float(request.hour)
+                input_df = pd.DataFrame([[boarding, alighting, load, hour]], columns=["boarding", "alighting", "load", "hour"])
+            else:
+                features_dict = {
+                    "hour": float(request.hour),
+                    "day_of_week": float(request.day_of_week),
+                    "month": float(datetime.now().month),
+                    "weekend_indicator": float(weekend_indicator),
+                    "peak_indicator": 1.0 if is_peak else 0.0,
+                    "route_distance": float(request.distance),
+                    "historical_delay": float(request.historical_delay),
+                    "historical_demand": float(historical_demand),
+                    "occupancy_percentage": float(occupancy_pct)
+                }
+                input_df = pd.DataFrame([{col: features_dict.get(col, 0.0) for col in feature_cols}])
+
             if hasattr(model, "predict_proba"):
                 probs = model.predict_proba(input_df)[0]
                 prob_delay = float(probs[1]) if len(probs) > 1 else float(probs[0])
@@ -98,9 +107,7 @@ async def predict_delay(request: DelayPredictionRequest):
                 prob_delay = 1.0 if pred_cls == 1 else 0.0
                 confidence = 0.90
             
-            # Predict estimated delay in minutes based on probability and historical baseline
             if prob_delay > 0.5:
-                # Base delay proportional to probability + historical delay + peak
                 predicted_delay = round(request.historical_delay * 0.7 + prob_delay * 8.5 + (4.0 if is_peak else 0.0), 1)
             else:
                 predicted_delay = round(max(0.0, request.historical_delay * 0.3 * (1.0 - prob_delay)), 1)
@@ -108,7 +115,6 @@ async def predict_delay(request: DelayPredictionRequest):
             logger.warning(f"Inference via model failed, using fallback formula: {e}")
             predicted_delay = round(request.historical_delay * 0.4 + (request.passenger_load / 10.0) * 0.3 + (4.5 if is_peak else 0.0), 1)
     else:
-        # Fallback heuristic
         predicted_delay = round(request.historical_delay * 0.4 + (request.passenger_load / 10.0) * 0.3 + (4.5 if is_peak else 0.0), 1)
     
     # Classify severity

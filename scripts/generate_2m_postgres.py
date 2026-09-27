@@ -12,12 +12,14 @@ from psycopg2.extras import execute_values
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 from config.settings import settings
+from backend.app.database.engine import init_db
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
 def generate_db_data():
     logger.info("Initializing 2 Million Record Generation natively into PostgreSQL...")
+    init_db()
 
     result = urlparse(settings.DATABASE_URL)
     conn = psycopg2.connect(

@@ -20,21 +20,21 @@ const Recommendations = () => {
 
   return (
     <div className="page-container recommendations-page">
-      <PipelineBanner contextMessage="Automated recommendations are powered by deep ML intelligence and historical inference." />
+      <PipelineBanner contextMessage="Train the AI to generate smart recommendations for improving transit service across all routes." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>DECISION INTELLIGENCE // ALGORITHMIC INTERVENTIONS</span>
+            <span>SMART RECOMMENDATIONS — AI-SUGGESTED IMPROVEMENTS</span>
           </div>
           <h1 className="hero-main-title">Operational Recommendations</h1>
           <p className="hero-desc">
-            Evidence-backed dispatch and scheduling interventions calculated strictly from empirical headway, delay, and load thresholds.
+            The AI analyzes your transit data and suggests specific actions to reduce delays, prevent overcrowding, and improve service quality.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaLightbulb className="text-cyan" /> 3 ACTIVE INTERVENTIONS</span>
+          <span className="sys-badge"><FaLightbulb className="text-cyan" /> 3 RECOMMENDATIONS</span>
         </div>
       </div>
 
@@ -58,7 +58,7 @@ const Recommendations = () => {
                 <span className={`status-badge-chip ${r.priority === 1 ? 'quarantined' : (r.priority === 2 ? 'corrected' : 'valid')}`}>
                   PRIORITY #{r.priority || (i + 1)}
                 </span>
-                <span className="rec-route-code">CORRIDOR: <strong>{r.affected_route}</strong></span>
+                <span className="rec-route-code">ROUTE: <strong>{r.affected_route}</strong></span>
               </div>
               <span className="rec-confidence mono-val text-cyan">
                 Confidence: {r.confidence_level}
@@ -68,29 +68,29 @@ const Recommendations = () => {
             <h3 className="rec-title">{r.recommendation}</h3>
 
             <div className="rec-section-box">
-              <strong>Empirical Evidence & Root Cause:</strong>
+              <strong>Why This Is Recommended:</strong>
               <p>{r.reason}</p>
               {r.evidence_metric && (
                 <div className="rec-evidence-tag mono-val text-gold">
-                  DATA EVIDENCE: {r.evidence_metric}
+                  SUPPORTING DATA: {r.evidence_metric}
                 </div>
               )}
             </div>
 
             <div className="rec-impact-callout">
-              <strong className="text-cyan">Expected Operational Impact:</strong>
+              <strong className="text-cyan">Expected Improvement:</strong>
               <p>{r.expected_impact}</p>
             </div>
 
             <div className="rec-footer-row">
               <div className="rec-footer-meta">
-                <span>TIME HORIZON: <strong className="mono-val">{r.affected_time}</strong></span>
+                <span>BEST TIME TO ACT: <strong className="mono-val">{r.affected_time}</strong></span>
               </div>
               <button 
                 onClick={() => navigate('/what-if-simulator')}
                 className="btn-primary-hud"
               >
-                Simulate Intervention in Sandbox <FaArrowRight />
+                Test This Scenario <FaArrowRight />
               </button>
             </div>
           </div>

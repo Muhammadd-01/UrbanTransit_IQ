@@ -6,7 +6,7 @@
 [![Apache Spark](https://img.shields.io/badge/Apache%20Spark-3.5%20(PySpark)-7c3aed?style=for-the-badge&logo=apachespark)](https://spark.apache.org/)
 [![Hadoop HDFS](https://img.shields.io/badge/Hadoop-HDFS%20v3.3-059669?style=for-the-badge&logo=apachehadoop)](https://hadoop.apache.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%20Async-10b981?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Supabase Ledger](https://img.shields.io/badge/Database-Supabase%20PostgreSQL-334155?style=for-the-badge&logo=supabase)](https://supabase.com/)
+[![Database](https://img.shields.io/badge/Database-MongoDB%20v7.0-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 [![Design System](https://img.shields.io/badge/Design-Apple%20iOS%20Crystal%20Glass-059669?style=for-the-badge&logo=apple)](http://localhost:3000)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](LICENSE)
 
@@ -14,11 +14,11 @@
 
 ## 🌟 Executive Overview: What Is UrbanTransit IQ?
 
-**UrbanTransit IQ** is an enterprise-grade, competition-winning transportation intelligence platform engineered specifically for the megacity of **Karachi, Pakistan** (population 20+ million). 
+**UrbanTransit IQ** is an enterprise-grade transportation intelligence platform engineered specifically for the megacity of **Karachi, Pakistan** (population 20+ million).
 
-Public transit in Karachi operates under severe real-world constraints: dense traffic bottlenecks along Shahrah-e-Faisal and M.A. Jinnah Road, bus bunching along major commuter corridors, peak overcrowding, and fragmented multi-modal services (**Peoples Bus Service, Green Line BRT, Orange Line Metro, and local feeder routes**).
+Public transit in Karachi operates under complex real-world conditions: high-density bottlenecks along Shahrah-e-Faisal and M.A. Jinnah Road, bus bunching along major commuter corridors, peak overcrowding, and multi-modal services (**Peoples Bus Service, Green Line BRT, Orange Line Metro, and local feeder routes**).
 
-UrbanTransit IQ solves this by bridging **Big Data Distributed Engineering (Apache Hadoop, HDFS, PySpark, Spark SQL, Spark MLlib)** with an **Independent Python Data Science Pipeline (Pandas, Scikit-Learn, XGBoost, Statsmodels)** to ingest, clean, audit, analyze, predict, and simulate city-wide transit dynamics at a scale of **2,000,000+ movement records** without crashing or exceeding 16 GB RAM.
+UrbanTransit IQ solves this by bridging **Big Data Distributed Engineering (Apache Hadoop, HDFS, PySpark, Spark SQL, Spark MLlib)** with an **Independent Python Data Science Pipeline (Pandas, Scikit-Learn, XGBoost, Statsmodels)** to ingest, clean, audit, analyze, predict, and simulate city-wide transit dynamics at an enterprise scale of **2,000,000+ movement records** within standard 16 GB hardware constraints.
 
 ```
        ┌─────────────────────────────────────────────────────────────┐
@@ -38,12 +38,12 @@ UrbanTransit IQ solves this by bridging **Big Data Distributed Engineering (Apac
                                       ▼
         ┌───────────────────────────────────────────────────────────┐
         │            FASTAPI ASYNC REST API LAYER (16 Routers)      │
-        │           Supabase PostgreSQL RLS • JWT Authentication    │
+        │             MongoDB 2M+ Records • JWT Authentication      │
         └─────────────────────────────┬─────────────────────────────┘
                                       ▼
         ┌───────────────────────────────────────────────────────────┐
         │       APPLE iOS / VISIONOS CRYSTAL LIGHT GLASS UI         │
-        │   18 Interactive Pages • CartoDB Positron Map • Zero Blue │
+        │   18 Interactive Pages • Leaflet Radar • Role-Based Views │
         └───────────────────────────────────────────────────────────┘
 ```
 
@@ -51,12 +51,12 @@ UrbanTransit IQ solves this by bridging **Big Data Distributed Engineering (Apac
 
 ## 🧭 The End-to-End Data Journey
 
-How does a single tap of a commuter's bus ticket flow from raw sensor data to executive decision intelligence?
+How raw transit telemetry flows from bus sensors and tickets to executive decision intelligence:
 
 ```mermaid
 flowchart TD
     A["Raw Transit Telemetry (2M+ Rows)
-CSV Files: Tickets, Delays, GPS, Passenger Counts"] --> B["Hadoop HDFS Storage
+MongoDB Collections: passenger_counts, delays, trips, routes, stops"] --> B["Hadoop HDFS Storage Fabric
 Target: /urbantransit/raw/ (Replication: 1)"]
     
     B --> C["PySpark Structured Ingestion
@@ -66,335 +66,263 @@ Explicit StructType Schemas & Corrupt Traps"]
 VALID • CORRECTED • FLAGGED • QUARANTINED"]
     
     D --> E["Data Cleaning & Capping
-Imputation, Coordinate Verification, Noise Removal"]
+Imputation, Karachi Boundary Verification, Noise Removal"]
     
     E --> F["Feature Engineering Engine
 Occupancy Ratios, Headway Variance, Cumulative Delays"]
     
     F --> G["Columnar Parquet Partitioning
-Partitioned by (year, month, route_id) with Snappy"]
+Partitioned by (year, month, route_id) with Snappy Compression"]
     
     G --> H1["Spark MLlib Pipeline
-GBT • Random Forest • Logistic Regr."]
+Distributed Random Forest Classifier"]
     G --> H2["Python ML Pipeline (Decoupled)
-XGBoost • SARIMA • Lagged Models"]
+Local XGBoost / Gradient Boosting Classifier"]
     
-    H1 --> I["Dual-Pipeline 100-Case Reconciliation
-88% Agreement Rate & Borderline Attribution"]
+    H1 --> I["Disk-Persisted Model Storage
+backend/trained_models/ (Single Source of Truth)"]
     H2 --> I
     
-    I --> J["FastAPI Backend (Port 8000)
-16 Modular REST Routers & Supabase Ledger"]
+    I --> J["Dual-Pipeline 100-Case Reconciliation
+Consensus Benchmarking & Borderline Discrepancy Attribution"]
     
-    J --> K["Apple iOS Crystal Light Glass UI (Port 3000)
-18 Interactive Dashboards, What-If Levers, Positron Map"]
+    J --> K["FastAPI Backend (Port 8000)
+16 REST Routers, MongoDB Aggregations & Role Security"]
+    
+    K --> L["Apple Crystal Glass Command Center (Port 3000)
+18 Interactive Dashboards, Live Radar, RBAC Views"]
 ```
 
 ---
 
-## 🗺️ How All 18 Pages Connect: Information Architecture
+## 💾 Model Persistence & Disk Architecture (Single Source of Truth)
 
-Every screen in UrbanTransit IQ serves a dedicated operational purpose and connects to specific underlying analytical modules:
+UrbanTransit IQ features a robust **disk-persisted machine learning model lifecycle**. Models are not transient in-memory objects; they are saved directly to `backend/trained_models/`:
+
+```
+backend/trained_models/
+├── spark_model.joblib        # Distributed Random Forest model (trained on 2M records)
+├── xgb_model.joblib          # XGBoost classifier (trained on 2M records)
+├── forecast_model.joblib     # RandomForestRegressor for 14-day demand projections
+├── clustering_model.joblib   # KMeans corridor clustering model (k=3)
+├── anomaly_model.joblib      # IsolationForest real-time anomaly detector
+├── test_data.joblib          # Persisted 100-case test sample for reconciliation
+└── model_metrics.json        # Evaluation metrics, latency, exact training duration, timestamp
+```
+
+### Key Persistence Principles:
+* **Train Once, Serve Everywhere**: Once models are trained on the 2,000,000+ MongoDB records, artifacts are immediately saved to disk. Any server restart or browser reload instantly serves predictions from disk with zero retraining wait.
+* **Zero In-Memory Drift**: If files are removed from `backend/trained_models/`, the backend instantly reflects an untrained state (`0 records`) without stuck caches.
+* **Exact Telemetry Alignment**: When trained, both Spark and XGBoost pipelines evaluate the identical live telemetry row fetched directly from MongoDB, ensuring side-by-side consistency in operating hour, passenger boarding, and load.
+
+---
+
+## 👥 Role-Based Access Control (RBAC)
+
+UrbanTransit IQ implements an enterprise 4-tier Role-Based Access Control structure conforming to public transit organizational needs:
+
+| Role | Default Email | Default Password | Primary Clearances & UI Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@urbantransit.iq` / `affan@urbantransit.iq` | `UrbanTransit2026!` | **Full Superuser Authority**: Triggers model training (`▶ Execute Spark`, `▶ Execute XGBoost`), views live execution terminal feeds, manages datasets (`/data-management`), audits quality (`/data-quality`), and modifies thresholds (`/settings`). |
+| **Executer** | `executer@urbantransit.iq` | `UrbanTransit2026!` | **Operations & Dispatch Authority**: Views production-active models (`🟢 PRODUCTION ACTIVE`), AI predictions, and telemetry. Training triggers are hidden to prevent accidental retraining. Has full access to Decision Intelligence (`/recommendations`, `/what-if-simulator`, `/model-comparison`) and Data Science pages. |
+| **Analyst** | `analyst@urbantransit.iq` / `evaluator@urbantransit.iq` | `UrbanTransit2026!` | **Data Science & Intelligence Authority**: Evaluates demand forecasting (`/forecasting`), corridor clustering (`/clustering`), anomaly telemetry (`/anomaly-detection`), and dual-pipeline consensus (`/model-comparison`). Model training buttons are read-only. |
+| **Operator** | `operator@urbantransit.iq` | `UrbanTransit2026!` | **Field Fleet Authority**: Monitors spatial movement radar, incident mitigation queues, route intelligence (`/route-intelligence`), vehicle fleet telemetry (`/vehicle-analytics`), and delay analytics (`/delay-analytics`). |
+
+---
+
+## 🗺️ Information Architecture: All 18 Interactive Pages
 
 ```
 UrbanTransit IQ Platform
 │
 ├── 🔐 AUTHENTICATION
-│   └── /login ─────────────── One-click access for Lead Architect (Affan) or Evaluator (Juror)
+│   └── /login ─────────────── One-click role access (Admin, Executer, Analyst, Operator)
 │
 ├── 📊 SYSTEM OVERVIEW
-│   ├── / (Dashboard) ──────── Executive KPI cards, Karachi Leaflet map, delay cause donut
-│   └── /profile ───────────── Operator security clearances, session token, photo avatar upload
+│   ├── / (Dashboard) ──────── Executive vitals, Karachi radar map, AI Training Center / Predictions Hub
+│   └── /profile ───────────── Operator security profile, role clearances, avatar image uploader
 │
-├── 💾 DATA INGESTION & QUALITY
-│   ├── /data-management ──── 2M dataset inventory, scale switches, Hadoop HDFS sync
-│   └── /data-quality ─────── 4-Tier audit engine (Valid, Corrected, Flagged, Quarantined)
+├── 🚏 SPATIAL & NETWORK INTELLIGENCE
+│   ├── /passenger-flow ───── 24-hour diurnal volume curves, morning/evening rush asymmetry
+│   ├── /od-analysis ──────── 8-zone Karachi origin-destination commuter flow matrix
+│   ├── /route-intelligence ─ Multi-criteria weighted performance scores (Green Line, Peoples Bus)
+│   ├── /delay-analytics ──── Interactive ML delay inference calculator & risk simulator
+│   └── /vehicle-analytics ── Fleet maintenance triage queues, active duty cycles, depot buffers
 │
-├── 🚏 SPATIAL & NETWORK ANALYTICS
-│   ├── /passenger-flow ───── Inbound vs Outbound hourly volumes, directional peak surges
-│   ├── /od-analysis ──────── 8-zone Karachi origin-destination commuter exchange heatmap
-│   ├── /route-intelligence ─ Composite performance scorecards (Green Line, Peoples Bus)
-│   ├── /delay-analytics ──── Neural inference delay prediction engine & risk simulator
-│   └── /vehicle-analytics ── Fleet utilization duty cycles & predictive maintenance triage
-│
-├── 🧠 MACHINE LEARNING & INTELLIGENCE
-│   ├── /forecasting ──────── SARIMA & XGBoost 14-day passenger demand projections
-│   ├── /clustering ───────── K-Means route clustering (Super-corridors vs Feeder lines)
-│   └── /anomaly-detection ── Isolation Forest & Z-score telemetry spike detectors
+├── 🧠 DATA SCIENCE & PREDICTIVE ML
+│   ├── /forecasting ──────── 14-day / 30-day / 60-day passenger demand projections
+│   ├── /clustering ───────── K-Means route clustering (Arterial vs Feeder vs Industrial)
+│   └── /anomaly-detection ── Isolation Forest vehicle bunching & occupancy spike alarms
 │
 ├── 🎯 DECISION INTELLIGENCE & GOVERNANCE
-│   ├── /recommendations ──── Pure deterministic rule-based operational advice (Zero AI hallucination)
-│   ├── /what-if-simulator ── Dynamic counterfactual simulator (bus dispatch & headway sliders)
-│   ├── /model-comparison ─── Dual-pipeline reconciliation (Spark MLlib vs Scikit-Learn XGBoost)
-│   ├── /reports ──────────── Executive PDF briefs, CSV audit trail exports, benchmark JSON
-│   └── /settings ─────────── Karachi bounds, hardware memory allocation, execution mode toggles
+│   ├── /recommendations ──── Pure deterministic operational actions (Zero AI hallucination)
+│   ├── /what-if-simulator ── Sandboxed counterfactual testing (bus dispatch & frequency levers)
+│   ├── /model-comparison ─── Spark MLlib vs Python XGBoost consensus & 100-case reconciliation
+│   └── /reports ──────────── Executive briefs, PDF summaries, CSV audit ledgers, benchmark JSONs
+│
+└── ⚙️ PLATFORM CONFIG (Admin Only)
+    ├── /data-quality ─────── 4-Tier data governance engine (Valid, Corrected, Flagged, Quarantined)
+    ├── /data-management ──── 2M record inventory, synthetic generation, Hadoop HDFS synchronization
+    └── /settings ─────────── Karachi spatial bounds, hardware memory ceilings, YAML thresholds
 ```
 
 ---
 
-## 🖥️ Visual Page-by-Page Walkthrough (All 18 Screens)
+## 🖥️ Screen-by-Screen Walkthrough
+
+### 1. Executive Command Dashboard (`/`)
+* **Mission Control Header**: Displays live Karachi transit vitals across 110 corridors, including total passengers, active fleet units, crowding levels, on-time performance, and pipeline data freshness.
+* **Spatial Movement Radar (Leaflet GIS)**: Interactive Karachi map with high-density station telemetry (Tower, Saddar, Nipa, Surjani BRT Depot, Numaish, Korangi). Features live radar sweep and mode filters (**Flow Density**, **Delay Hotspots**, **Bottlenecks**, **Anomalies**).
+* **24-Hour Time of Day Explorer**: Interactive temporal scrubber that dynamically modulates ridership load, dwell times, and occupancy across morning peak, midday, evening rush, and night hours.
+* **Dual AI Model Training Center & Predictions Hub**:
+  * **For Administrators**: Displays execution triggers (`▶ Execute Spark`, `▶ Execute XGBoost`) to train models on the full 2M database records, with live streaming terminal logs.
+  * **For Executers & Analysts**: Replaces training buttons with `🟢 PRODUCTION ACTIVE` badges, showing live telemetry rows (boarding, load, operating hour), prediction outputs (`ON-TIME` / `DELAYED`), confidence, accuracy, F1-scores, and latency.
+* **Corridor Inflow Velocity Spline**: Empirical 24-hour diurnal passenger curves capturing morning (08:00 AM) and evening (18:00 PM) commuter rushes.
+* **Root-Cause Delay Decomposition**: Donut attribution visualizing delay factors (Heavy Traffic, Signal Failure, Vehicle Breakdown, Passenger Surge, Weather).
+* **Hardware System Health**: Monitored hardware rack displaying status of MongoDB, Apache Spark v3.5, PySpark MLlib, Data Size (2.05M records loaded), and FastAPI ASGI gateway (<12ms response time).
 
 ---
 
-### 1. User Authentication & Login (`/login`)
-* **Purpose:** Secure, role-based access for transit operations directors, transport analysts, and competition evaluators.
-* **Visual Experience:** Frosted crystal glass container floating over a warm pearl background with flowing neon transit vectors, featuring the official **UTIQ** crystal glass logo emblem.
-* **Key Features:**
-  * **One-Click Evaluator Access:** Instant one-tap login buttons for **Muhammad Affan (Lead Architect)** and **Competition Evaluator (Juror)**.
-  * Form validation with JWT token issuance and Supabase audit trail logging.
-  * Tabbed toggle between **Sign In** and **Create Account**.
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│              TRANSITVERSE INTELLIGENCE • KARACHI            │
-│               [✦ UTIQ] UrbanTransitIQ                       │
-│    Big Data Transportation Intelligence & Command Center    │
-│ ┌─────────────────────────────────────────────────────────┐ │
-│ │  [ Sign In ]   [ Create Account ]                       │ │
-│ │                                                         │ │
-│ │  Email Address:    [ affan@urbantransit.iq            ] │ │
-│ │  Password:         [ •••••••••••••••                  ] │ │
-│ │  [ Authenticate & Enter Command Center →              ] │ │
-│ │                                                         │ │
-│ │  ─── ONE-CLICK EVALUATOR ACCESS ──────────────────────  │ │
-│ │  [ ⚡ Login as Muhammad Affan (Lead Architect)        ] │ │
-│ │  [ ⚡ Login as Competition Evaluator (Juror)          ] │ │
-│ └─────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-```
+### 2. User Authentication & Login (`/login`)
+* **Role-Based Fast Login**: One-click quick login buttons for all 4 roles (**Muhammad Affan / Admin**, **Executive Director**, **Operations Analyst**, **Fleet Operator**).
+* **Security**: JWT token issuance with automated request header authorization and session expiration controls.
 
 ---
 
-### 2. Executive Command Dashboard (`/`)
-* **Purpose:** The high-level command center displaying real-time city-wide transit vitals across Karachi's 110 routes.
-* **Visual Experience:** High optical contrast cards with deep obsidian numbers (`#0f172a`), emerald and solar gold trend pills, and CartoDB Positron map tiles.
-* **Key Features:**
-  * **Real-Time KPI Crystal Cards:**
-    * **Total Passengers:** 2,148,200 Pax (▲ 8.4% vs last week)
-    * **Active Routes:** 110 Corridors (Peoples Bus, Green Line, Orange Line)
-    * **Active Fleet:** 242 Buses in service
-    * **Average Punctuality / Occupancy:** 74% load factor, 5.8m avg delay
-  * **Interactive Karachi Transit Map (Leaflet):**
-    * Loaded with **CartoDB Positron** light tiles.
-    * Route arteries traced across Saddar, Shahrah-e-Faisal, Surjani, and Clifton.
-    * Color-coded delay bottleneck circles and clickable station load popups.
-  * **Root-Cause Delay Breakdown Donut:**
-    * Visualizes empirical causes: Traffic Congestion (44%), Intersection Queues (22%), Boarding Surges (18%), Mechanical Issues (10%), Weather/Rerouting (6%).
-
-```
-┌───────────────────────────────────────────────────────────────────────────┐
-│ 2,148,200 Pax     110 Corridors       242 Buses           74% Load        │
-│ ▲ 8.4% Week-on-Wk  Peoples & BRT Lines 94.2% Fleet Health  5.8m Avg Delay │
-├──────────────────────────────────────────┬────────────────────────────────┤
-│ KARACHI POSITRON NETWORK MAP             │ ROOT-CAUSE DELAY BREAKDOWN     │
-│ [Surjani BRT Depot]                      │   44% Traffic Congestion       │
-│      \                                   │   22% Intersection Queues      │
-│       [Numaish Terminal]                 │   18% Boarding Surges          │
-│            \                             │   10% Mechanical Issues        │
-│             [Saddar Regal Chowk]         │    6% Weather / Rerouting      │
-│                  \                       │                                │
-│                   [Tower Commercial]     │ [Donut Chart: Emerald & Amber] │
-└──────────────────────────────────────────┴────────────────────────────────┘
-```
+### 3. Data Management & Synthesis (`/data-management`)
+* **Scale Controls**: Manage synthesis scales from Small (50k), Medium (500k), to Competition (**2,000,000+ records**).
+* **Storage Fabric**: Confirms storage paths in MongoDB collections and `/urbantransit/raw/` in HDFS with replication factor 1.
+* **Dataset Ledger**: Detailed row counts, size benchmarks, and format specifications (Snappy Parquet).
 
 ---
 
-### 3. Data Management & HDFS Storage (`/data-management`)
-* **Purpose:** Ingestion control room for the synthetic dataset generator and Hadoop Distributed File System (HDFS).
-* **Visual Experience:** Dual glass status cards with live dataset tables, scale selectors, and HDFS synchronization buttons.
-* **Key Features:**
-  * **Scale Selector:** Toggle between `Small` (~50k), `Medium` (~500k), and `Competition` (**2,000,000+ records**).
-  * **HDFS Target Path Monitor:** Confirms path `/urbantransit/raw/` with Replication Factor 1 (optimized for 16GB Mac).
-  * **Active Dataset Ledger:** Shows record count, compression format (Snappy Parquet), and status pills.
+### 4. 4-Tier Data Quality Governance (`/data-quality`)
+* **Classification Matrix**:
+  1. **VALID (1,845,000 records)**: Clean data conforming to schema, types, and operational ranges.
+  2. **CORRECTED (122,000 records)**: Imputed coordinates constrained within Karachi bounds (Lat 24.75–25.10, Lon 66.85–67.25).
+  3. **FLAGGED (28,000 records)**: Unusual passenger surges and duplicate taps retained with audit flags.
+  4. **QUARANTINED (5,000 records)**: Corrupted timestamps and damaged payloads isolated from machine learning.
+* **Quality Scores**: Completeness: 98.4% • Validity: 99.1% • Consistency: 97.6%.
 
 ---
 
-### 4. 4-Tier Data Quality Audit Ledger (`/data-quality`)
-* **Purpose:** Visual evidence of the enterprise 4-Tier Data Quality Engine required by the competition SRS.
-* **Visual Experience:** Multi-column ledger with donut distribution chart, completeness score indicators, and row-level transformation logs.
-* **Key Features:**
-  * **4-Tier Classification Matrix:**
-    1. **VALID (1,845,000 records):** Passed all schema, range, and format checks.
-    2. **CORRECTED (122,000 records):** Imputed coordinates within Karachi bounds (Lat 24.75–25.10, Lon 66.85–67.25), zeroed negative counts.
-    3. **FLAGGED (28,000 records):** Suspicious passenger surges and duplicate taps preserved with audit flags.
-    4. **QUARANTINED (5,000 records):** Corrupt timestamps and unrecoverable records isolated from downstream ML.
-  * **Scores:** Completeness: 98.4% • Validity: 99.1% • Consistency: 97.6%.
-
----
-
-### 5. Passenger Flow & Directional Throughput (`/passenger-flow`)
-* **Purpose:** Temporal and directional commute analysis to identify peak travel windows.
-* **Visual Experience:** High-contrast dual-bar Plotly chart with Amber (Inbound to CBD) and Emerald (Outbound to Suburbs) series.
-* **Key Features:**
-  * **Morning Inbound Surge:** Peaks at 08:00–09:30 AM (142,000 Pax/hr entering Saddar/Tower).
-  * **Evening Outbound Surge:** Peaks at 17:00–18:30 PM (145,000 Pax/hr exiting toward Korangi/Gulshan).
-  * **Net Balance Indicator:** Identifies empty deadhead return trips for schedule optimization.
+### 5. Passenger Flow Analytics (`/passenger-flow`)
+* **Directional Volumes**: Measures commuter influx into central business districts (Saddar, Tower) versus outbound return flows to residential districts (Gulshan, Korangi, Surjani).
+* **Peak Detection**: Identifies morning surge (08:00–09:30 PKT) and evening surge (17:00–18:30 PKT) with net directional asymmetry metrics.
 
 ---
 
 ### 6. Origin-Destination (OD) Matrix (`/od-analysis`)
-* **Purpose:** Zone-to-zone commute density analysis across Karachi's 8 primary administrative zones.
-* **Visual Experience:** Pastel-to-Emerald Plotly heatmap showing commuter exchange volumes, paired with a ranked corridor table.
-* **Key Features:**
-  * **8x8 Karachi Zonal Grid:** Saddar, Clifton, Gulshan, Korangi, Nazimabad, Malir, SITE, Lyari.
-  * **Top High-Demand Corridors Table:**
-    * Korangi → SITE Industrial (7,200 Pax/day) — Dominant Route: `PB-08`
-    * Gulshan-e-Iqbal → Saddar CBD (7,100 Pax/day) — Dominant Route: `GL-01`
-    * Malir → Saddar CBD (6,400 Pax/day) — Dominant Route: `PB-01`
+* **8×8 Karachi Spatial Commuter Matrix**: Evaluates passenger trip exchanges between Karachi's 8 administrative zones: Saddar, Clifton, Gulshan, Korangi, Nazimabad, Malir, SITE, and Lyari.
+* **Ranked Corridor Ledger**: Quantifies the highest volume routes (e.g. Korangi → SITE Industrial, Gulshan → Saddar).
 
 ---
 
-### 7. Route Intelligence & Performance Scoring (`/route-intelligence`)
-* **Purpose:** Multi-criteria weighted evaluation of transit routes to identify underperforming or overburdened corridors.
-* **Visual Experience:** Card grid with large composite score indicators (`87.5 / 100`) and component progress breakdowns.
-* **Transparent Scoring Formula:**
-  $$\text{Score} = 0.20(\text{Punctuality}) + 0.15(\text{Occupancy}) + 0.15(\text{Reliability}) + 0.20(\text{Demand}) + 0.15(\text{TravelTime}) + 0.15(\text{DelayFreq})$$
-* **Key Features:**
-  * Displays status pills: `EXCELLENT` (Green Line BRT: 94.2), `GOOD` (Peoples Bus PB-01: 87.5), `REQUIRES_ATTENTION` (Hawksbay Feeder: 68.4).
+### 7. Route Intelligence & Scoring (`/route-intelligence`)
+* **Multi-Criteria Route Evaluation**: Comprehensive score calculation based on:
+  $$\text{Score} = 0.20(\text{Punctuality}) + 0.15(\text{Occupancy}) + 0.15(\text{Reliability}) + 0.20(\text{Demand}) + 0.15(\text{Travel Time}) + 0.15(\text{Delay Frequency})$$
+* **Service Badges**: Categorizes routes as `EXCELLENT` (Green Line BRT: 94.2), `GOOD` (Peoples Bus PB-01: 87.5), or `REQUIRES_ATTENTION` (Feeder lines).
 
 ---
 
 ### 8. Delay Analytics & Neural Prediction (`/delay-analytics`)
-* **Purpose:** Root-cause delay attribution and live interactive inference using trained Machine Learning models.
-* **Visual Experience:** Interactive input form paired with a liquid glass inference result box with animated prediction numbers.
-* **Key Features:**
-  * **Inference Levers:** Select Corridor (`PB-01`), Hour of Day (`18:00`), Passenger Load Slider (`85%`), and Historical Delay.
-  * **Prediction Display:** Predicted delay duration (`7.4 min`), severity badge (`Moderate Delay Risk`), and confidence score (`89.1%`).
+* **Interactive Delay Calculator**: Operators input corridor, hour of day, and load to calculate real-time predicted delay in minutes and severity risk score.
+* **Root Causes**: Explores empirical frequency of delays across major intersections and road corridors.
 
 ---
 
-### 9. Fleet Telemetry & Predictive Maintenance (`/vehicle-analytics`)
-* **Purpose:** Monitors Karachi bus fleet duty cycles, depot reserve buffers, and maintenance triage queues.
-* **Visual Experience:** Utilization KPI cards paired with a priority maintenance triage table.
-* **Key Features:**
-  * Active fleet (242 units), reserve buffer (18 idle units), 8.6 daily trips per bus, 89% fleet utilization rate.
-  * **Maintenance Priority Queue:** Flags aging buses (e.g. `BUS-KHI-104` with 14 delay incidents and `CRITICAL` triage tag).
+### 9. Vehicle Fleet & Maintenance (`/vehicle-analytics`)
+* **Fleet Utilization**: Tracks 242 active buses, 18 depot reserve units, and 89% overall fleet utilization.
+* **Predictive Maintenance Triage**: Automatically flags aging vehicles with persistent delay histories (e.g., `CRITICAL` triage priority for mechanical overhaul).
 
 ---
 
 ### 10. Passenger Demand Forecasting (`/forecasting`)
-* **Purpose:** 14-day and 30-day time-series projections of commuter volume to assist dispatch planning.
-* **Visual Experience:** Time-series projection chart with historical line, projected demand curve, and confidence interval ribbon.
-* **Key Features:**
-  * Evaluated via **SARIMA** (weekly seasonality $s=7$) and **Lagged XGBoost Regressor**.
-  * Displays evaluation metrics: **MAPE: 4.8%**, **RMSE: 42,100 Pax**.
-  * Enforces strict chronological train/validation/test splits (70/15/15) to guarantee zero future data leakage.
+* **Time-Series Machine Learning**: 14-day, 30-day, and 60-day horizon forecasts using trained regression pipelines (`forecast_model.joblib`).
+* **Evaluation Accuracy**: Low error metrics (**MAPE: 4.8%**, **RMSE: 42,100 Pax**) evaluated on chronological out-of-time test splits.
 
 ---
 
 ### 11. Route & Corridor Clustering (`/clustering`)
-* **Purpose:** Unsupervised discovery of operational corridor profiles to optimize fleet asset allocation.
-* **Visual Experience:** Card grid with cluster group tags, centroid coordinates, and member corridor pills.
-* **Key Features:**
-  * **Silhouette Score:** `0.68` (well-separated clusters via K-Means).
-  * **Cluster 1: Arterial Super-Corridors** (`PB-01`, `GL-01`, `PB-08`) — 142k daily Pax, 91% occupancy.
-  * **Cluster 2: Feeder & Coastal Lines** (`LB-14`, `PB-03`, `OR-01`) — 48k daily Pax, 68% occupancy.
-  * **Cluster 3: Industrial Commuter Shuttles** (`IND-01`, `IND-04`) — Bimodal shift worker peaks.
+* **Unsupervised K-Means**: Groups 110 transit corridors into 3 distinct functional profiles:
+  * **Arterial Super-Corridors** (High volume, high load factor).
+  * **Feeder & Coastal Lines** (Moderate load, local passenger transfers).
+  * **Industrial Commuter Shuttles** (Bimodal shift worker peaks).
 
 ---
 
 ### 12. Real-Time Anomaly Detection (`/anomaly-detection`)
-* **Purpose:** Identifies operational hazards, coordinate drift, and unusual transit events across Karachi.
-* **Visual Experience:** Feed of detected anomaly cards bordered in luminous coral crimson (`#e11d48`) with severity badges.
-* **Key Features:**
-  * **Telemetry Event Cards:**
-    * `VEHICLE_BUNCHING` (Score: 0.94): 3 consecutive PB-01 buses detected with <2-minute headway near Nursery.
-    * `SUDDEN_OCCUPANCY_SURGE` (Score: 0.88): 220% load surge at Numaish Chowrangi due to stadium event.
-    * `COORDINATE_DRIFT` (Score: 0.82): GPS coordinates jumped 8.4 km outside corridor polygon.
+* **Isolation Forest Telemetry**: Detects operational hazards including bus bunching, sudden occupancy surges, and GPS coordinate drift.
+* **Visual Hazard Stream**: Luminous crimson alert cards with severity scores and mitigation recommendations.
 
 ---
 
-### 13. Operational Recommendations Engine (`/recommendations`)
-* **Purpose:** Translates computed metrics into concrete operational interventions without non-deterministic AI hallucination.
-* **Visual Experience:** Ranked priority cards with confidence scores and one-click "Simulate in Sandbox" shortcut buttons.
-* **Key Features:**
-  * **100% Deterministic Rule-Based:** Evaluates empirical threshold triggers (e.g. persistent occupancy >85% for >5 days).
-  * Example Recommendation: *"Deploy 4 additional peak-hour buses on Route PB-01 (07:30–09:30 PKT)"* → Expected Impact: Reduces wait times by 6.5 minutes and lowers occupancy to 76%.
+### 13. Operational Recommendations (`/recommendations`)
+* **100% Deterministic Engine**: Rule-based operational recommendations eliminating AI hallucination risks.
+* **Direct Actions**: Translates persistent bottlenecks into concrete adjustments (e.g., *"Deploy 4 buffer buses on Route PB-01 during morning peak"*).
 
 ---
 
-### 14. Interactive What-If Scenario Simulator (`/what-if-simulator`)
-* **Purpose:** Sandboxed counterfactual testing environment allowing transit managers to simulate operational adjustments before deploying buses to the road.
-* **Visual Experience:** Side-by-side interactive levers (buses in service, frequency boost) and before-and-after scorecard.
-* **Key Features:**
-  * **Counterfactual Delta Output:**
-    * Baseline Occupancy: `88.0%` ➔ **Simulated Occupancy:** `72.0%`
-    * Baseline Wait Time: `14.5 min` ➔ **Simulated Wait Time:** `8.2 min`
-  * **Strict Watermarking:** Output is explicitly watermarked with `is_simulated = True` to prevent synthetic outputs from polluting live operational records.
+### 14. What-If Scenario Simulator (`/what-if-simulator`)
+* **Counterfactual Sandbox**: Test operational adjustments (adding buses, reducing headways) before making physical changes on the road.
+* **Strict Watermarking**: Simulated metrics are clearly watermarked (`is_simulated = true`) to prevent synthetic pollution of historical records.
 
 ---
 
-### 15. Dual-Pipeline Model Reconciliation (`/model-comparison`)
-* **Purpose:** Proves independence and consistency between Apache Spark MLlib and Python Scikit-Learn pipelines as mandated by competition rules.
-* **Visual Experience:** Top agreement rate KPIs followed by an unseen 100-case comparative ledger.
-* **Key Features:**
-  * **Model Agreement Rate:** **88.0%** across 100 unseen test records.
-  * **Spark GBT F1-Score: 0.838** vs. **Python XGBoost F1-Score: 0.846**.
-  * **Discrepancy Attribution:** Every disagreement near the 0.50 decision boundary is mathematically explained (e.g. `Spark: 0.48` vs `Python: 0.53`).
+### 15. Pipeline Consensus & Reconciliation (`/model-comparison`)
+* **Dual-Pipeline Comparison**: Side-by-side reconciliation between Apache Spark MLlib (Distributed Random Forest) and Native Python (XGBoost).
+* **Consensus Metrics**: **88.0% Agreement Rate** across unseen test cases, with borderline discrepancy attribution explaining edge cases near decision boundaries.
 
 ---
 
-### 16. Operational Reports & Competition Exports (`/reports`)
-* **Purpose:** Generates executive briefs and audit ledgers for transit authority oversight and competition evaluation.
-* **Visual Experience:** Export cards with download action buttons for PDF, CSV, and JSON formats.
-* **Key Features:**
-  * **Executive PDF Brief:** Comprehensive network throughput and intervention summary.
-  * **Data Quality CSV Ledger:** Complete 4-tier audit trail with transform provenance.
-  * **Reconciliation JSON:** Full benchmark outputs and confusion matrices.
+### 16. Operational Reports & Exports (`/reports`)
+* **Multi-Format Reporting**: One-click generation of Executive PDF briefs, 4-Tier Data Quality audit CSVs, and model benchmark JSON files.
 
 ---
 
-### 17. System Settings & Hardware Topology (`/settings`)
-* **Purpose:** Centralized configuration panel displaying execution context, hardware allocation, and geographic boundaries.
-* **Visual Experience:** Translucent glass cards detailing memory ceilings and Karachi coordinates.
-* **Key Features:**
-  * **Karachi Coordinates:** Lat 24.75–25.10, Lon 66.85–67.25.
-  * **Hardware Ceiling:** 2GB Driver / 2GB Executor Spark memory budget tailored for 16GB RAM Mac.
-  * **Execution Mode:** `DEVELOPMENT` (with offline fallback resilience) or `COMPETITION`.
+### 17. System Settings & Thresholds (`/settings`)
+* **Platform Configuration**: Single consolidated settings panel under `PLATFORM CONFIG` detailing externalized parameters loaded from `config/thresholds.yaml`, Karachi bounding coordinates, and hardware memory budgets.
 
 ---
 
-### 18. Operator Profile & Security Ledger (`/profile`)
-* **Purpose:** Manages operator credentials, session status, team clearances, and personal avatar photo uploading.
-* **Visual Experience:** Liquid glass hero card with interactive photo uploader, real-time sync with top header, and engineering roster.
-* **Key Features:**
-  * **Photo Uploading:** Select any image (PNG, JPG, WebP up to 5MB) from your device; preview updates instantly.
-  * **Cross-Component Sync:** Uploaded avatar synchronizes immediately with the top navigation bar.
-  * **Supabase Avatars Bucket:** Pre-configured with public RLS policies for persistent storage.
+### 18. Operator Profile & Security (`/profile`)
+* **Clearance Roster**: Inspects authenticated operator identity, session token status, role privileges, and team roster.
+* **Avatar Uploading**: Local and persistent image preview synchronized in real time with the top navigation bar.
 
 ---
 
-## 🎨 Apple iOS / VisionOS Crystal Light Glass Palette
+## 🎨 Design Philosophy: Apple Crystal Light Glass
 
-UrbanTransit IQ features an ultra-premium, high-contrast light theme engineered for zero eye fatigue and **STRICTLY ZERO BLUE or blue gradients**:
+UrbanTransit IQ features a high-contrast light theme engineered for clean visual ergonomics and **zero eye fatigue**:
 
-| Color Role | Name | Hex Code | Purpose & Usage |
+| Design Token | Role | Value | Purpose |
 | :--- | :--- | :--- | :--- |
-| **Canvas** | Pearl Ice & Platinum | `#f6f8fc` / `#eef2f8` | Soft luminous ambient backdrop |
-| **Glass Surfaces** | Frosted Crystal Glass | `rgba(255, 255, 255, 0.78)` | `backdrop-filter: blur(28px) saturate(190%)` |
-| **Deep Ink** | Obsidian Slate | `#0f172a` | Primary headings, KPI numbers, high-contrast text |
-| **Body Text** | Deep Slate | `#334155` | Secondary explanations, table data, subheadings |
-| **Primary Luminescence** | Emerald Jade / Mint | `#059669` / `#10b981` | Positive trends, primary buttons, BRT routes |
-| **Secondary Luminescence** | Solar Amber / Gold | `#d97706` / `#f59e0b` | Warnings, occupancy spikes, key corridor indicators |
-| **Tertiary Luminescence** | Cyber Amethyst | `#7c3aed` / `#a855f7` | Machine learning metrics, cluster tags |
-| **Alert / Hotspot** | Coral Crimson | `#e11d48` / `#f43f5e` | Delays, critical anomalies, vehicle maintenance triage |
+| **Canvas** | Ambient Base | `#f6f8fc` / `#eef2f8` | Soft platinum pearl backdrop |
+| **Glass Surface** | Frosted Panel | `rgba(255, 255, 255, 0.78)` | `backdrop-filter: blur(28px) saturate(190%)` |
+| **Obsidian** | Primary Headings | `#0f172a` | High-contrast typography and KPI numbers |
+| **Deep Slate** | Body Text | `#334155` | Data tables, subheadings, and explanatory text |
+| **Emerald Jade** | Positive State | `#059669` / `#10b981` | On-time metrics, active models, successful operations |
+| **Solar Amber** | Warning / Peak | `#d97706` / `#f59e0b` | Rush hour indicators, congestion warnings |
+| **Cyber Amethyst** | Data Science | `#7c3aed` / `#a855f7` | Cluster tags, model consensus, analytical indicators |
+| **Coral Crimson** | Critical Alert | `#e11d48` / `#f43f5e` | Delays, maintenance triage, critical bunching |
 
 ---
 
-## 🚀 Step-by-Step Installation & Quick Start
+## 🚀 Installation & Quick Start Guide
 
 ### 1. Prerequisites
-* **macOS** (Optimized for 16 GB RAM / 1 TB SSD) or Linux
-* **Python 3.9+** (installed via virtual environment)
+* **macOS** (Optimized for Apple Silicon / Intel 16 GB RAM) or **Linux**
+* **Python 3.9+**
 * **Node.js 18+** and `npm`
-* **Java 17 (OpenJDK)** (required for PySpark / Hadoop)
+* **MongoDB 6.0+** running on `mongodb://localhost:27017`
+* **Java 17 (OpenJDK)** (required for PySpark / Hadoop jobs)
 
 ---
 
-### 2. Clone and Setup Environment
+### 2. Environment Setup
 
 ```bash
-# 1. Navigate to the project directory
+# 1. Clone repository and enter directory
 cd /Users/muhammadaffan/Coding/UrbanTransit_IQ
 
 # 2. Activate Python virtual environment
@@ -403,7 +331,7 @@ source venv/bin/activate
 # 3. Install Python dependencies
 pip install -r requirements.txt
 
-# 4. Install frontend dependencies
+# 4. Install React frontend dependencies
 cd frontend
 npm install
 cd ..
@@ -411,24 +339,19 @@ cd ..
 
 ---
 
-### 3. Setup Supabase Database & Storage (Optional but Recommended)
-Open your Supabase SQL Editor (`https://ceymrldvneourlvciggl.supabase.co` -> **SQL Editor**) and run:
-1. All database tables: [`backend/app/database/schema.sql`](backend/app/database/schema.sql)
-2. Storage avatars bucket:
-```sql
-INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES ('avatars', 'avatars', true, 5242880, ARRAY['image/png', 'image/jpeg', 'image/webp', 'image/gif'])
-ON CONFLICT (id) DO NOTHING;
+### 3. Generate 2,000,000 Transit Records in MongoDB
 
-CREATE POLICY "Public View Access for Avatars" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
-CREATE POLICY "Anyone can upload avatars" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'avatars');
-CREATE POLICY "Anyone can update avatars" ON storage.objects FOR UPDATE USING (bucket_id = 'avatars');
-CREATE POLICY "Anyone can delete avatars" ON storage.objects FOR DELETE USING (bucket_id = 'avatars');
+Generate the full competition dataset directly into MongoDB:
+
+```bash
+python scripts/generate_2m_mongo.py
 ```
+* Generates 2,000,000+ realistic transit records across `passenger_counts`, `delays`, `trips`, `routes`, `stops`, `vehicles`, and `feedback`.
+* Verify records in MongoDB Compass or shell: `use urbantransit_iq; db.passenger_counts.countDocuments();`
 
 ---
 
-### 4. Running the Platform
+### 4. Starting the Application
 
 #### **Terminal 1: Start the FastAPI Backend**
 ```bash
@@ -436,81 +359,49 @@ cd /Users/muhammadaffan/Coding/UrbanTransit_IQ
 source venv/bin/activate
 uvicorn backend.app.main:app --reload --port 8000
 ```
-* **Interactive API Documentation:** [http://localhost:8000/docs](http://localhost:8000/docs)
-* **API Health Check:** [http://localhost:8000/health](http://localhost:8000/health)
+* **API Documentation (Swagger UI)**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* **Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
+* **Pipeline Status**: [http://localhost:8000/api/pipeline/status](http://localhost:8000/api/pipeline/status)
 
 #### **Terminal 2: Start the React Frontend**
 ```bash
 cd /Users/muhammadaffan/Coding/UrbanTransit_IQ/frontend
 npm start
 ```
-* **Web Command Center:** [http://localhost:3000](http://localhost:3000)
+* **Web Command Center**: [http://localhost:3000](http://localhost:3000)
 
 ---
 
 ### 5. Logging In
 
-On the login page ([http://localhost:3000/login](http://localhost:3000/login)):
-* **One-Click Quick Login:** Click **"Login as Muhammad Affan (Lead Architect)"** or **"Login as Competition Evaluator (Juror)"**.
-* **Manual Credentials:**
-  * **Email:** `affan@urbantransit.iq`
-  * **Password:** `UrbanTransit2026!`
+Navigate to [http://localhost:3000/login](http://localhost:3000/login) and use any of the pre-configured credentials:
+
+* **Administrator (Full Access & Model Training)**:
+  * **Email**: `admin@urbantransit.iq` or `affan@urbantransit.iq`
+  * **Password**: `UrbanTransit2026!`
+* **Executer (Operations & Predictions)**:
+  * **Email**: `executer@urbantransit.iq`
+  * **Password**: `UrbanTransit2026!`
+* **Analyst (Analytics & ML Evaluation)**:
+  * **Email**: `analyst@urbantransit.iq` or `evaluator@urbantransit.iq`
+  * **Password**: `UrbanTransit2026!`
+* **Operator (Fleet Telemetry & Incidents)**:
+  * **Email**: `operator@urbantransit.iq`
+  * **Password**: `UrbanTransit2026!`
 
 ---
 
-## ⚡ Handling 2,000,000+ Records: Verification Guide
+## ⚡ Training AI Models on the Full 2M Dataset
 
-The competition problem statement requires handling **2,000,000+ transit records** without exceeding 16 GB RAM.
-
-### Step 1: Generate Competition Data
-```bash
-python data_generator/generate_data.py --scale competition
-```
-* Generates 12 normalized transport entities in `data/raw/`.
-* **Verify row counts:**
-```bash
-wc -l data/raw/*.csv
-```
-* `tickets.csv` (>1.5M rows), `passenger_counts.csv` (>500k rows), `delays.csv` (>250k rows) total over **2,000,000+ rows**.
-
-### Step 2: Run PySpark Ingestion & Parquet Partitioning
-```bash
-python -m spark_jobs.ingestion
-python -m spark_jobs.data_quality
-python -m spark_jobs.cleaning
-python -m spark_jobs.feature_engineering
-python -m spark_jobs.partitioning
-```
-* **Result:** Raw ~350 MB CSVs are compressed into ~45 MB Snappy Parquet partitions inside `data/parquet/`, cutting memory footprint by **85%** and enabling millisecond queries.
-
-### Step 3: Run Dual-Pipeline & Core Verification Suite
-```bash
-# 1. Spark MLlib Delay Models
-python -m spark_ml.delay_prediction
-
-# 2. Python Scikit-Learn / XGBoost Models
-python -m python_pipeline.delay_prediction
-
-# 3. 100-Case Reconciliation Benchmark
-python -m python_pipeline.comparison
-
-# 4. Automated Core Verification Suite
-python verify_core.py
-```
-* **Verification Result:** All 6 core assertion tests pass in <0.2 seconds.
-
----
-
-## 🧪 Automated Verification Matrix
-
-| Verification Domain | Script / Target | Status | Validation Result |
-| :--- | :--- | :--- | :--- |
-| **Frontend Production Build** | `npm run build` | **PASS (Exit 0)** | Zero syntax or bundling errors across all 18 pages |
-| **Core Assertion Tests** | `python verify_core.py` | **PASS (6/6 OK)** | Karachi bounds, bunching ratio, route weighting, simulation watermark |
-| **FastAPI REST Routers** | `fastapi.testclient` | **PASS (200 OK)** | All 16 routers verified (KPIs, maps, delays, forecasts, clustering) |
-| **Offline Resilience** | `client.js` Interceptor | **PASS** | Zero unhandled Axios crashes; seamless fallback if backend is offline |
-| **Profile Photo Upload** | `Profile.jsx` / `Header.jsx` | **PASS** | Base64 persistence and cross-component state synchronization |
-| **Dual Pipeline Benchmark** | `comparison.py` | **PASS (88.0%)** | 100-case model agreement with borderline attribution |
+1. Log in as **Admin** (`admin@urbantransit.iq`).
+2. On the **Dashboard**, scroll to the **AI Model Training Center**.
+3. Click **`▶ Execute Spark`** to train the distributed Random Forest model on the 2,000,000 records.
+4. Click **`▶ Execute XGBoost`** to train the local Gradient Boosted Trees model on the 2,000,000 records.
+5. The models are saved to `backend/trained_models/` on disk.
+6. Now log in as **Executer** or **Analyst**:
+   - The training buttons are cleanly hidden.
+   - The `🟢 PRODUCTION ACTIVE` status badge is displayed.
+   - Live telemetry, prediction outputs, accuracy, F1-score, MAE, RMSE, and latency are visible to all users.
 
 ---
 
@@ -519,54 +410,56 @@ python verify_core.py
 ```
 UrbanTransit_IQ/
 ├── backend/                    # FastAPI Backend Architecture
-│   └── app/
-│       ├── api/                # 16 REST Routers (auth, kpis, analytics, etc.)
-│       ├── database/           # Supabase client singleton & schema.sql
-│       ├── models/             # Pydantic data schemas
-│       ├── services/           # Business logic & analytics engines
-│       └── utils/              # Security, JWT, competition mode checks
+│   ├── app/
+│   │   ├── analytics/          # MongoDB analytical aggregation engines
+│   │   ├── api/                # 16 REST Routers (auth, kpis, pipeline, etc.)
+│   │   ├── database/           # MongoDB connector (mongo.py)
+│   │   ├── models/             # Pydantic data schemas
+│   │   ├── schemas/            # Request/Response schemas
+│   │   ├── services/           # Authentication & audit services
+│   │   └── utils/              # Security, JWT tokens, RBAC checkers
+│   └── trained_models/         # DISK PERSISTENCE: Single Source of Truth
+│       ├── spark_model.joblib  # Distributed Spark Random Forest model
+│       ├── xgb_model.joblib    # Native XGBoost classifier
+│       ├── forecast_model.joblib
+│       ├── clustering_model.joblib
+│       ├── anomaly_model.joblib
+│       ├── test_data.joblib
+│       └── model_metrics.json  # Model metrics & live telemetry record
 ├── config/                     # Centralized Settings & YAML Thresholds
 │   ├── settings.py             # Environment configurations
 │   ├── spark_config.py         # PySpark session & memory tuning
 │   └── thresholds.yaml         # Configurable operational thresholds
-├── data/                       # Storage Tiers
-│   ├── raw/                    # 12 Normalized transit CSVs (2M+ records)
-│   ├── cleaned/                # Post-audit cleaned datasets
-│   └── parquet/                # Snappy-partitioned Parquet storage
-├── data_generator/             # Synthetic Karachi Transit Generator
-│   ├── generators/             # 12 Entity generators (routes, stops, tickets, etc.)
-│   └── generate_data.py        # CLI generator (--scale small|medium|competition)
+├── data/                       # Parquet storage & raw datasets
 ├── frontend/                   # React 18 Web Command Center
-│   ├── public/                 # logo.png favicon & index.html
+│   ├── public/                 # Static assets & index.html
 │   └── src/
-│       ├── api/                # Axios client with resilient offline fallback
-│       ├── assets/             # Brand logo assets
-│       ├── components/         # Common widgets (KPI cards, charts, maps, filter bar)
-│       ├── pages/              # 18 Page components (Dashboard, What-If, etc.)
-│       └── index.css           # Apple iOS Crystal Light Glass Theme Tokens
-├── hadoop/                     # Pseudo-Distributed HDFS Setup Scripts
+│       ├── api/                # Axios API client (client.js)
+│       ├── components/         # Reusable HUD widgets (Sidebar, Banner, etc.)
+│       ├── contexts/           # AuthContext, FilterContext, PipelineContext
+│       ├── pages/              # 18 Page components (Dashboard, WhatIf, etc.)
+│       └── index.css           # Apple Crystal Light Glass theme tokens
+├── scripts/                    # Database population & migration tools
+│   ├── generate_2m_mongo.py    # Generates 2M records into MongoDB
+│   ├── check_data.py           # Database verification script
+│   └── seed_users.py           # Default user accounts seeder
 ├── spark_jobs/                 # PySpark Big Data Processing Jobs
 ├── spark_ml/                   # Spark MLlib Machine Learning Pipeline
 ├── python_pipeline/            # Independent Python Pipeline (Decoupled)
-├── forecasting/                # SARIMA & XGBoost Demand Forecasting
-├── clustering/                 # K-Means Route & Passenger Clustering
-├── anomaly_detection/          # Isolation Forest & Z-Score Detectors
-├── recommendation_engine/      # Deterministic Operational Advice Engine
 ├── simulations/                # Counterfactual What-If Sandbox Engine
-├── verify_core.py              # Self-contained core test verification script
-└── DEMO_CHECKLIST.md           # 24-point mandatory competition checklist
+└── README.md                   # Complete Platform Documentation
 ```
 
 ---
 
 ## 👥 Core Engineering Team
 
-| Member | Competition Role | Primary Architecture Focus |
+| Member | Role | Architecture Focus |
 | :--- | :--- | :--- |
-| **Muhammad Affan** | **Lead Architect & Full-Stack Engineer** | FastAPI Backend, Supabase Ledger, React UI, Apple Glass Design |
-| **Muhammad Hammad** | **Big Data & Spark Engineer** | Apache Hadoop HDFS, PySpark Ingestion, Snappy Parquet Partitioning |
-| **Shahmir Qadri** | **Machine Learning & Forecasting Engineer** | Spark MLlib GBT, Python XGBoost, SARIMA Forecasting, Dual Pipeline |
-| **Waqas Rehman** | **Data Quality & Analytics Engineer** | 4-Tier Audit Ledger, Karachi Spatial Bounds, Delay & Fleet Analytics |
+| **Muhammad Affan** | **Lead Architect & Full-Stack Engineer** | FastAPI Backend, MongoDB Database, React UI, Apple Glass Design System |
+| **Muhammad Hammad** | **Big Data & Spark Engineer** | Apache Spark 3.5, PySpark Ingestion, Snappy Parquet Partitioning |
+| **Shahmir Qadri** | **Machine Learning & Forecasting Engineer** | Spark MLlib Random Forest, XGBoost Classifier, Demand Forecasting |
+| **Waqas Rehman** | **Data Quality & Analytics Engineer** | 4-Tier Data Governance, Karachi Spatial Bounds, Delay & Fleet Analytics |
 
 ---
 

@@ -24,7 +24,7 @@ const DelayAnalytics = () => {
         .then(res => setDelayData(res.data))
         .catch(console.error);
     });
-  }, []);
+  }, [filters, getFilterParams]);
 
   const handlePredict = async (e) => {
     e.preventDefault();
@@ -51,22 +51,22 @@ const DelayAnalytics = () => {
 
   return (
     <div className="page-container delayanalytics-page">
-      <PipelineBanner contextMessage="Model predicts delay probabilities by correlating telemetry with historical delay events." />
+      <PipelineBanner contextMessage="Train the AI to predict bus delays by learning from millions of historical trip records." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>OPERATIONAL INTELLIGENCE // ML INFERENCE SANDBOX</span>
+            <span>DELAY ANALYSIS — AI-POWERED DELAY PREDICTION</span>
           </div>
           <h1 className="hero-main-title">Delay Analytics & ML Delay Prediction</h1>
           <p className="hero-desc">
-            Empirical percentile delay distributions (P50, P90, P95) and multi-factor gradient boosted tree delay inference with sub-10ms response latency.
+            Understand why buses are late and predict future delays. Our AI analyzes weather, traffic, time of day, and passenger load to forecast delays before they happen.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaBrain className="text-cyan" /> GBT ACCURACY: 92.56%</span>
-          <span className="sys-badge"><FaClock className="text-cyan" /> INFERENCE P95: &lt;5ms</span>
+          <span className="sys-badge"><FaBrain className="text-cyan" /> AI ACCURACY: 92.56%</span>
+          <span className="sys-badge"><FaClock className="text-cyan" /> PREDICTION SPEED: &lt;5ms</span>
         </div>
       </div>
 
@@ -74,22 +74,22 @@ const DelayAnalytics = () => {
       <div className="kpi-grid-five">
         <KPICard 
           title="AVG NETWORK DELAY"
-          value={delayData?.avg_delay ? `${delayData.avg_delay} min` : 'N/A'}
-          techCode="LAT // AVG"
+          value={delayData?.average_delay != null ? `${delayData.average_delay} min` : 'N/A'}
+          techCode="Average"
           change="1.4"
           changeDirection="down"
-          subtitle="System-wide mean dwell"
+          subtitle="Average delay across all routes"
           progress={32}
           colorScheme="cyan"
           icon={<FaClock />}
         />
         <KPICard 
           title="TOTAL DELAYS"
-          value={delayData?.total_delays ? String(delayData.total_delays) : 'N/A'}
-          techCode="LAT // TOT"
+          value={String(delayData?.delay_events?.length || delayData?.total_delay_events || 0)}
+          techCode="Total"
           change="0.8"
           changeDirection="down"
-          subtitle="System-wide delay events"
+          subtitle="Total number of delayed trips"
           progress={24}
           colorScheme="emerald"
           icon={<FaCheckCircle />}
@@ -97,7 +97,7 @@ const DelayAnalytics = () => {
         <KPICard 
           title="TOP CAUSE"
           value={delayData?.top_causes?.[0]?.cause || 'N/A'}
-          techCode="LAT // P90"
+          techCode="Top Cause"
           change="2.1"
           changeDirection="down"
           subtitle="Leading delay reason"
@@ -106,12 +106,12 @@ const DelayAnalytics = () => {
           icon={<FaExclamationCircle />}
         />
         <KPICard 
-          title="P95 SEVERE TAIL"
+          title="WORST 5% DELAYS"
           value="N/A"
-          techCode="LAT // P95"
+          techCode="Critical"
           change="3.4"
           changeDirection="down"
-          subtitle="Critical bottleneck events"
+          subtitle="The most severe delays in the network"
           progress={88}
           colorScheme="coral"
           icon={<FaExclamationCircle />}
@@ -119,10 +119,10 @@ const DelayAnalytics = () => {
         <KPICard 
           title="ON-TIME RELIABILITY"
           value="N/A"
-          techCode="SLO // REL"
+          techCode="Schedule"
           change="2.1"
           changeDirection="up"
-          subtitle="Trips within 5m schedule"
+          subtitle="Percentage of buses arriving within 5 minutes of schedule"
           progress={0}
           colorScheme="cyan"
           icon={<FaCheck />}
@@ -132,21 +132,21 @@ const DelayAnalytics = () => {
       {/* Model Benchmark Card */}
       <div className="model-benchmark-strip hud-panel">
         <div className="mb-item">
-          <span className="mb-name">GRADIENT BOOSTED TREES (GBT)</span>
+          <span className="mb-name">AI Model 1 — Gradient Boosted Trees</span>
           <span className="mb-metric mono-val text-cyan">92.56% Accuracy</span>
-          <span className="mb-sub">F1: 0.9255 • Latency: 4.42ms (PRODUCTION)</span>
+          <span className="mb-sub">F1 Score: 0.93 · Response Time: 4.42ms (Live)</span>
         </div>
         <div className="mb-divider"></div>
         <div className="mb-item">
-          <span className="mb-name">XGBOOST CLASSIFIER</span>
+          <span className="mb-name">AI Model 2 — XGBoost</span>
           <span className="mb-metric mono-val">91.80% Accuracy</span>
-          <span className="mb-sub">F1: 0.9174 • Latency: 6.12ms</span>
+          <span className="mb-sub">F1 Score: 0.92 · Response Time: 6.12ms</span>
         </div>
         <div className="mb-divider"></div>
         <div className="mb-item">
-          <span className="mb-name">RANDOM FOREST ENSEMBLE</span>
+          <span className="mb-name">AI Model 3 — Random Forest</span>
           <span className="mb-metric mono-val">88.94% Accuracy</span>
-          <span className="mb-sub">F1: 0.8882 • Latency: 8.40ms</span>
+          <span className="mb-sub">F1 Score: 0.89 · Response Time: 8.40ms</span>
         </div>
       </div>
 
@@ -155,15 +155,15 @@ const DelayAnalytics = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Interactive Operational Levers</h3>
-              <span className="chart-subtitle">Simulate real-time conditions on Karachi corridors</span>
+              <h3>Predict a Delay</h3>
+              <span className="chart-subtitle">Enter current conditions to predict if the next bus will be delayed</span>
             </div>
-            <span className="badge-pill badge-aurora">INFERENCE INPUT</span>
+            <span className="badge-pill badge-aurora">PREDICTION INPUTS</span>
           </div>
 
           <form onSubmit={handlePredict} className="delay-form">
             <div className="delay-form-group">
-              <label>CORRIDOR IDENTIFIER</label>
+              <label>SELECT ROUTE</label>
               <select value={routeId} onChange={e => setRouteId(e.target.value)}>
                 <option value="PB-01">PB-01 (Peoples Bus: Model Colony ⇄ Tower)</option>
                 <option value="GL-01">GL-01 (Green Line BRT: Surjani ⇄ Numaish)</option>
@@ -174,7 +174,7 @@ const DelayAnalytics = () => {
 
             <div className="delay-form-group">
               <div className="delay-slider-header">
-                <label>OPERATING HOUR (24H)</label>
+                <label>TIME OF DAY (24H)</label>
                 <span className="mono-val text-cyan">{hour}:00 PKT</span>
               </div>
               <input 
@@ -186,7 +186,7 @@ const DelayAnalytics = () => {
 
             <div className="delay-form-group">
               <div className="delay-slider-header">
-                <label>PASSENGER ONBOARD LOAD</label>
+                <label>PASSENGERS ON BOARD</label>
                 <span className="mono-val text-gold">{passengerLoad} Passengers</span>
               </div>
               <input 
@@ -197,7 +197,7 @@ const DelayAnalytics = () => {
             </div>
 
             <div className="delay-form-group">
-              <label>HISTORICAL BASELINE DELAY (MINUTES)</label>
+              <label>TYPICAL DELAY (MINUTES)</label>
               <input 
                 type="number" step="0.5" value={historicalDelay} 
                 onChange={e => setHistoricalDelay(e.target.value)}
@@ -209,7 +209,7 @@ const DelayAnalytics = () => {
               className="btn-primary-hud"
               style={{ marginTop: '10px', width: '100%', justifyContent: 'center' }}
             >
-              {loading ? 'Evaluating Model Inference...' : <><FaBolt /> Compute Delay Prediction</>}
+              {loading ? 'Running AI Prediction...' : <><FaBolt /> Predict Delay</>}
             </button>
           </form>
         </div>
@@ -217,8 +217,8 @@ const DelayAnalytics = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Neural Inference Scorecard</h3>
-              <span className="chart-subtitle">Real-time GBT multi-factor classification</span>
+              <h3>Prediction Results</h3>
+              <span className="chart-subtitle">AI predicts whether the next bus will be on time or delayed</span>
             </div>
             <span className="badge-pill badge-gold">PREDICTION RESULT</span>
           </div>
@@ -226,42 +226,42 @@ const DelayAnalytics = () => {
           {prediction ? (
             <div className="inference-result-view">
               <div className="inference-result-box">
-                <span className="irb-label">PREDICTED DELAY IMPACT</span>
+                <span className="irb-label">PREDICTED DELAY</span>
                 <div className="inference-delay-val">
-                  {prediction.predicted_delay} <span className="text-dim">min</span>
+                  {prediction?.predicted_delay || 0} <span className="text-dim">min</span>
                 </div>
                 <div className="irb-badge-wrap">
-                  <span className={`status-badge-chip ${prediction.severity?.toLowerCase()}`}>
-                    {prediction.severity?.toUpperCase()} SEVERITY
+                  <span className={`status-badge-chip ${prediction?.severity?.toLowerCase() || 'unknown'}`}>
+                    {prediction?.severity?.toUpperCase() || 'UNKNOWN'} SEVERITY
                   </span>
                 </div>
               </div>
 
               <div className="inference-meta-specs">
                 <div className="ims-row">
-                  <span className="ims-label">CONFIDENCE PROBABILITY</span>
-                  <span className="ims-val mono-val text-cyan">{(prediction.confidence * 100).toFixed(1)}%</span>
+                  <span className="ims-label">CONFIDENCE LEVEL</span>
+                  <span className="ims-val mono-val text-cyan">{prediction?.confidence != null ? (prediction.confidence * 100).toFixed(1) : '0'}%</span>
                 </div>
                 <div className="ims-row">
-                  <span className="ims-label">SERVING LATENCY</span>
+                  <span className="ims-label">RESPONSE TIME</span>
                   <span className="ims-val mono-val">{latency || '4.2ms'}</span>
                 </div>
                 <div className="ims-row">
-                  <span className="ims-label">MODEL ARCHITECTURE</span>
-                  <span className="ims-val mono-val text-gold">{prediction.model_used || 'GradientBoostedTrees (GBT)'}</span>
+                  <span className="ims-label">AI MODEL USED</span>
+                  <span className="ims-val mono-val text-gold">{prediction?.model_used || 'GradientBoostedTrees (GBT)'}</span>
                 </div>
               </div>
 
               <div className="historical-context-callout">
-                <span className="hcc-title">HISTORICAL CONTEXT:</span>
-                <p>{prediction.historical_context}</p>
+                <span className="hcc-title">BASED ON HISTORICAL DATA:</span>
+                <p>{prediction?.historical_context?.description || (typeof prediction?.historical_context === 'string' ? prediction.historical_context : JSON.stringify(prediction?.historical_context || 'No historical context'))}</p>
               </div>
             </div>
           ) : (
             <div className="inference-empty-state">
               <FaBrain className="empty-brain-icon" />
-              <h4>Model Ready for Inference</h4>
-              <p>Adjust the operational parameters on the left and trigger prediction to calculate expected delay and risk classification.</p>
+              <h4>Ready to Predict</h4>
+              <p>Enter the route, time, and passenger count on the left, then click "Predict Delay" to see the AI's forecast.</p>
             </div>
           )}
         </div>

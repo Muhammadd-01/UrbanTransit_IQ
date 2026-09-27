@@ -16,6 +16,20 @@ def evaluate_classifier(y_true, y_pred, y_prob=None):
         "confusion_matrix": confusion_matrix(y_true, y_pred).tolist()
     }
     
+    # Calculate regression-style error metrics on the binary predictions
+    # to match the execution pipeline requirements
+    from sklearn.metrics import r2_score
+    metrics["mae"] = mean_absolute_error(y_true, y_pred)
+    metrics["rmse"] = np.sqrt(mean_squared_error(y_true, y_pred))
+    
+    def safe_mape(y_t, y_p):
+        mask = y_t != 0
+        if not np.any(mask): return 0.0
+        return np.mean(np.abs((y_t[mask] - y_p[mask]) / y_t[mask])) * 100
+        
+    metrics["mape"] = safe_mape(np.array(y_true), np.array(y_pred))
+    metrics["r2"] = r2_score(y_true, y_pred)
+    
     if y_prob is not None:
         try:
             # Handle multi-class vs binary
@@ -30,10 +44,18 @@ def evaluate_classifier(y_true, y_pred, y_prob=None):
 
 def evaluate_regressor(y_true, y_pred):
     """Evaluate a regression model and return metrics dict."""
+    from sklearn.metrics import r2_score
+    
+    def safe_mape(y_t, y_p):
+        mask = y_t != 0
+        if not np.any(mask): return 0.0
+        return np.mean(np.abs((y_t[mask] - y_p[mask]) / y_t[mask])) * 100
+
     return {
         "mae": mean_absolute_error(y_true, y_pred),
         "rmse": np.sqrt(mean_squared_error(y_true, y_pred)),
-        "mape": mean_absolute_percentage_error(y_true, y_pred)
+        "mape": safe_mape(np.array(y_true), np.array(y_pred)),
+        "r2": r2_score(y_true, y_pred)
     }
 
 def get_feature_importance(model, feature_names):

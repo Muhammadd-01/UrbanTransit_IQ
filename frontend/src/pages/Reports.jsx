@@ -50,17 +50,17 @@ const Reports = () => {
 
   return (
     <div className="page-container reports-page">
-      <PipelineBanner contextMessage="Compliance and performance reports generated strictly from verified ML-audited datasets." />
+      <PipelineBanner contextMessage="Generate and download reports based on your verified transit data and AI model results." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>EXPORT HUB // ARTIFACT GENERATION</span>
+            <span>REPORTS & EXPORTS — DOWNLOAD YOUR DATA</span>
           </div>
-          <h1 className="hero-main-title">Operational Reports & Benchmark Exports</h1>
+          <h1 className="hero-main-title">Reports & Data Exports</h1>
           <p className="hero-desc">
-            Generate printable executive operational briefs, export record-level data governance audit trails, and download machine-readable benchmark reconciliation JSON artifacts.
+            Download summary reports, detailed data audits, and AI model comparison results in PDF, CSV, or JSON format.
           </p>
         </div>
         <div className="hero-right-actions">
@@ -81,12 +81,12 @@ const Reports = () => {
             <FaChartPie className="report-icon text-cyan" />
             <span className="badge-pill badge-aurora">EXECUTIVE PDF</span>
           </div>
-          <h3>Executive Intelligence Brief</h3>
+          <h3>Executive Summary Report</h3>
           <p>
-            Comprehensive printable operational summary covering Karachi network ridership, fleet utilization, bottleneck corridors, and priority operational interventions.
+            A complete overview of Karachi's transit performance including passenger numbers, fleet status, problem areas, and recommended actions.
           </p>
           <button onClick={handleExportExecutive} className="btn-primary-hud" style={{ width: '100%', justifyContent: 'center' }}>
-            <FaFilePdf /> Export Executive Brief (Print/PDF)
+            <FaFilePdf /> Download Executive Summary (PDF)
           </button>
         </div>
 
@@ -95,26 +95,26 @@ const Reports = () => {
             <FaShieldAlt className="report-icon text-gold" />
             <span className="badge-pill badge-gold">AUDIT CSV</span>
           </div>
-          <h3>Data Quality & Audit Ledger</h3>
+          <h3>Data Quality Audit Report</h3>
           <p>
-            Full record-level audit trail documenting all 4-tier remediations (Valid, Corrected, Flagged, Quarantined) with column-level transform provenance.
+            Detailed record of how every data issue was found and fixed, showing what was valid, corrected, flagged, or removed.
           </p>
           <button onClick={handleExportQuality} className="btn-secondary-hud" style={{ width: '100%', justifyContent: 'center' }}>
-            <FaFileCsv className="text-gold" /> Export Audit CSV Ledger
+            <FaFileCsv className="text-gold" /> Download Data Audit (CSV)
           </button>
         </div>
 
         <div className="chart-card hud-panel hud-corners report-card">
           <div className="report-card-header">
             <FaBalanceScale className="report-icon text-sky" />
-            <span className="badge-pill badge-violet">BENCHMARK JSON</span>
+            <span className="badge-pill badge-violet">AI COMPARISON REPORT</span>
           </div>
-          <h3>Dual Pipeline Reconciliation</h3>
+          <h3>AI Model Comparison Report</h3>
           <p>
-            Unseen 100-case comparative evaluation verifying independent Spark MLlib and Python XGBoost predictions with agreement rate metrics.
+            Test report comparing how well both AI models agree when predicting delays on 100 unseen bus trips.
           </p>
           <button onClick={handleExportBenchmark} className="btn-secondary-hud" style={{ width: '100%', justifyContent: 'center' }}>
-            <FaDownload className="text-cyan" /> Download Benchmark JSON
+            <FaDownload className="text-cyan" /> Download AI Comparison (JSON)
           </button>
         </div>
       </div>

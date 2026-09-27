@@ -29,29 +29,29 @@ const PassengerFlow = () => {
 
   const terminalData = data?.top_boarding_stops || [];
 
-  const maxIn = data?.hourly_distribution ? Math.max(...data.hourly_distribution.map(d => d.inbound || 0)) : 0;
-  const maxOut = data?.hourly_distribution ? Math.max(...data.hourly_distribution.map(d => d.outbound || 0)) : 0;
+  const maxIn = data?.hourly_distribution?.length > 0 ? Math.max(...data.hourly_distribution.map(d => d.inbound || 0)) : 0;
+  const maxOut = data?.hourly_distribution?.length > 0 ? Math.max(...data.hourly_distribution.map(d => d.outbound || 0)) : 0;
   const asymmetry = maxOut ? (maxIn / maxOut).toFixed(1) : 0;
   const busiest = data?.top_boarding_stops?.[0]?.stop_name || 'N/A';
 
   return (
     <div className="page-container passengerflow-page">
-      <PipelineBanner contextMessage="Passenger demand profiles and flow dynamics are core features predicting network strain in the ML pipeline." />
+      <PipelineBanner contextMessage="Train the AI to understand passenger demand patterns, helping predict when routes will be busiest." />
       {/* Executive Hero Banner */}
       <div className="dashboard-hero hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>PASSENGER MOBILITY // FLOW DYNAMICS & SPATIAL DEMAND</span>
+            <span>PASSENGER TRENDS — HOW MANY PEOPLE ARE TRAVELING</span>
           </div>
           <h1 className="hero-main-title">Passenger Flow & Demand Profiles</h1>
           <p className="hero-desc">
-            Temporal demand curves, directional ingress/egress asymmetry, and high-density terminal passenger exchanges across the Karachi metropolitan transit grid.
+            Track passenger numbers throughout the day — see when and where the most people are boarding and getting off buses across Karachi.
           </p>
         </div>
         <div className="pf-hero-actions">
           <span className="pf-telemetry-chip">
-            <FaUsers /> {data?.total_volume ? `${(data.total_volume / 1000).toFixed(1)}k` : '0'} DAILY TRANSIT SURGE
+            <FaUsers /> {data?.total_volume ? `${(data.total_volume / 1000).toFixed(1)}k` : '0'} DAILY PASSENGERS
           </span>
           <span className="pf-telemetry-chip alt">
             <FaClock /> AM PEAK: 08:00 — 09:30
@@ -62,34 +62,34 @@ const PassengerFlow = () => {
       {/* Mobility KPI Grid — 4 Columns with Generous Gaping */}
       <div className="kpi-grid-four">
         <KPICard 
-          title="DAILY INFLOW PEAK"
+          title="MORNING PEAK PASSENGERS"
           value={String(maxIn)}
-          techCode="FLOW // IN"
+          techCode="Peak In"
           change="12.4"
           changeDirection="up"
-          subtitle="Commercial Morning Rush"
+          subtitle="Most passengers boarding in the morning"
           progress={92}
           colorScheme="cyan"
           icon={<FaArrowUp />}
         />
         <KPICard 
-          title="DAILY OUTFLOW PEAK"
+          title="EVENING PEAK PASSENGERS"
           value={String(maxOut)}
-          techCode="FLOW // OUT"
+          techCode="Peak Out"
           change="9.8"
           changeDirection="up"
-          subtitle="Residential Evening Rush"
+          subtitle="Most passengers getting off in the evening"
           progress={88}
           colorScheme="sky"
           icon={<FaArrowDown />}
         />
         <KPICard 
-          title="DIRECTIONAL ASYMMETRY"
+          title="MORNING vs EVENING BALANCE"
           value={`${asymmetry}x`}
-          techCode="RATIO // ASYM"
+          techCode="Balance"
           change="0.2"
           changeDirection="up"
-          subtitle="Peak Inflow vs Counter-Peak Load"
+          subtitle="Difference between morning and evening passenger counts"
           progress={75}
           colorScheme="gold"
           icon={<FaExchangeAlt />}
@@ -97,7 +97,7 @@ const PassengerFlow = () => {
         <KPICard 
           title="BUSIEST TERMINAL"
           value={busiest}
-          techCode="HUB // PEAK"
+          techCode="Busiest"
           change="14.2"
           changeDirection="up"
           subtitle="High volume hub"
@@ -114,9 +114,9 @@ const PassengerFlow = () => {
             <FaArrowUp />
           </div>
           <div className="pf-insight-content">
-            <span className="pf-insight-label">Morning Inflow Peak (07:30 – 09:30)</span>
+            <span className="pf-insight-label">Morning Rush (07:30 – 09:30)</span>
             <span className="pf-insight-val">{maxIn} Pax/Hr <span className="text-cyan" style={{ fontSize: '0.78rem' }}>+138% Bias</span></span>
-            <span className="pf-insight-sub">Dominant Ingress to Commercial Zones</span>
+            <span className="pf-insight-sub">Most passengers heading to work areas</span>
           </div>
         </div>
 
@@ -125,9 +125,9 @@ const PassengerFlow = () => {
             <FaArrowDown />
           </div>
           <div className="pf-insight-content">
-            <span className="pf-insight-label">Evening Outflow Peak (17:00 – 19:30)</span>
+            <span className="pf-insight-label">Evening Rush (17:00 – 19:30)</span>
             <span className="pf-insight-val">{maxOut} Pax/Hr <span className="text-sky" style={{ fontSize: '0.78rem' }}>Residential Return</span></span>
-            <span className="pf-insight-sub">Dominant Egress to Residential Hubs</span>
+            <span className="pf-insight-sub">Most passengers heading home</span>
           </div>
         </div>
 
@@ -136,9 +136,9 @@ const PassengerFlow = () => {
             <FaChartLine />
           </div>
           <div className="pf-insight-content">
-            <span className="pf-insight-label">Commute Equilibrium Score</span>
+            <span className="pf-insight-label">Morning-Evening Balance</span>
             <span className="pf-insight-val">{data ? '94.2%' : '0%'} <span className="text-gold" style={{ fontSize: '0.78rem' }}>High Congruence</span></span>
-            <span className="pf-insight-sub">Vehicle deployment aligns with tidal desire lines</span>
+            <span className="pf-insight-sub">How well bus schedules match passenger demand patterns</span>
           </div>
         </div>
       </div>
@@ -147,19 +147,19 @@ const PassengerFlow = () => {
       <div className="pf-chart-card hud-panel hud-corners">
         <div className="pf-chart-header">
           <div className="pf-chart-title-group">
-            <h3>Hourly Passenger Flow (Directional Ingress & Egress Dynamics)</h3>
+            <h3>Hourly Passenger Flow — Boarding vs Getting Off</h3>
             <p className="pf-chart-subtitle">
-              Comparative diurnal distribution contrasting inbound commercial commute against outbound residential return across 24 hourly buckets.
+              How many passengers board (blue) vs get off (orange) at each hour of the day.
             </p>
           </div>
           <div className="pf-chart-legend-pills">
             <span className="pf-legend-pill inbound">
               <span className="pf-color-indicator inbound"></span>
-              INBOUND (SADDAR / CORE)
+              BOARDING (City Center)
             </span>
             <span className="pf-legend-pill outbound">
               <span className="pf-color-indicator outbound"></span>
-              OUTBOUND (SURJANI / MALIR)
+              GETTING OFF (Outer Areas)
             </span>
           </div>
         </div>
@@ -169,7 +169,7 @@ const PassengerFlow = () => {
             {
               x: data?.hourly_distribution ? data.hourly_distribution.map(d => `${d.hour}:00`) : [],
               y: data?.hourly_distribution ? data.hourly_distribution.map(d => d.inbound) : [],
-              name: 'Inbound Flow (To Commercial Core)',
+              name: 'Boarding (Heading to City Center)',
               type: 'bar',
               marker: { 
                 color: '#0D9488',
@@ -179,7 +179,7 @@ const PassengerFlow = () => {
             {
               x: data?.hourly_distribution ? data.hourly_distribution.map(d => `${d.hour}:00`) : [],
               y: data?.hourly_distribution ? data.hourly_distribution.map(d => d.outbound) : [],
-              name: 'Outbound Flow (To Residential Hubs)',
+              name: 'Getting Off (Heading Home)',
               type: 'bar',
               marker: { 
                 color: '#0284C7',
@@ -205,12 +205,12 @@ const PassengerFlow = () => {
       <div className="pf-chart-card hud-panel hud-corners">
         <div className="pf-chart-header">
           <div className="pf-chart-title-group">
-            <h3>High-Volume Terminal Activity Ledger</h3>
+            <h3>Busiest Stations & Stops</h3>
             <p className="pf-chart-subtitle">
-              Ranked transit interchanges by daily aggregate passenger boardings, egress counts, and exchange net imbalance.
+              The busiest stations ranked by total daily passengers.
             </p>
           </div>
-          <span className="badge-pill badge-aurora">TRANSIT INTERCHANGE TELEMETRY</span>
+          <span className="badge-pill badge-aurora">STATION TRANSFER DATA</span>
         </div>
 
         <div className="pf-table-wrapper">
@@ -223,13 +223,13 @@ const PassengerFlow = () => {
                 <th>Corridor Route</th>
                 <th>Capacity Load</th>
                 <th>Daily Boardings</th>
-                <th>Daily Alightings</th>
-                <th>Net Flow Imbalance</th>
+                <th>Daily Getting Off</th>
+                <th>Net Difference</th>
               </tr>
             </thead>
             <tbody>
               {terminalData.map((st, i) => {
-                const netDiff = st.boarding - st.alighting;
+                const netDiff = (st.boarding || 0) - (st.alighting || 0);
                 const isNetIn = netDiff >= 0;
                 return (
                   <tr key={i}>
@@ -270,12 +270,12 @@ const PassengerFlow = () => {
                     </td>
                     <td>
                       <span className="mono-val" style={{ fontWeight: '800', color: 'var(--color-text)', fontSize: '0.94rem' }}>
-                        {st.boarding.toLocaleString()} <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '500' }}>Pax</span>
+                        {(st.boarding || 0).toLocaleString()} <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '500' }}>Pax</span>
                       </span>
                     </td>
                     <td>
                       <span className="mono-val text-sky" style={{ fontWeight: '700', fontSize: '0.94rem' }}>
-                        {st.alighting.toLocaleString()} <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '500' }}>Pax</span>
+                        {(st.alighting || 0).toLocaleString()} <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '500' }}>Pax</span>
                       </span>
                     </td>
                     <td>

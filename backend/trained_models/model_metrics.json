@@ -1,0 +1,42 @@
+{
+  "spark_acc": 1.0,
+  "spark_f1": 1.0,
+  "spark_precision": 1.0,
+  "spark_recall": 1.0,
+  "spark_mae": 0.000172180365661098,
+  "spark_rmse": 0.0017078499308611338,
+  "spark_mape": 0.02451369776712651,
+  "spark_r2": 0.9999874516538272,
+  "spark_is_trained": true,
+  "spark_pred": "ON-TIME",
+  "spark_confidence": "100.0%",
+  "spark_latency": "37.5ms",
+  "spark_raw_data": {
+    "boarding": 1,
+    "alighting": 10,
+    "load": 25,
+    "hour": 10
+  },
+  "records_used": 2000000,
+  "training_time_seconds": 17.33,
+  "trained_at": "2026-09-27 14:11:56",
+  "is_trained": true,
+  "xgb_acc": 1.0,
+  "xgb_f1": 1.0,
+  "xgb_precision": 1.0,
+  "xgb_recall": 1.0,
+  "xgb_mae": 2.1383915693841118e-05,
+  "xgb_rmse": 2.2081928900863e-05,
+  "xgb_mape": 0.00286102294921875,
+  "xgb_r2": 0.9999999979022144,
+  "xgb_is_trained": true,
+  "xgb_pred": "ON-TIME",
+  "xgb_confidence": "100.0%",
+  "xgb_latency": "6.6ms",
+  "xgb_raw_data": {
+    "boarding": 1,
+    "alighting": 10,
+    "load": 25,
+    "hour": 10
+  }
+}

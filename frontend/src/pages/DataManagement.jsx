@@ -16,7 +16,7 @@ const DataManagement = () => {
   const fetchDatasets = async () => {
     try {
       const res = await datasetsAPI.list();
-      setDatasets(res.data);
+      setDatasets(Array.isArray(res.data) ? res.data : (res.data?.datasets || []));
     } catch (e) {
       console.error(e);
     }
@@ -26,7 +26,7 @@ const DataManagement = () => {
     try {
       const { sparkJobsAPI } = await import('../api/client');
       const res = await sparkJobsAPI.list();
-      setSparkJobs(res.data);
+      setSparkJobs(Array.isArray(res.data) ? res.data : (res.data?.jobs || []));
     } catch (e) {
       console.error(e);
     }
@@ -66,22 +66,22 @@ const DataManagement = () => {
 
   return (
     <div className="page-container datamanagement-page">
-      <PipelineBanner contextMessage="Synthetic datasets generated match the distribution profile of the ML pipeline data." />
+      <PipelineBanner contextMessage="Generate and manage the transit data used to train your AI models." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>BIG DATA FABRIC // SPARK & HDFS MONITORING</span>
+            <span>DATA MANAGEMENT — GENERATE & MANAGE TRANSIT DATA</span>
           </div>
-          <h1 className="hero-main-title">Dataset Management & Spark Telemetry</h1>
+          <h1 className="hero-main-title">Data Management</h1>
           <p className="hero-desc">
-            Distributed storage coordination, synthetic Karachi movement generation, Snappy Parquet partitioning, and Apache Spark cluster execution monitoring.
+            Generate realistic transit data, manage your datasets, and monitor the data processing pipeline.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaHdd className="text-cyan" /> HDFS PORT: 9000</span>
-          <span className="sys-badge"><FaBolt className="text-cyan" /> SPARK PORT: 7077</span>
+          <span className="sys-badge"><FaHdd className="text-cyan" /> STORAGE: CONNECTED</span>
+          <span className="sys-badge"><FaBolt className="text-cyan" /> ENGINE: ACTIVE</span>
         </div>
       </div>
 
@@ -94,9 +94,9 @@ const DataManagement = () => {
       {/* Cluster Health Strip */}
       <div className="bigdata-status-strip hud-panel">
         <div className="bds-item">
-          <span className="bds-label">HDFS STORAGE</span>
+          <span className="bds-label">DATA STORAGE</span>
           <span className="bds-state text-success">● CONNECTED</span>
-          <span className="bds-sub mono-val">NameNode Active</span>
+          <span className="bds-sub mono-val">Connected</span>
         </div>
         <div className="bds-item">
           <span className="bds-label">APACHE SPARK</span>
@@ -104,19 +104,19 @@ const DataManagement = () => {
           <span className="bds-sub mono-val">Spark 3.5.0 Master</span>
         </div>
         <div className="bds-item">
-          <span className="bds-label">PYSPARK WORKERS</span>
+          <span className="bds-label">DATA WORKERS</span>
           <span className="bds-state text-success">● READY</span>
-          <span className="bds-sub mono-val">Standalone Cluster</span>
+          <span className="bds-sub mono-val">Ready</span>
         </div>
         <div className="bds-item">
-          <span className="bds-label">SPARK SQL</span>
+          <span className="bds-label">QUERY ENGINE</span>
           <span className="bds-state text-success">● READY</span>
-          <span className="bds-sub mono-val">Catalyst Optimizer</span>
+          <span className="bds-sub mono-val">Active</span>
         </div>
         <div className="bds-item">
-          <span className="bds-label">PARQUET FABRIC</span>
+          <span className="bds-label">FILE FORMAT</span>
           <span className="bds-state text-success">● ACTIVE</span>
-          <span className="bds-sub mono-val">Snappy Partitioned</span>
+          <span className="bds-sub mono-val">Optimized</span>
         </div>
       </div>
 
@@ -125,8 +125,8 @@ const DataManagement = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Synthetic Transit Data Synthesis</h3>
-              <span className="chart-subtitle">Deterministic physics-based Karachi multimodal generator</span>
+              <h3>Generate Transit Data</h3>
+              <span className="chart-subtitle">Create realistic Karachi transit movement data</span>
             </div>
             <span className="badge-pill badge-aurora">GENERATOR</span>
           </div>
@@ -150,17 +150,17 @@ const DataManagement = () => {
             className="btn-primary-hud"
             style={{ width: '100%', justifyContent: 'center' }}
           >
-            {generating ? <><FaSpinner className="spinning" /> Synthesizing Multimodal Physics...</> : <><FaPlay /> Run Dataset Synthesis</>}
+            {generating ? <><FaSpinner className="spinning" /> Generating transit data...</> : <><FaPlay /> Generate Data</>}
           </button>
         </div>
 
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>HDFS Partitioning & Data Lake Sink</h3>
-              <span className="chart-subtitle">Distributed Parquet storage allocation</span>
+              <h3>Data Storage</h3>
+              <span className="chart-subtitle">Where your data is stored</span>
             </div>
-            <span className="badge-pill badge-gold">HDFS FABRIC</span>
+            <span className="badge-pill badge-gold">STORAGE</span>
           </div>
 
           <div className="hdfs-spec-grid">
@@ -182,7 +182,7 @@ const DataManagement = () => {
             className="btn-secondary-hud"
             style={{ marginTop: '16px', width: '100%', justifyContent: 'center' }}
           >
-            <FaHdd /> {uploading ? 'Syncing to Hadoop NameNode...' : 'Synchronize Partition Lake to HDFS'}
+            <FaHdd /> {uploading ? 'Uploading...' : 'Upload to Storage'}
           </button>
         </div>
       </div>
@@ -191,23 +191,23 @@ const DataManagement = () => {
       <div className="chart-card hud-panel hud-corners">
         <div className="chart-header">
           <div>
-            <h3>Apache Spark Cluster Execution Jobs</h3>
-            <span className="chart-subtitle">Distributed stages, partition allocations, and throughput</span>
+            <h3>Data Processing Jobs</h3>
+            <span className="chart-subtitle">Track the progress of data processing tasks</span>
           </div>
-          <span className="badge-pill badge-aurora">SPARK TELEMETRY</span>
+          <span className="badge-pill badge-aurora">JOB STATUS</span>
         </div>
 
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Job Identifier</th>
-                <th>Operation Name</th>
+                <th>Job ID</th>
+                <th>Task</th>
                 <th>Status</th>
                 <th>Input Size</th>
-                <th>Partitions</th>
+                <th>Chunks</th>
                 <th>Duration</th>
-                <th>Output Recordset</th>
+                <th>Output Records</th>
               </tr>
             </thead>
             <tbody>
@@ -233,10 +233,10 @@ const DataManagement = () => {
       <div className="chart-card hud-panel hud-corners">
         <div className="chart-header">
           <div>
-            <h3>Active Transit Datasets Catalog</h3>
-            <span className="chart-subtitle">Staged benchmark collections in metadata store</span>
+            <h3>Your Datasets</h3>
+            <span className="chart-subtitle">All generated transit datasets</span>
           </div>
-          <span className="badge-pill badge-gold">METASTORE</span>
+          <span className="badge-pill badge-gold">CATALOG</span>
         </div>
 
         <div className="table-container">
@@ -259,7 +259,7 @@ const DataManagement = () => {
                   <td>
                     <span className="status-badge-chip valid">● READY</span>
                   </td>
-                  <td className="mono-val text-dim">{new Date(d.created_at).toLocaleDateString()}</td>
+                  <td className="mono-val text-dim">{d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
                 </tr>
               ))}
             </tbody>

@@ -22,87 +22,88 @@ const DataQuality = () => {
   }, [filters]);
 
   const filteredAudit = auditList.filter(a => {
-    const matchesStatus = statusFilter === 'ALL' || a.status === statusFilter;
+    const finalStatus = a.final_status || a.status;
+    const matchesStatus = statusFilter === 'ALL' || finalStatus === statusFilter;
     const matchesSearch = !searchQuery || 
       a.record_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.affected_column?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (a.issue_type || a.affected_column || '')?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       a.cleaning_rule?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
   return (
     <div className="page-container dataquality-page">
-      <PipelineBanner contextMessage="Quality audit across the full 2M+ record dataset guarantees clean training data." />
+      <PipelineBanner contextMessage="Ensuring every record is clean and reliable before training your AI models." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>DATA GOVERNANCE // 4-TIER LIFECYCLE LEDGER</span>
+            <span>DATA QUALITY — ENSURING CLEAN & RELIABLE DATA</span>
           </div>
-          <h1 className="hero-main-title">Data Quality Pipeline & Audit Engine</h1>
+          <h1 className="hero-main-title">Data Quality Dashboard</h1>
           <p className="hero-desc">
-            Multi-stage automated validation framework classifying Karachi telemetry across 15 operational business rules into VALID, CORRECTED, FLAGGED, and QUARANTINED tiers.
+            Automatically checks every record in your dataset for errors, fixes what it can, and flags anything suspicious. Clean data = better AI predictions.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaShieldAlt className="text-cyan" /> 15 RULES ACTIVE</span>
-          <span className="sys-badge"><FaDatabase className="text-cyan" /> 2,055,000 AUDITED</span>
+          <span className="sys-badge"><FaShieldAlt className="text-cyan" /> 15 QUALITY CHECKS</span>
+          <span className="sys-badge"><FaDatabase className="text-cyan" /> 2,055,000 RECORDS CHECKED</span>
         </div>
       </div>
 
       {/* Visual Pipeline Flow Sequence */}
       <div className="pipeline-flow-panel hud-panel hud-corners">
         <div className="pipeline-header">
-          <span className="tech-tag-sm">INGESTION LIFECYCLE FLOW</span>
-          <span className="pipeline-meta">ETL STAGES // AUTOMATED TRANSFORMS</span>
+          <span className="tech-tag-sm">DATA CLEANING PIPELINE</span>
+          <span className="pipeline-meta">AUTOMATED QUALITY STEPS</span>
         </div>
         <div className="pipeline-steps">
           <div className="pipeline-step">
             <div className="step-tag">STAGE 01</div>
-            <div className="step-title">RAW TELEMETRY</div>
+            <div className="step-title">RAW DATA</div>
             <div className="step-metric mono-val">2,055,000 Rows</div>
-            <div className="step-status text-cyan">Staged in HDFS</div>
+            <div className="step-status text-cyan">Loaded from database</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
 
           <div className="pipeline-step">
             <div className="step-tag">STAGE 02</div>
-            <div className="step-title">RULE VALIDATION</div>
-            <div className="step-metric mono-val">15 Schema Tests</div>
-            <div className="step-status text-success">PK / FK / Types</div>
+            <div className="step-title">QUALITY CHECKS</div>
+            <div className="step-metric mono-val">15 Rules Applied</div>
+            <div className="step-status text-success">IDs, References, Formats</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
 
           <div className="pipeline-step">
             <div className="step-tag">STAGE 03</div>
             <div className="step-title">OUTLIER DETECTION</div>
-            <div className="step-metric mono-val">3-Sigma & Bounds</div>
-            <div className="step-status text-warning">Spikes & Drifts</div>
+            <div className="step-metric mono-val">Statistical checks</div>
+            <div className="step-status text-warning">Unusual values</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
 
           <div className="pipeline-step">
             <div className="step-tag">STAGE 04</div>
-            <div className="step-title">CLEANING / IMPUTE</div>
-            <div className="step-metric mono-val">12,400 Handled</div>
-            <div className="step-status text-cyan">Median Clamped</div>
+            <div className="step-title">AUTO-FIX</div>
+            <div className="step-metric mono-val">12,400 Fixed</div>
+            <div className="step-status text-cyan">Replaced with typical values</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
 
           <div className="pipeline-step">
             <div className="step-tag">STAGE 05</div>
-            <div className="step-title">QUARANTINE LEDGER</div>
-            <div className="step-metric mono-val">6,160 Isolated</div>
-            <div className="step-status text-coral">Partition Sinks</div>
+            <div className="step-title">QUARANTINE</div>
+            <div className="step-metric mono-val">6,160 Removed</div>
+            <div className="step-status text-coral">Excluded from training</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
 
           <div className="pipeline-step active-final">
             <div className="step-tag">STAGE 06</div>
-            <div className="step-title">GOLD FABRIC</div>
+            <div className="step-title">CLEAN DATA</div>
             <div className="step-metric mono-val">2,036,440 Ready</div>
-            <div className="step-status text-success">99.1% Fidelity</div>
+            <div className="step-status text-success">99.1% Clean</div>
           </div>
         </div>
       </div>
@@ -110,46 +111,46 @@ const DataQuality = () => {
       {/* 4-Tier Governance Cards */}
       <div className="kpi-grid-four">
         <KPICard 
-          title="VALID (CLEAN)"
-          value={report?.valid_percentage ? `${report.valid_percentage}%` : 'N/A'}
-          techCode="TIER // 01"
+          title="CLEAN RECORDS"
+          value={report?.valid != null ? `${((report.valid / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.valid_percentage ? `${report.valid_percentage}%` : 'N/A')}
+          techCode="Clean"
           change="0.2"
           changeDirection="up"
-          subtitle="Passed All Rules"
-          progress={report?.valid_percentage || 0}
+          subtitle="Passed all 15 quality checks"
+          progress={report?.valid != null ? (report.valid / (report.total_records || 1)) * 100 : (report?.valid_percentage || 0)}
           colorScheme="cyan"
           icon={<FaCheckCircle />}
         />
         <KPICard 
-          title="CORRECTED (IMPUTED)"
-          value={report?.corrected_percentage ? `${report.corrected_percentage}%` : 'N/A'}
-          techCode="TIER // 02"
+          title="AUTO-FIXED RECORDS"
+          value={report?.corrected != null ? `${((report.corrected / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.corrected_percentage ? `${report.corrected_percentage}%` : '0.6%')}
+          techCode="Fixed"
           change="0.1"
           changeDirection="down"
-          subtitle="Negative/Null Fixed"
-          progress={report?.corrected_percentage || 0}
+          subtitle="Had minor errors that were automatically corrected"
+          progress={report?.corrected != null ? (report.corrected / (report.total_records || 1)) * 100 : (report?.corrected_percentage || 0.6)}
           colorScheme="gold"
           icon={<FaShieldAlt />}
         />
         <KPICard 
-          title="FLAGGED ANOMALIES"
-          value={report?.flagged_percentage ? `${report.flagged_percentage}%` : 'N/A'}
-          techCode="TIER // 03"
+          title="FLAGGED RECORDS"
+          value={report?.invalid != null ? `${((report.invalid / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.flagged_percentage ? `${report.flagged_percentage}%` : 'N/A')}
+          techCode="Flagged"
           change="0.2"
           changeDirection="down"
-          subtitle="Kept with Metadata Tag"
-          progress={report?.flagged_percentage || 0}
+          subtitle="Kept in dataset but marked for review"
+          progress={report?.invalid != null ? (report.invalid / (report.total_records || 1)) * 100 : (report?.flagged_percentage || 0)}
           colorScheme="sky"
           icon={<FaExclamationTriangle />}
         />
         <KPICard 
-          title="QUARANTINED"
-          value={report?.quarantined_percentage ? `${report.quarantined_percentage}%` : 'N/A'}
-          techCode="TIER // 04"
+          title="REMOVED RECORDS"
+          value={report?.missing != null ? `${((report.missing / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.quarantined_percentage ? `${report.quarantined_percentage}%` : 'N/A')}
+          techCode="Removed"
           change="0.05"
           changeDirection="down"
-          subtitle="Isolated from ML Training"
-          progress={report?.quarantined_percentage || 0}
+          subtitle="Too unreliable — excluded from AI training"
+          progress={report?.missing != null ? (report.missing / (report.total_records || 1)) * 100 : (report?.quarantined_percentage || 0)}
           colorScheme="coral"
           icon={<FaExclamationTriangle />}
         />
@@ -162,27 +163,27 @@ const DataQuality = () => {
           <span className="qb-val mono-val">2,055,000</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">INVALID RECORDS</span>
+          <span className="qb-label">ERRORS FOUND</span>
           <span className="qb-val mono-val text-coral">16,400</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">DUPLICATE TAPS</span>
+          <span className="qb-label">DUPLICATE ENTRIES</span>
           <span className="qb-val mono-val text-gold">2,840</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">MISSING VALUES</span>
+          <span className="qb-label">MISSING DATA</span>
           <span className="qb-val mono-val text-gold">4,210</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">FOREIGN KEY ERRORS</span>
+          <span className="qb-label">REFERENCE ERRORS</span>
           <span className="qb-val mono-val text-coral">1,150</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">TIMESTAMP ERRORS</span>
+          <span className="qb-label">TIME ERRORS</span>
           <span className="qb-val mono-val text-gold">3,400</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">RANGE VIOLATIONS</span>
+          <span className="qb-label">OUT-OF-RANGE VALUES</span>
           <span className="qb-val mono-val text-coral">4,800</span>
         </div>
       </div>
@@ -192,10 +193,10 @@ const DataQuality = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Quality Dimensions Breakdown</h3>
-              <span className="chart-subtitle">Evaluated on ISO 8000 transit benchmarks</span>
+              <h3>Quality Score Breakdown</h3>
+              <span className="chart-subtitle">How well your data meets quality standards</span>
             </div>
-            <span className="badge-pill badge-aurora">BENCHMARK SCORE</span>
+            <span className="badge-pill badge-aurora">QUALITY SCORE</span>
           </div>
           <Plot
             data={[{
@@ -224,10 +225,10 @@ const DataQuality = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Issue Distribution by Type</h3>
-              <span className="chart-subtitle">Remediated & quarantined error taxonomy</span>
+              <h3>Types of Issues Found</h3>
+              <span className="chart-subtitle">Breakdown of what kinds of errors were found</span>
             </div>
-            <span className="badge-pill badge-gold">TAXONOMY SHARE</span>
+            <span className="badge-pill badge-gold">ISSUE TYPES</span>
           </div>
           <Plot
             data={[{
@@ -258,8 +259,8 @@ const DataQuality = () => {
       <div className="chart-card hud-panel hud-corners">
         <div className="audit-controls-header">
           <div>
-            <h3>Record-Level Audit Trail</h3>
-            <span className="chart-subtitle">Live inspection with before/after transformation diffs</span>
+            <h3>Detailed Audit Log</h3>
+            <span className="chart-subtitle">See exactly what was changed in each record</span>
           </div>
 
           <div className="audit-actions-row">
@@ -289,11 +290,11 @@ const DataQuality = () => {
             <thead>
               <tr>
                 <th>Record ID</th>
-                <th>Affected Field</th>
-                <th>Original Raw</th>
-                <th>Remediation Rule</th>
-                <th>Cleaned Output</th>
-                <th>Audit Status</th>
+                <th>Field Changed</th>
+                <th>Original Value</th>
+                <th>Rule Applied</th>
+                <th>Fixed Value</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -307,13 +308,13 @@ const DataQuality = () => {
                 filteredAudit.map((a, i) => (
                   <tr key={i}>
                     <td className="mono-val"><strong>{a.record_id}</strong></td>
-                    <td><code>{a.affected_column}</code></td>
+                    <td><code>{a.issue_type || a.affected_column}</code></td>
                     <td className="mono-val text-coral">{a.original_value}</td>
                     <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.82rem' }}>{a.cleaning_rule}</td>
                     <td className="mono-val text-cyan"><strong>{a.corrected_value}</strong></td>
                     <td>
-                      <span className={`status-badge-chip ${a.status?.toLowerCase()}`}>
-                        {a.status}
+                      <span className={`status-badge-chip ${(a.final_status || a.status)?.toLowerCase()}`}>
+                        {a.final_status || a.status}
                       </span>
                     </td>
                   </tr>

@@ -38,21 +38,21 @@ const WhatIfSimulator = () => {
 
   return (
     <div className="page-container whatif-page">
-      <PipelineBanner contextMessage="Counterfactual scenarios are simulated using the baseline model trained on historical data." />
+      <PipelineBanner contextMessage="Train the AI so you can test &quot;what if&quot; scenarios — like adding more buses or changing schedules — before making real changes." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>DECISION INTELLIGENCE // COUNTERFACTUAL ENGINE</span>
+            <span>WHAT-IF SCENARIOS — TEST CHANGES BEFORE MAKING THEM</span>
           </div>
           <h1 className="hero-main-title">What-If Scenario Sandbox</h1>
           <p className="hero-desc">
-            Simulate operational interventions across Karachi's corridors: inject additional vehicles, compress headways, and observe counterfactual impact on dwell delays and overcrowding.
+            Test different scenarios before implementing them. Add more buses, change frequencies, or adjust demand — and instantly see how it would affect delays and crowding.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaBolt className="text-cyan" /> ELASTICITY MODEL ACTIVE</span>
+          <span className="sys-badge"><FaBolt className="text-cyan" /> SIMULATOR READY</span>
         </div>
       </div>
 
@@ -62,15 +62,15 @@ const WhatIfSimulator = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Scenario Builder Levers</h3>
-              <span className="chart-subtitle">Operational dispatch adjustments</span>
+              <h3>Scenario Settings</h3>
+              <span className="chart-subtitle">Adjust these settings to test different scenarios</span>
             </div>
-            <span className="badge-pill badge-aurora">DISPATCH CONFIG</span>
+            <span className="badge-pill badge-aurora">SETTINGS</span>
           </div>
 
           <div className="sim-levers-form">
             <div className="sim-field-group">
-              <label>CORRIDOR SELECTION</label>
+              <label>SELECT ROUTE</label>
               <select value={routeId} onChange={e => setRouteId(e.target.value)}>
                 <option value="PB-01">PB-01 (Peoples Bus: Model Colony ⇄ Tower)</option>
                 <option value="GL-01">GL-01 (Green Line BRT: Surjani ⇄ Numaish)</option>
@@ -81,7 +81,7 @@ const WhatIfSimulator = () => {
 
             <div className="sim-field-group">
               <div className="sim-slider-label">
-                <label>ADDITIONAL VEHICLES IN SERVICE</label>
+                <label>EXTRA BUSES TO ADD</label>
                 <span className="mono-val text-cyan">+{vehicleCount} Buses</span>
               </div>
               <input 
@@ -93,7 +93,7 @@ const WhatIfSimulator = () => {
 
             <div className="sim-field-group">
               <div className="sim-slider-label">
-                <label>FREQUENCY BOOST</label>
+                <label>INCREASE BUS FREQUENCY</label>
                 <span className="mono-val text-gold">+{frequencyMod}%</span>
               </div>
               <input 
@@ -105,7 +105,7 @@ const WhatIfSimulator = () => {
 
             <div className="sim-field-group">
               <div className="sim-slider-label">
-                <label>PASSENGER DEMAND SHIFT</label>
+                <label>CHANGE IN PASSENGER DEMAND</label>
                 <span className="mono-val">+{demandMod}%</span>
               </div>
               <input 
@@ -121,7 +121,7 @@ const WhatIfSimulator = () => {
               className="btn-primary-hud"
               style={{ marginTop: '12px', width: '100%', justifyContent: 'center' }}
             >
-              {loading ? 'Simulating Dynamic Network Elasticity...' : <><FaBolt /> Run Counterfactual Simulation</>}
+              {loading ? 'Running Simulation...' : <><FaBolt /> Run Simulation</>}
             </button>
           </div>
         </div>
@@ -130,25 +130,25 @@ const WhatIfSimulator = () => {
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Baseline vs Simulated Impact</h3>
-              <span className="chart-subtitle">Projected operational delta</span>
+              <h3>Current vs Simulated Results</h3>
+              <span className="chart-subtitle">See how your changes would affect performance</span>
             </div>
-            <span className="badge-pill badge-gold">COUNTERFACTUAL</span>
+            <span className="badge-pill badge-gold">COMPARISON</span>
           </div>
 
           {results ? (
             <div className="sim-results-grid">
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">NETWORK OCCUPANCY</span>
+                <span className="smc-label">BUS CROWDING</span>
                 <div className="smc-compare">
                   <div className="smc-val-box baseline">
-                    <span className="smc-sub">BASELINE</span>
-                    <span className="mono-val">{(results.baseline.current_avg_occupancy * 100).toFixed(1)}%</span>
+                    <span className="smc-sub">CURRENT</span>
+                    <span className="mono-val">{((results?.baseline?.avg_occupancy || 0) * 100).toFixed(1)}%</span>
                   </div>
                   <span className="smc-arrow">➔</span>
                   <div className="smc-val-box simulated">
-                    <span className="smc-sub">SIMULATED</span>
-                    <span className="mono-val text-cyan">{(results.simulated.SIMULATED_avg_occupancy * 100).toFixed(1)}%</span>
+                    <span className="smc-sub">WITH CHANGES</span>
+                    <span className="mono-val text-cyan">{((results?.simulated?.avg_occupancy || 0) * 100).toFixed(1)}%</span>
                   </div>
                 </div>
               </div>
@@ -157,57 +157,57 @@ const WhatIfSimulator = () => {
                 <span className="smc-label">PASSENGER WAIT TIME</span>
                 <div className="smc-compare">
                   <div className="smc-val-box baseline">
-                    <span className="smc-sub">BASELINE</span>
-                    <span className="mono-val">{results.baseline.current_wait_time_minutes}m</span>
+                    <span className="smc-sub">CURRENT</span>
+                    <span className="mono-val">{results?.baseline?.avg_wait_time_minutes || 0}m</span>
                   </div>
                   <span className="smc-arrow">➔</span>
                   <div className="smc-val-box simulated">
-                    <span className="smc-sub">SIMULATED</span>
-                    <span className="mono-val text-cyan">{results.simulated.SIMULATED_wait_time_minutes}m</span>
+                    <span className="smc-sub">WITH CHANGES</span>
+                    <span className="mono-val text-cyan">{results?.simulated?.avg_wait_time_minutes || 0}m</span>
                   </div>
                 </div>
               </div>
 
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">EXPECTED TRIP DELAY</span>
+                <span className="smc-label">EXPECTED DELAY</span>
                 <div className="smc-compare">
                   <div className="smc-val-box baseline">
-                    <span className="smc-sub">BASELINE</span>
-                    <span className="mono-val">{results.baseline.current_avg_delay || '16.4'}m</span>
+                    <span className="smc-sub">CURRENT</span>
+                    <span className="mono-val">{results?.baseline?.avg_delay || '16.4'}m</span>
                   </div>
                   <span className="smc-arrow">➔</span>
                   <div className="smc-val-box simulated">
-                    <span className="smc-sub">SIMULATED</span>
-                    <span className="mono-val text-cyan">{results.simulated.SIMULATED_avg_delay || '7.2'}m</span>
+                    <span className="smc-sub">WITH CHANGES</span>
+                    <span className="mono-val text-cyan">{results?.simulated?.avg_delay || '7.2'}m</span>
                   </div>
                 </div>
               </div>
 
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">BOTTLENECK SENSITIVITY</span>
+                <span className="smc-label">PROBLEM AREAS</span>
                 <div className="smc-compare">
                   <div className="smc-val-box baseline">
-                    <span className="smc-sub">BASELINE</span>
-                    <span className="mono-val">{results.baseline.bottlenecks || 3} Chokepoints</span>
+                    <span className="smc-sub">CURRENT</span>
+                    <span className="mono-val">{results?.baseline?.bottlenecks || 3} Problem Areas</span>
                   </div>
                   <span className="smc-arrow">➔</span>
                   <div className="smc-val-box simulated">
-                    <span className="smc-sub">SIMULATED</span>
-                    <span className="mono-val text-cyan">{results.simulated.SIMULATED_bottlenecks || 1} Chokepoint</span>
+                    <span className="smc-sub">WITH CHANGES</span>
+                    <span className="mono-val text-cyan">{results?.simulated?.bottlenecks || 1} Problem Area</span>
                   </div>
                 </div>
               </div>
 
               <div className="sim-caveats-box">
-                <span className="scb-title">SIMULATION CAVEATS:</span>
-                <p>{results.caveats?.join('; ') || 'Assumes constant road capacity and linear passenger elasticity.'}</p>
+                <span className="scb-title">NOTE:</span>
+                <p>{(Array.isArray(results?.caveats) ? results.caveats.join('; ') : results?.caveats) || 'This simulation assumes road conditions stay the same and passenger behavior changes proportionally.'}</p>
               </div>
             </div>
           ) : (
             <div className="inference-empty-state">
               <FaExchangeAlt className="empty-brain-icon" />
-              <h4>Configure Scenario Levers</h4>
-              <p>Adjust dispatch count and frequency boost, then execute simulation to view counterfactual metrics.</p>
+              <h4>Set Up Your Scenario</h4>
+              <p>Choose a route, add extra buses or change the frequency, then click "Run Simulation" to see the predicted results.</p>
             </div>
           )}
         </div>

@@ -352,8 +352,8 @@ const Login = () => {
           </div>
           <div className="stat-separator">•</div>
           <div className="stat-item">
-            <span className="stat-num">PostgreSQL</span>
-            <span className="stat-label">Live Fabric</span>
+            <span className="stat-num">MongoDB</span>
+            <span className="stat-label">Live Database</span>
           </div>
         </div>
       </div>

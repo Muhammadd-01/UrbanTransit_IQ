@@ -92,14 +92,15 @@ def _user_to_dict(user: User) -> Dict[str, Any]:
 
 
 def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
-    """Retrieve user from PostgreSQL if configured, otherwise from local registry."""
+    """Retrieve user from MongoDB if configured, otherwise from local registry."""
     try:
-        with SessionLocal() as db:
-            user = db.query(User).filter(User.email == email).first()
-            if user:
-                return _user_to_dict(user)
+        from backend.app.database.mongo import get_mongo_db
+        db = get_mongo_db()
+        user = db.users.find_one({"email": email}, {"_id": 0})
+        if user:
+            return user
     except Exception as e:
-        logger.warning(f"Failed to query PostgreSQL for user {email}: {e}. Falling back to local store.")
+        logger.warning(f"Failed to query MongoDB for user {email}: {e}. Falling back to local store.")
 
     return _DEV_USERS.get(email)
 
@@ -116,35 +117,26 @@ def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
 
 def create_user(user_create: Any) -> Dict[str, Any]:
     """Create a new user account."""
+    import uuid
     email = user_create.email
     hashed = hash_password(user_create.password)
     role = getattr(user_create, "role", "viewer")
-    
-    try:
-        with SessionLocal() as db:
-            new_user = User(
-                email=email,
-                full_name=user_create.full_name,
-                hashed_password=hashed,
-                role=role,
-                is_active=True
-            )
-            db.add(new_user)
-            db.commit()
-            db.refresh(new_user)
-            return _user_to_dict(new_user)
-    except Exception as e:
-        logger.warning(f"Failed to persist user in PostgreSQL: {e}. Storing in memory.")
-
     user_record = {
-        "id": "00000000-0000-0000-0000-000000000003",
+        "id": str(uuid.uuid4()),
         "email": email,
         "full_name": user_create.full_name,
         "hashed_password": hashed,
         "role": role,
         "is_active": True,
         "created_at": datetime.utcnow().isoformat(),
-        "last_login": None,
+        "last_login": None
     }
-    _DEV_USERS[email] = user_record
-    return user_record
+    try:
+        from backend.app.database.mongo import get_mongo_db
+        db = get_mongo_db()
+        db.users.update_one({"email": email}, {"$set": user_record}, upsert=True)
+        return user_record
+    except Exception as e:
+        logger.warning(f"Failed to persist user in MongoDB: {e}. Storing in memory.")
+        _DEV_USERS[email] = user_record
+        return user_record

@@ -19,7 +19,7 @@ const periodicElements = [
   { id: 'Ka', name: 'Kafka', group: 'bigdata', num: 23, desc: 'Event Streaming' },
   { id: 'Pq', name: 'Parquet', group: 'bigdata', num: 24, desc: 'Columnar Format' },
 
-  { id: 'Ps', name: 'PostgreSQL', group: 'database', num: 31, desc: 'Relational Ledger' },
+  { id: 'Mg', name: 'MongoDB', group: 'database', num: 31, desc: 'Document Database' },
   { id: 'Su', name: 'Supabase', group: 'database', num: 32, desc: 'BaaS Provider' },
   { id: 'Rd', name: 'Redis', group: 'database', num: 33, desc: 'In-Memory Cache' },
   { id: 'S3', name: 'S3 Bucket', group: 'database', num: 34, desc: 'Object Storage' },

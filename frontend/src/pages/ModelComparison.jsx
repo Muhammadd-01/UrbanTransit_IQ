@@ -1,12 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { FilterContext } from '../contexts/FilterContext';
-import { liveComparisonAPI } from '../api/client';
+import { AuthContext } from '../contexts/AuthContext';
+import { liveComparisonAPI, pipelineAPI } from '../api/client';
 import { FaCheckCircle, FaExclamationCircle, FaShieldAlt, FaBalanceScale, FaBolt, FaPython, FaExchangeAlt, FaCogs, FaDatabase, FaFileExport, FaInfoCircle, FaArrowRight, FaClock, FaUsers } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './ModelComparison.css';
 
 const ModelComparison = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
+  const { user } = useContext(AuthContext);
+  const role = user?.role || 'viewer';
+  const isAdmin = role === 'admin';
 
   const [sparkResult, setSparkResult] = useState(null);
   const [xgbResult, setXgbResult] = useState(null);
@@ -14,12 +18,54 @@ const ModelComparison = () => {
   const [filterMode, setFilterMode] = useState('ALL');
   const [loading, setLoading] = useState(false);
 
-  // Load any exported results from Dashboard on mount
+  // Load any exported results from Dashboard on mount (or auto-fetch from backend trained models)
   useEffect(() => {
     const savedSpark = localStorage.getItem('pipeline_spark_result');
     const savedXgb = localStorage.getItem('pipeline_xgb_result');
-    if (savedSpark) setSparkResult(JSON.parse(savedSpark));
-    if (savedXgb) setXgbResult(JSON.parse(savedXgb));
+    let hasSpark = false;
+    let hasXgb = false;
+    try { if (savedSpark) { setSparkResult(JSON.parse(savedSpark)); hasSpark = true; } } catch(e) { console.error(e); }
+    try { if (savedXgb) { setXgbResult(JSON.parse(savedXgb)); hasXgb = true; } } catch(e) { console.error(e); }
+
+    // If not in localStorage, fetch from pipeline status so ALL roles can see the trained model comparison immediately
+    if (!hasSpark || !hasXgb) {
+      pipelineAPI.getStatus().then(res => {
+        if (!hasSpark && res.data?.spark_is_trained && res.data?.spark_raw_data) {
+          setSparkResult({
+            pred: res.data.spark_pred || "ON-TIME",
+            confidence: res.data.spark_confidence || "100.0%",
+            latency: res.data.spark_latency || "25ms",
+            accuracy: res.data.spark_acc,
+            f1_score: res.data.spark_f1,
+            mae: res.data.spark_mae,
+            rmse: res.data.spark_rmse,
+            mape: res.data.spark_mape,
+            r2: res.data.spark_r2,
+            records_used: res.data.records_used,
+            raw_data: res.data.spark_raw_data,
+            trained_at: res.data.trained_at,
+            training_time_seconds: res.data.training_time_seconds,
+          });
+        }
+        if (!hasXgb && res.data?.xgb_is_trained && res.data?.xgb_raw_data) {
+          setXgbResult({
+            pred: res.data.xgb_pred || "ON-TIME",
+            confidence: res.data.xgb_confidence || "100.0%",
+            latency: res.data.xgb_latency || "12ms",
+            accuracy: res.data.xgb_acc,
+            f1_score: res.data.xgb_f1,
+            mae: res.data.xgb_mae,
+            rmse: res.data.xgb_rmse,
+            mape: res.data.xgb_mape,
+            r2: res.data.xgb_r2,
+            records_used: res.data.records_used,
+            raw_data: res.data.xgb_raw_data,
+            trained_at: res.data.trained_at,
+            training_time_seconds: res.data.training_time_seconds,
+          });
+        }
+      }).catch(console.error);
+    }
   }, []);
 
   const runComparison = async () => {
@@ -67,8 +113,8 @@ const ModelComparison = () => {
       isDelayed,
       severity,
       summary: isDelayed
-        ? `${modelName} predicts that the next bus service will likely be DELAYED. Based on ${(result.records_used || 0).toLocaleString()} historical records, the model is ${result.confidence} confident in this prediction. Current boarding activity (${result.raw_data.boarding} passengers) and vehicle load (${result.raw_data.load} passengers) at the ${result.raw_data.hour}:00 hour suggest congestion pressure.`
-        : `${modelName} predicts that the next bus service will run ON TIME. Based on ${(result.records_used || 0).toLocaleString()} historical records, the model is ${result.confidence} confident. Current conditions at the ${result.raw_data.hour}:00 hour show manageable boarding (${result.raw_data.boarding} PAX) and load (${result.raw_data.load} PAX) levels.`,
+        ? `${modelName} predicts that the next bus service will likely be DELAYED. Based on ${(result?.records_used || 0).toLocaleString()} historical records, the model is ${result?.confidence || '0%'} confident in this prediction. Current boarding activity (${result?.raw_data?.boarding || 0} passengers) and vehicle load (${result?.raw_data?.load || 0} passengers) at the ${result?.raw_data?.hour || 0}:00 hour suggest congestion pressure.`
+        : `${modelName} predicts that the next bus service will run ON TIME. Based on ${(result?.records_used || 0).toLocaleString()} historical records, the model is ${result?.confidence || '0%'} confident. Current conditions at the ${result?.raw_data?.hour || 0}:00 hour show manageable boarding (${result?.raw_data?.boarding || 0} Passengers) and load (${result?.raw_data?.load || 0} Passengers) levels.`,
       whatItMeans: isDelayed
         ? `This means commuters may experience longer wait times. Transit operators should consider deploying additional buses or adjusting signal timings to reduce congestion.`
         : `This means the transit system is operating smoothly under current conditions. No immediate corrective action is required.`
@@ -85,16 +131,16 @@ const ModelComparison = () => {
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>DUAL-ENGINE VALIDATION // CONSENSUS PIPELINE</span>
+            <span>AI MODEL COMPARISON — DO BOTH MODELS AGREE?</span>
           </div>
-          <h1 className="hero-main-title">Pipeline Consensus & Analytics</h1>
+          <h1 className="hero-main-title">AI Model Comparison</h1>
           <p className="hero-desc">
             Two independent AI models analyze the same transit data and predict whether the next bus will be delayed or on time. Compare their predictions to validate accuracy and build confidence in the results.
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaShieldAlt className="text-cyan" /> {comparisonData ? `${comparisonData.agreement_rate}% CONGRUENCE` : 'AWAITING DATA'}</span>
-          <span className="sys-badge"><FaCheckCircle className="text-cyan" /> {hasBothPipelines ? 'BOTH PIPELINES READY' : 'EXPORT FROM DASHBOARD'}</span>
+          <span className="sys-badge"><FaShieldAlt className="text-cyan" /> {comparisonData ? `${comparisonData.agreement_rate}% AGREEMENT` : 'AWAITING DATA'}</span>
+          <span className="sys-badge"><FaCheckCircle className="text-cyan" /> {hasBothPipelines ? 'BOTH MODELS READY' : 'TRAIN MODELS FIRST'}</span>
         </div>
       </div>
 
@@ -138,9 +184,9 @@ const ModelComparison = () => {
       {/* KPI Cards */}
       <div className="kpi-grid-four">
         <KPICard 
-          title="SPARK PIPELINE"
+          title="SPARK AI MODEL"
           value={sparkResult ? `${sparkResult.accuracy}%` : '— No Data —'}
-          techCode="MLLIB // ACC"
+          techCode="Accuracy"
           change={sparkResult ? 'Exported' : 'Pending'}
           changeDirection={sparkResult ? 'up' : 'flat'}
           subtitle={sparkResult ? `${sparkResult.records_used?.toLocaleString()} records trained` : 'Run on Dashboard first'}
@@ -149,9 +195,9 @@ const ModelComparison = () => {
           icon={<FaBolt />}
         />
         <KPICard 
-          title="XGBOOST PIPELINE"
+          title="XGBOOST AI MODEL"
           value={xgbResult ? `${xgbResult.accuracy}%` : '— No Data —'}
-          techCode="XGB // ACC"
+          techCode="Accuracy"
           change={xgbResult ? 'Exported' : 'Pending'}
           changeDirection={xgbResult ? 'up' : 'flat'}
           subtitle={xgbResult ? `${xgbResult.records_used?.toLocaleString()} records trained` : 'Run on Dashboard first'}
@@ -162,10 +208,10 @@ const ModelComparison = () => {
         <KPICard 
           title="MODEL AGREEMENT"
           value={comparisonData ? `${comparisonData.agreement_rate}%` : '— Not Compared —'}
-          techCode="REC // AGR"
+          techCode="Match Rate"
           change={comparisonData ? 'Live' : 'Pending'}
           changeDirection={comparisonData ? 'up' : 'flat'}
-          subtitle={comparisonData ? 'Consensus calculated' : 'Click Compare below'}
+          subtitle={comparisonData ? 'How often both models agree' : 'Click Compare below'}
           progress={comparisonData ? comparisonData.agreement_rate : 0}
           colorScheme="cyan"
           icon={<FaBalanceScale />}
@@ -173,10 +219,10 @@ const ModelComparison = () => {
         <KPICard 
           title="TOTAL RECORDS"
           value={sparkResult ? sparkResult.records_used?.toLocaleString() : '0'}
-          techCode="POSTGRES // ROWS"
+          techCode="Records"
           change="Live"
           changeDirection="up"
-          subtitle="PostgreSQL telemetry rows"
+          subtitle="Training data records from database"
           progress={100}
           colorScheme="emerald"
           icon={<FaDatabase />}
@@ -196,7 +242,7 @@ const ModelComparison = () => {
                 disabled={loading}
                 style={{ padding: '16px 48px', fontSize: '1.1rem', background: 'var(--color-accent)', color: '#FFFFFF', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, boxShadow: '0 4px 14px rgba(0, 122, 255, 0.3)' }}
               >
-                {loading ? '⏳ Running Consensus Analysis...' : '⚡ Run Full Consensus Comparison'}
+                {loading ? '⏳ Comparing predictions...' : '⚡ Compare Both Models'}
               </button>
               <button
                 onClick={clearAll}
@@ -209,9 +255,11 @@ const ModelComparison = () => {
         ) : (
           <div>
             <FaCogs size={48} style={{ color: 'var(--color-text-muted)', marginBottom: '12px' }} />
-            <h3 style={{ color: 'var(--color-text-secondary)' }}>Pipeline Data Not Yet Exported</h3>
+            <h3 style={{ color: 'var(--color-text-secondary)' }}>Pipeline Data Not Yet Deployed</h3>
             <p style={{ color: 'var(--color-text-muted)', maxWidth: '600px', margin: '8px auto' }}>
-              Go to the <strong>Dashboard</strong>, execute each pipeline (PySpark & XGBoost), and click the <strong>"Export to Compare Page"</strong> button after each run. Then come back here to compare.
+              {isAdmin 
+                ? 'Go to the Dashboard, execute each pipeline (Spark & XGBoost), and click the "Export to Compare Page" button after each run. Then come back here to compare.'
+                : 'Awaiting Administrator Training — The AI models have not been trained yet. Please contact an Administrator to deploy models.'}
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '16px' }}>
               <span style={{ padding: '8px 20px', borderRadius: '6px', background: sparkResult ? '#DCFCE7' : '#FEE2E2', color: sparkResult ? '#16A34A' : '#DC2626', fontWeight: 600, fontSize: '0.9rem' }}>
@@ -233,7 +281,7 @@ const ModelComparison = () => {
             <div className="pipeline-side-header">
               <div className="psh-title">
                 <FaBolt className="text-gold" />
-                <h3>SPARK PIPELINE RESULT</h3>
+                <h3>SPARK MODEL PREDICTION</h3>
               </div>
               <span className="tech-tag-sm">{sparkResult ? 'EXPORTED' : 'PENDING'}</span>
             </div>
@@ -256,15 +304,15 @@ const ModelComparison = () => {
                   <div className="rds-items">
                     <div className="rds-item">
                       <span className="rds-key"><FaUsers /> Boarding</span>
-                      <span className="rds-val">{sparkResult.raw_data.boarding} PAX</span>
+                      <span className="rds-val">{sparkResult?.raw_data?.boarding || 0} Passengers</span>
                     </div>
                     <div className="rds-item">
                       <span className="rds-key">Vehicle Load</span>
-                      <span className="rds-val">{sparkResult.raw_data.load} PAX</span>
+                      <span className="rds-val">{sparkResult?.raw_data?.load || 0} Passengers</span>
                     </div>
                     <div className="rds-item">
                       <span className="rds-key"><FaClock /> Time</span>
-                      <span className="rds-val">{sparkResult.raw_data.hour}:00</span>
+                      <span className="rds-val">{sparkResult?.raw_data?.hour || 0}:00</span>
                     </div>
                   </div>
                 </div>
@@ -292,7 +340,7 @@ const ModelComparison = () => {
             <div className="pipeline-side-header">
               <div className="psh-title">
                 <FaPython className="text-cyan" />
-                <h3>XGBOOST PIPELINE RESULT</h3>
+                <h3>XGBOOST MODEL PREDICTION</h3>
               </div>
               <span className="tech-tag-sm">{xgbResult ? 'EXPORTED' : 'PENDING'}</span>
             </div>
@@ -315,15 +363,15 @@ const ModelComparison = () => {
                   <div className="rds-items">
                     <div className="rds-item">
                       <span className="rds-key"><FaUsers /> Boarding</span>
-                      <span className="rds-val">{xgbResult.raw_data.boarding} PAX</span>
+                      <span className="rds-val">{xgbResult?.raw_data?.boarding || 0} Passengers</span>
                     </div>
                     <div className="rds-item">
                       <span className="rds-key">Vehicle Load</span>
-                      <span className="rds-val">{xgbResult.raw_data.load} PAX</span>
+                      <span className="rds-val">{xgbResult?.raw_data?.load || 0} Passengers</span>
                     </div>
                     <div className="rds-item">
                       <span className="rds-key"><FaClock /> Time</span>
-                      <span className="rds-val">{xgbResult.raw_data.hour}:00</span>
+                      <span className="rds-val">{xgbResult?.raw_data?.hour || 0}:00</span>
                     </div>
                   </div>
                 </div>
@@ -372,18 +420,18 @@ const ModelComparison = () => {
 
           <div className="audit-controls-header">
             <div>
-              <h3>{cases.length}-Case Discrepancy & Consistency Ledger</h3>
-              <span className="chart-subtitle">Direct case-by-case prediction reconciliation with boundary condition attribution</span>
+              <h3>{cases.length} Test Cases — Prediction Comparison</h3>
+              <span className="chart-subtitle">Comparing each model's prediction side by side</span>
             </div>
             <div className="audit-chip-group">
               <button onClick={() => setFilterMode('ALL')} className={`filter-chip-btn ${filterMode === 'ALL' ? 'active' : ''}`}>
                 ALL CASES ({cases.length})
               </button>
               <button onClick={() => setFilterMode('AGREEMENT')} className={`filter-chip-btn ${filterMode === 'AGREEMENT' ? 'active' : ''}`}>
-                MATCHING ({cases.filter(c => c.match_status).length})
+                AGREEMENTS ({cases.filter(c => c.match_status).length})
               </button>
               <button onClick={() => setFilterMode('DISCREPANCY')} className={`filter-chip-btn ${filterMode === 'DISCREPANCY' ? 'active' : ''}`}>
-                DISCREPANCIES ({cases.filter(c => !c.match_status).length})
+                DISAGREEMENTS ({cases.filter(c => !c.match_status).length})
               </button>
             </div>
           </div>
@@ -393,12 +441,12 @@ const ModelComparison = () => {
               <thead>
                 <tr>
                   <th>Case ID</th>
-                  <th>Ground Truth</th>
+                  <th>Actual Result</th>
                   <th>Spark MLlib</th>
                   <th>Python XGBoost</th>
-                  <th>Probability Δ</th>
-                  <th>Match State</th>
-                  <th>Boundary Explanation</th>
+                  <th>Confidence Diff</th>
+                  <th>Agreement</th>
+                  <th>Why They Differ</th>
                 </tr>
               </thead>
               <tbody>
@@ -425,7 +473,7 @@ const ModelComparison = () => {
                     <td className="mono-val text-cyan">{c.numerical_difference}</td>
                     <td>
                       <span className={`match-badge ${c.match_status ? 'agreement' : 'discrepancy'}`}>
-                        {c.match_status ? 'CONGRUENT' : 'BOUNDARY DIVERGENCE'}
+                        {c.match_status ? 'AGREE' : 'DISAGREE (CLOSE CALL)'}
                       </span>
                     </td>
                     <td style={{ fontSize: '0.82rem', color: 'var(--color-text-secondary)' }}>

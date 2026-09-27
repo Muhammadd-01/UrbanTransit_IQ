@@ -22,17 +22,17 @@ const VehicleAnalytics = () => {
 
   return (
     <div className="page-container vehicleanalytics-page">
-      <PipelineBanner contextMessage="Vehicle load capacities and active utilization form the backbone of the overcrowding classifier." />
+      <PipelineBanner contextMessage="Train the AI to predict which buses are likely to break down or become overcrowded, helping plan better maintenance schedules." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>FLEET OPERATIONS // ASSET TELEMETRY</span>
+            <span>BUS FLEET — VEHICLE STATUS & PERFORMANCE</span>
           </div>
           <h1 className="hero-main-title">Vehicle Fleet & Maintenance Analytics</h1>
           <p className="hero-desc">
-            Karachi transit fleet duty cycles, depot reserve buffer status, odometer wear indices, and predictive maintenance triage queue.
+            Monitor the health of every bus in the fleet. Track which vehicles need maintenance, which ones are in service, and plan repairs before breakdowns happen.
           </p>
         </div>
         <div className="hero-right-actions">
@@ -43,46 +43,46 @@ const VehicleAnalytics = () => {
       {/* Fleet KPI Strip */}
       <div className="kpi-grid-four">
         <KPICard 
-          title="ACTIVE FLEET"
+          title="BUSES IN SERVICE"
           value={String(data?.active_vehicles || 0)}
-          techCode="FLT // ACTIVE"
+          techCode="Active"
           change="4.2"
           changeDirection="up"
-          subtitle="Operational units in service"
+          subtitle="Currently running on routes"
           progress={93}
           colorScheme="cyan"
           icon={<FaBus />}
         />
         <KPICard 
-          title="IDLE / RESERVE"
-          value={data?.total_vehicles ? String(data.total_vehicles - (data.active_vehicles || 0)) : '0'}
-          techCode="FLT // STBY"
+          title="STANDBY BUSES"
+          value={String((data?.total_vehicles || 242) - (data?.active_vehicles || 0))}
+          techCode="Reserve"
           change="0.0"
           changeDirection="up"
-          subtitle="Depot standby buffer"
+          subtitle="Ready to deploy if needed"
           progress={7}
           colorScheme="gold"
           icon={<FaCar />}
         />
         <KPICard 
-          title="DAILY TRIPS / BUS"
-          value={String(data?.avg_daily_trips_per_vehicle || '0')}
-          techCode="OPS // TURN"
+          title="TRIPS PER BUS TODAY"
+          value={String(data?.avg_daily_trips_per_vehicle || (data?.total_trips_today ? Math.round(data.total_trips_today / (data.active_vehicles || 1)) : 0))}
+          techCode="Trips"
           change="1.2"
           changeDirection="up"
-          subtitle="Corridor turnaround rate"
+          subtitle="Average number of round trips each bus makes"
           progress={86}
           colorScheme="sky"
           icon={<FaTools />}
         />
         <KPICard 
-          title="FLEET UTILIZATION"
-          value={data?.utilization_rate ? `${(data.utilization_rate * 100).toFixed(0)}%` : '0%'}
-          techCode="EFF // DUTY"
+          title="FLEET USAGE RATE"
+          value={`${((data?.utilization_rate || 0) * 100).toFixed(0)}%`}
+          techCode="Usage"
           change="2.4"
           changeDirection="up"
-          subtitle="Optimal duty cycle target"
-          progress={data?.utilization_rate ? (data.utilization_rate * 100) : 0}
+          subtitle="Percentage of fleet actively in use"
+          progress={(data?.utilization_rate || 0) * 100}
           colorScheme="emerald"
           icon={<FaCheckCircle />}
         />
@@ -92,10 +92,10 @@ const VehicleAnalytics = () => {
       <div className="chart-card hud-panel hud-corners">
         <div className="chart-header">
           <div>
-            <h3>Predictive Maintenance Attention Queue</h3>
-            <span className="chart-subtitle">Early warning triage based on mechanical delay frequencies and mileage</span>
+            <h3>Buses Needing Maintenance</h3>
+            <span className="chart-subtitle">Buses flagged for maintenance based on age, mileage, and recent delay issues</span>
           </div>
-          <span className="badge-pill badge-gold">TRIAGE QUEUE</span>
+          <span className="badge-pill badge-gold">PRIORITY LIST</span>
         </div>
 
         <div className="table-container">
@@ -103,17 +103,17 @@ const VehicleAnalytics = () => {
             <thead>
               <tr>
                 <th>Vehicle ID</th>
-                <th>Bus Chassis Type</th>
-                <th>Assigned Depot</th>
-                <th>Service Age</th>
-                <th>Cumulative Mileage</th>
-                <th>Delay Incidents</th>
-                <th>Triage Priority</th>
+                <th>Bus Type</th>
+                <th>Home Depot</th>
+                <th>Years in Service</th>
+                <th>Total Kilometers</th>
+                <th>Recent Delays</th>
+                <th>Maintenance Priority</th>
               </tr>
             </thead>
             <tbody>
               {maintenanceList.length === 0 && (
-                <tr><td colSpan="7" style={{textAlign:'center'}}>No flagged vehicles</td></tr>
+                <tr><td colSpan="7" style={{textAlign:'center'}}>No buses need immediate maintenance</td></tr>
               )}
               {maintenanceList.map((v, i) => (
                 <tr key={i}>

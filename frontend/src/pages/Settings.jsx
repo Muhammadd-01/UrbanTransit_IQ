@@ -120,8 +120,8 @@ const Settings = () => {
               <strong className="mono-val text-white">Replication 1 / 64MB Block Size</strong>
             </div>
             <div className="ps-row">
-              <span className="ps-label">DATABASE FABRIC:</span>
-              <strong className="mono-val text-gold">PostgreSQL (Supabase) with RLS Enforced</strong>
+              <span className="ps-label">DATABASE:</span>
+              <strong className="mono-val text-gold">MongoDB Compass (Port 27017)</strong>
             </div>
             <div className="ps-row">
               <span className="ps-label">FASTAPI GATEWAY:</span>

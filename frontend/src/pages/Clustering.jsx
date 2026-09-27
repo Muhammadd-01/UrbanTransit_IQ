@@ -29,48 +29,48 @@ const Clustering = () => {
 
   return (
     <div className="page-container clustering-page">
-      <PipelineBanner contextMessage="Passenger segments derived directly from the trained historical dataset." />
+      <PipelineBanner contextMessage="Train the AI to automatically group similar routes together, helping identify which routes need more buses or schedule changes." />
       {/* Header */}
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>UNSUPERVISED MACHINE LEARNING // K-MEANS PARTITIONING</span>
+            <span>ROUTE GROUPING — SIMILAR ROUTES CLUSTERED TOGETHER</span>
           </div>
           <h1 className="hero-main-title">Route & Commuter Clustering</h1>
           <p className="hero-desc">
-            K-Means algorithm partitioning Karachi's 110 transit lines into behavioral operating archetypes evaluated on load factor, passenger volume, and schedule reliability.
+            The AI automatically groups Karachi's 110 bus routes into categories based on how busy they are, how many passengers they carry, and how reliable their schedules are.
           </p>
         </div>
         <div className="hero-right-actions">
           <div className="sys-badge">
-            <span className="mono-val text-cyan">SILHOUETTE: {silhouette}</span>
+            <span className="mono-val text-cyan">GROUP QUALITY: {silhouette}</span>
           </div>
         </div>
       </div>
 
       {/* Cluster Grid */}
       <div className="clusters-grid">
-        {loading && <div style={{padding: '20px'}}>Loading clusters...</div>}
+        {loading && <div style={{padding: '20px'}}>Finding route groups...</div>}
         {!loading && clusters.length === 0 && (
-          <div style={{padding: '20px', color: '#64748B'}}>No clusters found.</div>
+          <div style={{padding: '20px', color: '#64748B'}}>No route groups found.</div>
         )}
         {!loading && clusters.map((c, i) => (
           <div key={i} className="chart-card hud-panel hud-corners cluster-card">
             <div className="cluster-card-top">
               <span className="badge-pill badge-aurora">
-                CLUSTER GROUP #{i + 1}
+                ROUTE GROUP #{i + 1}
               </span>
-              <span className="cluster-k-tag mono-val text-dim">K = {clusters.length}</span>
+              <span className="cluster-k-tag mono-val text-dim">{clusters.length} Groups</span>
             </div>
 
             <h3 className="cluster-title">{c.name}</h3>
             <p className="cluster-desc">{c.description}</p>
             
             <div className="cluster-centroid-box">
-              <span className="ccb-label">CENTROID COORDINATES:</span>
+              <span className="ccb-label">GROUP AVERAGES:</span>
               <div className="ccb-row">
-                <span className="ccb-stat-name">Avg Daily Demand:</span>
+                <span className="ccb-stat-name">Avg Daily Passengers:</span>
                 <strong className="mono-val">{c.centroid?.avg_demand?.toLocaleString() || 0} Pax</strong>
               </div>
               <div className="ccb-row">
@@ -84,7 +84,7 @@ const Clustering = () => {
             </div>
 
             <div className="cluster-members-section">
-              <span className="members-title">MEMBER CORRIDORS:</span>
+              <span className="members-title">ROUTES IN THIS GROUP:</span>
               <div className="members-pill-wrap">
                 {c.members?.map((m, idx) => (
                   <span key={idx} className="member-corridor-pill">

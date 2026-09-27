@@ -8,7 +8,7 @@ class DatasetCreate(BaseModel):
     scale: str
 
 class DatasetResponse(BaseModel):
-    id: UUID
+    id: str
     name: str
     scale: str
     status: str

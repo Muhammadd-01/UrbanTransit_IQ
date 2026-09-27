@@ -1,48 +1,15 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: urbantransit_postgres
+  mongodb:
+    image: mongo:7.0
+    container_name: urbantransit_mongodb
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: urbantransit_iq
-      POSTGRES_USER: urbantransit
-      POSTGRES_PASSWORD: UrbanTransit2026!
     ports:
-      - "5433:5432"
+      - "27017:27017"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    command: >
-      postgres
-      -c shared_buffers=512MB
-      -c effective_cache_size=1536MB
-      -c work_mem=16MB
-      -c maintenance_work_mem=256MB
-      -c max_connections=100
-      -c checkpoint_completion_target=0.9
-      -c wal_buffers=16MB
-      -c random_page_cost=1.1
-      -c default_statistics_target=100
-      -c log_min_duration_statement=1000
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U urbantransit -d urbantransit_iq"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: urbantransit_pgadmin
-    restart: unless-stopped
+      - mongodata:/data/db
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@urbantransit.iq
-      PGADMIN_DEFAULT_PASSWORD: admin123
-      PGADMIN_LISTEN_PORT: 5050
-    ports:
-      - "5050:5050"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      MONGO_INITDB_DATABASE: urbantransit_iq
 
 volumes:
-  pgdata:
+  mongodata:
     driver: local

@@ -55,6 +55,7 @@ export const analyticsAPI = {
   getDelays: (filters) => client.get('/api/analytics/delays', { params: filters }),
   getOccupancy: (filters) => client.get('/api/analytics/occupancy', { params: filters }),
   getHeadway: (filters) => client.get('/api/analytics/headway', { params: filters }),
+  getRoutes: () => client.get("/api/analytics/routes"),
   getVehicleBunching: (filters) => client.get('/api/analytics/vehicle-bunching', { params: filters }),
   getVehicleUtilization: (filters) => client.get('/api/analytics/vehicle-utilization', { params: filters }),
   getBottlenecks: (filters) => client.get('/api/analytics/bottlenecks', { params: filters }),
@@ -131,7 +132,7 @@ export const sparkJobsAPI = {
 
 export default client;
 export const pipelineAPI = {
-  executePipeline: (type) => client.post(`/api/pipeline/execute?pipeline_type=${type}`),
+  executePipeline: (type, dataSplit = '70') => client.post(`/api/pipeline/execute?pipeline_type=${type}&data_split=${dataSplit}`),
   getStatus: () => client.get('/api/pipeline/status'),
 };
 

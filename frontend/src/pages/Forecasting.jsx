@@ -15,7 +15,12 @@ const Forecasting = () => {
   const fetchForecast = async () => {
     setLoading(true);
     try {
-      const res = await forecastingAPI.forecastDemand({ entity_id: 'network', horizon_days: Number(horizon) });
+      const res = await forecastingAPI.forecastDemand({ 
+        entity_type: 'network',
+        entity_id: 'ALL', 
+        horizon_days: Number(horizon),
+        model_type: 'XGBOOST'
+      });
       setForecastData(res.data);
     } catch (e) {
       console.error(e);

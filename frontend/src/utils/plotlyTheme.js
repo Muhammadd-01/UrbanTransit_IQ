@@ -3,7 +3,7 @@ export const shadcnPlotlyTheme = {
   plot_bgcolor: 'transparent',
   font: {
     family: "var(--font-sans)",
-    color: '#64748b',
+    color: 'var(--color-text-muted)',
     size: 12
   },
   xaxis: {
@@ -13,13 +13,13 @@ export const shadcnPlotlyTheme = {
     tickcolor: 'transparent',
     tickfont: {
       family: "var(--font-sans)",
-      color: '#64748b',
+      color: 'var(--color-text-muted)',
       size: 11
     }
   },
   yaxis: {
     showgrid: true,
-    gridcolor: 'rgba(0,0,0,0.06)',
+    gridcolor: 'var(--color-border-subtle)',
     gridwidth: 1,
     griddash: 'dash',
     zeroline: false,
@@ -27,28 +27,28 @@ export const shadcnPlotlyTheme = {
     tickcolor: 'transparent',
     tickfont: {
       family: "var(--font-sans)",
-      color: '#64748b',
+      color: 'var(--color-text-muted)',
       size: 11
     }
   },
   legend: {
     font: {
       family: "var(--font-sans)",
-      color: '#0f172a',
+      color: 'var(--color-text-primary)',
       size: 12
     },
-    bgcolor: 'rgba(255, 255, 255, 0.5)',
+    bgcolor: 'transparent',
     bordercolor: 'transparent',
     borderwidth: 0,
     orientation: 'h',
     y: 1.15
   },
   hoverlabel: {
-    bgcolor: '#ffffff',
-    bordercolor: 'rgba(0,0,0,0.1)',
+    bgcolor: 'var(--color-panel-elevated)',
+    bordercolor: 'var(--color-border)',
     font: {
       family: "var(--font-sans)",
-      color: '#0f172a',
+      color: 'var(--color-text-primary)',
       size: 12
     }
   },

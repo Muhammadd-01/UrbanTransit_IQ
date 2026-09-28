@@ -28,14 +28,14 @@ router = APIRouter()
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 MODEL_DIR = os.path.join(BASE_DIR, "models/python")
-DELAY_MODEL_PATH = os.path.join(MODEL_DIR, "delay_prediction_best.joblib")
-DELAY_COLS_PATH = os.path.join(MODEL_DIR, "delay_feature_cols.joblib")
+DELAY_MODEL_PATH = os.path.join(MODEL_DIR, "delay_prediction_best.csv")
+DELAY_COLS_PATH = os.path.join(MODEL_DIR, "delay_feature_cols.csv")
 FORECAST_JSON_PATH = os.path.join(MODEL_DIR, "forecast_14day_projection.json")
 CROWDING_JSON_PATH = os.path.join(MODEL_DIR, "predictions/crowding_risk_predictions.json")
 
 TRAINED_DIR = os.path.join(BASE_DIR, "backend/trained_models")
-XGB_PATH = os.path.join(TRAINED_DIR, "xgb_model.joblib")
-SPARK_PATH = os.path.join(TRAINED_DIR, "spark_model.joblib")
+XGB_PATH = os.path.join(TRAINED_DIR, "xgb_model.csv")
+SPARK_PATH = os.path.join(TRAINED_DIR, "spark_model.csv")
 
 _PREDICTION_HISTORY: List[Dict[str, Any]] = []
 

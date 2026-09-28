@@ -83,7 +83,7 @@ def run_occupancy_pipeline():
     base_metrics = evaluate_regressor(y_test, mean_baseline)
     
     # Save model
-    joblib.dump(rf, 'models/python/occupancy_forecast_rf.joblib')
+    joblib.dump(rf, 'models/python/occupancy_forecast_rf.csv')
     
     # Generate Crowding-Risk Prediction Output (Section 16)
     crowding_predictions = []

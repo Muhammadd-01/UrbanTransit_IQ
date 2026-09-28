@@ -203,6 +203,7 @@ const Dashboard = () => {
     isTrained, isAnalyzingSpark, isAnalyzingXgb,
     sparkResult, xgbResult,
     sparkSteps, xgbSteps,
+    dataSplit, setDataSplit,
     executeSpark, executeXgb
   } = React.useContext(require('../contexts/PipelineContext').PipelineContext);
 
@@ -635,6 +636,35 @@ const Dashboard = () => {
                 ? 'Start training AI models on your transit data. Each model learns from your 3 million+ records to predict delays, crowding, and route performance.'
                 : 'Production AI models delivering live transit predictions and performance metrics trained across 3,000,000+ transit records.'}
             </p>
+            {isAdmin && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginTop: '18px' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>DATA SPLIT:</span>
+                <button
+                  onClick={() => setDataSplit('70')}
+                  style={{
+                    padding: '8px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.85rem',
+                    border: dataSplit === '70' ? '2px solid var(--color-accent)' : '1px solid var(--color-border)',
+                    background: dataSplit === '70' ? 'var(--color-accent-bg)' : 'transparent',
+                    color: dataSplit === '70' ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                    cursor: 'pointer', transition: 'all 0.2s'
+                  }}
+                >
+                  70% — 2.1M Records
+                </button>
+                <button
+                  onClick={() => setDataSplit('30')}
+                  style={{
+                    padding: '8px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '0.85rem',
+                    border: dataSplit === '30' ? '2px solid var(--color-success)' : '1px solid var(--color-border)',
+                    background: dataSplit === '30' ? 'rgba(52,199,89,0.12)' : 'transparent',
+                    color: dataSplit === '30' ? 'var(--color-success)' : 'var(--color-text-muted)',
+                    cursor: 'pointer', transition: 'all 0.2s'
+                  }}
+                >
+                  30% — 900K Records
+                </button>
+              </div>
+            )}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>

@@ -1,10 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { FilterContext } from '../../contexts/FilterContext';
+import { analyticsAPI } from '../../api/client';
 import { FaFilter, FaRedo, FaCalendarAlt, FaRoute, FaClock } from 'react-icons/fa';
 import './FilterBar.css';
 
 const FilterBar = () => {
   const { filters, updateFilter, resetFilters } = useContext(FilterContext);
+  const [routes, setRoutes] = useState([]);
+
+  useEffect(() => {
+    analyticsAPI.getRoutes()
+      .then(res => {
+        if (res.data && res.data.routes) {
+          setRoutes(res.data.routes.sort());
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch routes', err);
+      });
+  }, []);
 
   return (
     <div className="filter-bar">
@@ -20,12 +34,10 @@ const FilterBar = () => {
             value={filters?.routeId || ''} 
             onChange={(e) => updateFilter('routeId', e.target.value || null)}
           >
-            <option value="">All Karachi Corridors (110 Routes)</option>
-            <option value="PB-01">PB-01 (Peoples Bus: Model Colony ⇄ Tower)</option>
-            <option value="GL-01">GL-01 (Green Line BRT: Surjani ⇄ Numaish)</option>
-            <option value="PB-08">PB-08 (Korangi Industrial ⇄ Saddar)</option>
-            <option value="LB-04">LB-04 (Liaquatabad Commercial Mixed)</option>
-            <option value="LB-14">LB-14 (Hawksbay Feeder Corridor)</option>
+            <option value="">All Karachi Corridors ({routes.length > 0 ? routes.length : "..."} Routes)</option>
+            {routes.map(route => (
+              <option key={route} value={route}>{route}</option>
+            ))}
           </select>
         </div>
 

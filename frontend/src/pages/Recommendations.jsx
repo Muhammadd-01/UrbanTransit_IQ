@@ -8,12 +8,14 @@ import PipelineBanner from '../components/common/PipelineBanner';
 
 const Recommendations = () => {
   const [recs, setRecs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     recommendationsAPI.list()
       .then(res => setRecs(res.data || []))
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const displayRecs = recs;
@@ -34,13 +36,19 @@ const Recommendations = () => {
           </p>
         </div>
         <div className="hero-right-actions">
-          <span className="sys-badge"><FaLightbulb className="text-cyan" /> 3 RECOMMENDATIONS</span>
+          <span className="sys-badge"><FaLightbulb className="text-cyan" /> {loading ? 'CALCULATING...' : `${displayRecs.length} RECOMMENDATIONS`}</span>
         </div>
       </div>
 
       {/* Recommendations Feed */}
       <div className="recommendations-list">
-        {displayRecs.length === 0 && (
+        {loading && (
+          <div style={{padding: '30px', textAlign: 'center', color: 'var(--color-cyan)', fontSize: '1.2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px'}}>
+            <FaBolt className="pulse-beacon-cyan" size={32} />
+            <span>AI is analyzing 3M+ records to generate dynamic operational recommendations...</span>
+          </div>
+        )}
+        {!loading && displayRecs.length === 0 && (
           <div style={{padding: '20px', color: '#64748B'}}>No recommendations available at this time.</div>
         )}
         {displayRecs.map((r, i) => (

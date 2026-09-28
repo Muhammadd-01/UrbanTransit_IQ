@@ -2,13 +2,13 @@
 Pipeline Execution — Model Training, Persistence, and Inference.
 
 All models and metrics are stored directly on disk in:
-  backend/trained_models/spark_model.joblib
-  backend/trained_models/xgb_model.joblib
+  backend/trained_models/spark_model.csv
+  backend/trained_models/xgb_model.csv
   backend/trained_models/model_metrics.json
-  backend/trained_models/forecast_model.joblib
-  backend/trained_models/anomaly_model.joblib
-  backend/trained_models/clustering_model.joblib
-  backend/trained_models/test_data.joblib
+  backend/trained_models/forecast_model.csv
+  backend/trained_models/anomaly_model.csv
+  backend/trained_models/clustering_model.csv
+  backend/trained_models/test_data.csv
 
 The disk directory is the SINGLE SOURCE OF TRUTH:
 - If files exist on disk, models and metrics are loaded directly from disk.
@@ -57,13 +57,13 @@ if not _MODEL_DIR.exists():
     if _MODEL_DIR_ALT.exists():
         _MODEL_DIR = _MODEL_DIR_ALT
 
-_SPARK_MODEL_PATH = _MODEL_DIR / "spark_model.joblib"
-_XGB_MODEL_PATH = _MODEL_DIR / "xgb_model.joblib"
+_SPARK_MODEL_PATH = _MODEL_DIR / "spark_model.csv"
+_XGB_MODEL_PATH = _MODEL_DIR / "xgb_model.csv"
 _METRICS_PATH = _MODEL_DIR / "model_metrics.json"
-_TEST_DATA_PATH = _MODEL_DIR / "test_data.joblib"
-_FORECAST_MODEL_PATH = _MODEL_DIR / "forecast_model.joblib"
-_ANOMALY_MODEL_PATH = _MODEL_DIR / "anomaly_model.joblib"
-_CLUSTERING_MODEL_PATH = _MODEL_DIR / "clustering_model.joblib"
+_TEST_DATA_PATH = _MODEL_DIR / "test_data.csv"
+_FORECAST_MODEL_PATH = _MODEL_DIR / "forecast_model.csv"
+_ANOMALY_MODEL_PATH = _MODEL_DIR / "anomaly_model.csv"
+_CLUSTERING_MODEL_PATH = _MODEL_DIR / "clustering_model.csv"
 
 logger.info(f"Model directory: {_MODEL_DIR} (exists={_MODEL_DIR.exists()})")
 
@@ -170,14 +170,18 @@ def _compute_all_metrics(y_true, y_pred_labels, y_pred_probs, prefix: str):
     return metrics
 
 
-def _train_pipeline(target: str = "ALL"):
+def _train_pipeline(target: str = "ALL", data_split: str = "70"):
     """
-    Train model(s) on all 3,000,000 MongoDB records and persist artifacts to disk.
+    Train model(s) on MongoDB records and persist artifacts to disk.
     Also executes live inference on the exact latest row in MongoDB so both models
     evaluate the exact same telemetry data and time.
+
+    data_split: '70' = train on 70% of 3M (2.1M records, default)
+                '30' = train on the remaining 30% of 3M (900K records)
     """
     train_start = time.time()
-    logger.info(f"Starting pipeline training for target={target} on MongoDB records...")
+    split_label = "30% (900K)" if data_split == "30" else "70% (2.1M)"
+    logger.info(f"Starting pipeline training for target={target}, split={split_label} on MongoDB records...")
 
     df = _fetch_training_data()
     if df is None or len(df) < 20:
@@ -189,7 +193,24 @@ def _train_pipeline(target: str = "ALL"):
     if len(y.unique()) < 2:
         return {"error": "Not enough variance in target variable to train a model."}
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    # Split the full dataset deterministically using the same seed
+    X_70, X_30, y_70, y_30 = train_test_split(X, y, test_size=0.3, random_state=42)
+
+    # Select which split to train on based on user selection
+    if data_split == "30":
+        X_train_full = X_30   # 900K records
+        y_train_full = y_30
+        records_label = 900000
+    else:
+        X_train_full = X_70   # 2.1M records
+        y_train_full = y_70
+        records_label = 2100000
+
+    # Further split the selected portion into train/eval (80/20 of the chosen portion)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_train_full, y_train_full, test_size=0.2, random_state=42
+    )
+
     os.makedirs(_MODEL_DIR, exist_ok=True)
     metrics = get_disk_metrics()
 
@@ -286,7 +307,8 @@ def _train_pipeline(target: str = "ALL"):
     joblib.dump({"X_test": X_test, "y_test": y_test}, _TEST_DATA_PATH)
 
     training_time = time.time() - train_start
-    metrics["records_used"] = 2100000
+    metrics["records_used"] = records_label
+    metrics["data_split"] = data_split
     metrics["training_time_seconds"] = round(training_time, 2)
     metrics["trained_at"] = time.strftime("%Y-%m-%d %H:%M:%S")
     metrics["is_trained"] = True
@@ -296,16 +318,17 @@ def _train_pipeline(target: str = "ALL"):
 
 
 @router.post("/retrain")
-async def force_retrain():
-    """Force retrain both models on ALL current database records and save to disk."""
+async def force_retrain(data_split: str = "70"):
+    """Force retrain both models. data_split='70' (default) or '30' for 30% of data."""
     start_time = time.time()
-    err = _train_pipeline(target="ALL")
+    err = _train_pipeline(target="ALL", data_split=data_split)
     if err:
         return err
     metrics = get_disk_metrics()
     latency = round((time.time() - start_time) * 1000, 2)
     return {
         "status": "retrained",
+        "data_split": data_split,
         "records_used": metrics.get("records_used", 3000000),
         "spark_acc": round(metrics.get("spark_acc", 0.0) * 100, 2),
         "xgb_acc": round(metrics.get("xgb_acc", 0.0) * 100, 2),
@@ -350,6 +373,7 @@ async def pipeline_status():
         "spark_is_trained": spark_is_trained,
         "xgb_is_trained": xgb_is_trained,
         "records_used": metrics.get("records_used", 0) if is_trained else 0,
+        "data_split": metrics.get("data_split", "70") if is_trained else "70",
         "trained_at": metrics.get("trained_at") if is_trained else None,
         "training_time_seconds": metrics.get("training_time_seconds", 0.0) if is_trained else 0.0,
         # Spark live telemetry and predictions
@@ -384,11 +408,12 @@ async def pipeline_status():
 
 
 @router.post("/execute")
-async def execute_pipeline(pipeline_type: str, authorization: Optional[str] = Header(None)):
+async def execute_pipeline(pipeline_type: str, data_split: str = "70", authorization: Optional[str] = Header(None)):
     """
     Executes training and returns live inference on the exact latest row in MongoDB.
     Persists the model to disk so you only have to train it once.
     Only administrators are permitted to trigger training.
+    data_split: '70' (default) trains on 70% of data, '30' trains on remaining 30%.
     """
     if authorization and authorization.startswith("Bearer "):
         token = authorization.split(" ")[1]
@@ -410,7 +435,7 @@ async def execute_pipeline(pipeline_type: str, authorization: Optional[str] = He
     prefix = "spark" if is_spark else "xgb"
 
     # Train model on MongoDB data and save directly to disk
-    err = _train_pipeline(target=target_key)
+    err = _train_pipeline(target=target_key, data_split=data_split)
     if err:
         return err
 

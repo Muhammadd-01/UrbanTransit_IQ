@@ -133,8 +133,8 @@ const Header = ({ toggleSidebar, isSidebarCollapsed }) => {
       autoClose: 1800
     });
     setTimeout(() => {
+      navigate('/');
       logout();
-      navigate('/login');
     }, 450);
   };
 

@@ -203,3 +203,31 @@ const BackgroundParticles = React.memo(() => {
 });
 
 export default BackgroundParticles;
+
+// Global message listener for iframe support
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'IFRAME_POINTER_MOVE') {
+      const nx = (e.data.clientX / e.data.innerWidth) * 2 - 1;
+      const ny = -(e.data.clientY / e.data.innerHeight) * 2 + 1;
+      mouseState.worldX = nx * 32;
+      mouseState.worldZ = -ny * 22;
+      mouseState.active = true;
+    } else if (e.data && e.data.type === 'IFRAME_POINTER_LEAVE') {
+      mouseState.active = false;
+    } else if (e.data && e.data.type === 'IFRAME_POINTER_DOWN') {
+      const nx = (e.data.clientX / e.data.innerWidth) * 2 - 1;
+      const ny = -(e.data.clientY / e.data.innerHeight) * 2 + 1;
+      const wx = nx * 32;
+      const wz = -ny * 22;
+      mouseState.ripples.push({
+        x: wx,
+        z: wz,
+        time: 0,
+        maxRadius: 36,
+        intensity: 2.8
+      });
+      if (mouseState.ripples.length > 5) mouseState.ripples.shift();
+    }
+  });
+}

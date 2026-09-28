@@ -163,3 +163,12 @@ async def capacity_gap_analytics():
 @router.get("/special-events")
 async def special_events_analytics():
     return detect_special_events()
+
+@router.get("/routes")
+async def get_unique_routes():
+    db = get_mongo_db()
+    try:
+        routes = db.passenger_counts.distinct("route_id")
+        return {"routes": routes}
+    except Exception as e:
+        return {"routes": [], "error": str(e)}

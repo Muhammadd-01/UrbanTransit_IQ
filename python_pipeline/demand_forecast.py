@@ -158,8 +158,8 @@ def run_forecast_pipeline():
     logger.info("Saved forecast evaluation table to reports/forecast_evaluation.csv")
     
     # Save best forecast model and 14-day projection
-    joblib.dump(gbr, 'models/python/demand_forecast_gbr.joblib')
-    joblib.dump(features, 'models/python/forecast_feature_cols.joblib')
+    joblib.dump(gbr, 'models/python/demand_forecast_gbr.csv')
+    joblib.dump(features, 'models/python/forecast_feature_cols.csv')
     
     # Save 14-day forecast projection
     last_row = df.iloc[-1:].copy()

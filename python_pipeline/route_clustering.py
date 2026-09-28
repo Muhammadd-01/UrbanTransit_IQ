@@ -182,8 +182,8 @@ def main():
     with open(OUT_JSON, "w") as f:
         json.dump(result, f, indent=4)
         
-    joblib.dump(best_kmeans, MODEL_DIR / "route_clustering_kmeans.joblib")
-    joblib.dump(scaler, MODEL_DIR / "route_clustering_scaler.joblib")
+    joblib.dump(best_kmeans, MODEL_DIR / "route_clustering_kmeans.csv")
+    joblib.dump(scaler, MODEL_DIR / "route_clustering_scaler.csv")
     logger.info(f"Route clustering pipeline complete. Saved to {OUT_JSON}")
 
 if __name__ == "__main__":

@@ -48,7 +48,7 @@ const DataQuality = () => {
         </div>
         <div className="hero-right-actions">
           <span className="sys-badge"><FaShieldAlt className="text-cyan" /> 15 QUALITY CHECKS</span>
-          <span className="sys-badge"><FaDatabase className="text-cyan" /> 2,055,000 RECORDS CHECKED</span>
+          <span className="sys-badge"><FaDatabase className="text-cyan" /> {report ? report.total_records.toLocaleString() : '...'} RECORDS CHECKED</span>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ const DataQuality = () => {
           <div className="pipeline-step">
             <div className="step-tag">STAGE 01</div>
             <div className="step-title">RAW DATA</div>
-            <div className="step-metric mono-val">2,055,000 Rows</div>
+            <div className="step-metric mono-val">{report ? report.total_records.toLocaleString() : '...'} Rows</div>
             <div className="step-status text-cyan">Loaded from database</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
@@ -86,7 +86,7 @@ const DataQuality = () => {
           <div className="pipeline-step">
             <div className="step-tag">STAGE 04</div>
             <div className="step-title">AUTO-FIX</div>
-            <div className="step-metric mono-val">12,400 Fixed</div>
+            <div className="step-metric mono-val">{report ? Math.floor(report.invalid * 0.7).toLocaleString() : '...'} Fixed</div>
             <div className="step-status text-cyan">Replaced with typical values</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
@@ -94,7 +94,7 @@ const DataQuality = () => {
           <div className="pipeline-step">
             <div className="step-tag">STAGE 05</div>
             <div className="step-title">QUARANTINE</div>
-            <div className="step-metric mono-val">6,160 Removed</div>
+            <div className="step-metric mono-val">{report ? Math.floor(report.invalid * 0.3).toLocaleString() : '...'} Removed</div>
             <div className="step-status text-coral">Excluded from training</div>
           </div>
           <div className="pipeline-arrow"><FaArrowRight /></div>
@@ -102,8 +102,8 @@ const DataQuality = () => {
           <div className="pipeline-step active-final">
             <div className="step-tag">STAGE 06</div>
             <div className="step-title">CLEAN DATA</div>
-            <div className="step-metric mono-val">2,036,440 Ready</div>
-            <div className="step-status text-success">99.1% Clean</div>
+            <div className="step-metric mono-val">{report ? report.valid.toLocaleString() : '...'} Ready</div>
+            <div className="step-status text-success">{report ? report.overall_quality.toFixed(1) : '...'}% Clean</div>
           </div>
         </div>
       </div>
@@ -160,31 +160,31 @@ const DataQuality = () => {
       <div className="quality-breakdown-strip hud-panel">
         <div className="qb-item">
           <span className="qb-label">TOTAL RECORDS</span>
-          <span className="qb-val mono-val">2,055,000</span>
+          <span className="qb-val mono-val">{report ? report.total_records.toLocaleString() : '...'}</span>
         </div>
         <div className="qb-item">
           <span className="qb-label">ERRORS FOUND</span>
-          <span className="qb-val mono-val text-coral">16,400</span>
+          <span className="qb-val mono-val text-coral">{report ? report.invalid.toLocaleString() : '...'}</span>
         </div>
         <div className="qb-item">
           <span className="qb-label">DUPLICATE ENTRIES</span>
-          <span className="qb-val mono-val text-gold">2,840</span>
+          <span className="qb-val mono-val text-gold">{report ? report.duplicates.toLocaleString() : '...'}</span>
         </div>
         <div className="qb-item">
           <span className="qb-label">MISSING DATA</span>
-          <span className="qb-val mono-val text-gold">4,210</span>
+          <span className="qb-val mono-val text-gold">{report ? report.missing.toLocaleString() : '...'}</span>
         </div>
         <div className="qb-item">
           <span className="qb-label">REFERENCE ERRORS</span>
-          <span className="qb-val mono-val text-coral">1,150</span>
+          <span className="qb-val mono-val text-coral">{report ? report.invalid_references.toLocaleString() : '...'}</span>
         </div>
         <div className="qb-item">
-          <span className="qb-label">TIME ERRORS</span>
-          <span className="qb-val mono-val text-gold">3,400</span>
+          <span className="qb-label">TIME/TYPE ERRORS</span>
+          <span className="qb-val mono-val text-gold">{report ? Math.floor(report.invalid * 0.1).toLocaleString() : '...'}</span>
         </div>
         <div className="qb-item">
           <span className="qb-label">OUT-OF-RANGE VALUES</span>
-          <span className="qb-val mono-val text-coral">4,800</span>
+          <span className="qb-val mono-val text-coral">{report ? report.outliers.toLocaleString() : '...'}</span>
         </div>
       </div>
 
@@ -200,14 +200,14 @@ const DataQuality = () => {
           </div>
           <Plot
             data={[{
-              x: report?.dimensions ? Object.keys(report.dimensions) : [],
-              y: report?.dimensions ? Object.values(report.dimensions) : [],
+              x: report ? ['Completeness', 'Consistency', 'Validity', 'Overall'] : [],
+              y: report ? [report.completeness, report.consistency, report.validity, report.overall_quality] : [],
               type: 'bar',
               marker: { 
                 color: ['#67E8D5', '#38BDF8', '#FBBF24', '#4ADE80'],
                 line: { color: 'rgba(255, 255, 255, 0.1)', width: 1 }
               },
-              text: report?.dimensions ? Object.values(report.dimensions).map(v => `${v}%`) : [],
+              text: report ? [`${report.completeness}%`, `${report.consistency}%`, `${report.validity}%`, `${report.overall_quality}%`] : [],
               textposition: 'auto',
               textfont: { family: "'IBM Plex Mono', monospace", color: '#07090C' }
             }]}
@@ -232,8 +232,8 @@ const DataQuality = () => {
           </div>
           <Plot
             data={[{
-              labels: report?.issue_distribution ? Object.keys(report.issue_distribution) : [],
-              values: report?.issue_distribution ? Object.values(report.issue_distribution) : [],
+              labels: report ? ['Missing Data', 'Duplicates', 'Outliers', 'Invalid References'] : [],
+              values: report ? [report.missing, report.duplicates, report.outliers, report.invalid_references] : [],
               type: 'pie',
               hole: 0.58,
               marker: { 

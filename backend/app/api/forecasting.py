@@ -17,7 +17,7 @@ async def forecast_demand(request: ForecastRequest):
     base_date = datetime.date.today()
     
     # Try to load the real model trained on user's database
-    model_path = MODEL_DIR / "forecast_model.joblib"
+    model_path = MODEL_DIR / "forecast_model.csv"
     if model_path.exists():
         try:
             model = joblib.load(model_path)
@@ -72,7 +72,7 @@ async def forecast_occupancy(request: ForecastRequest):
     crowd_risk = "HIGH"
     
     # Check if a model is trained to show real dynamic data
-    if (MODEL_DIR / "forecast_model.joblib").exists():
+    if (MODEL_DIR / "forecast_model.csv").exists():
         import random
         # Just generate realistic dynamic numbers for the specific entity based on a hash
         seed = sum(ord(c) for c in (request.entity_id or "R-001"))

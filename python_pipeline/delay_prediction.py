@@ -159,10 +159,10 @@ def run_pipeline():
     # 6. Save models
     for m_name, m_obj in all_models.items():
         fname = m_name.lower().replace(' ', '_')
-        joblib.dump(m_obj, f'models/python/delay_prediction_{fname}.joblib')
+        joblib.dump(m_obj, f'models/python/delay_prediction_{fname}.csv')
         
-    joblib.dump(best_model, 'models/python/delay_prediction_best.joblib')
-    joblib.dump(feature_cols, 'models/python/delay_feature_cols.joblib')
+    joblib.dump(best_model, 'models/python/delay_prediction_best.csv')
+    joblib.dump(feature_cols, 'models/python/delay_feature_cols.csv')
     
     # 7. Save metrics JSON
     with open('models/python/delay_prediction_metrics.json', 'w') as f:

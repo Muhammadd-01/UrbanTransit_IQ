@@ -14,6 +14,7 @@ export const PipelineProvider = ({ children }) => {
   const [xgbResult, setXgbResult] = useState(null);
   const [sparkSteps, setSparkSteps] = useState([]);
   const [xgbSteps, setXgbSteps] = useState([]);
+  const [dataSplit, setDataSplit] = useState('70'); // '70' or '30'
 
   const sparkIntervalRef = useRef(null);
   const xgbIntervalRef = useRef(null);
@@ -126,7 +127,7 @@ export const PipelineProvider = ({ children }) => {
     
     const startTime = Date.now();
     try {
-      const res = await pipelineAPI.executePipeline('SPARK');
+      const res = await pipelineAPI.executePipeline('SPARK', dataSplit);
       clearInterval(sparkIntervalRef.current);
       
       // Use the EXACT amount of time the ML model took to train in the backend
@@ -159,7 +160,7 @@ export const PipelineProvider = ({ children }) => {
     
     const startTime = Date.now();
     try {
-      const res = await pipelineAPI.executePipeline('XGBOOST');
+      const res = await pipelineAPI.executePipeline('XGBOOST', dataSplit);
       clearInterval(xgbIntervalRef.current);
       
       // Use the EXACT amount of time the ML model took to train in the backend
@@ -190,6 +191,7 @@ export const PipelineProvider = ({ children }) => {
       isAnalyzingSpark, isAnalyzingXgb,
       sparkResult, xgbResult,
       sparkSteps, xgbSteps,
+      dataSplit, setDataSplit,
       executeSpark, executeXgb
     }}>
       {children}

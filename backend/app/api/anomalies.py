@@ -14,7 +14,7 @@ async def detect_anomalies(limit: int = 10):
     anomalies = []
     
     # Use real trained IsolationForest if it exists
-    model_path = MODEL_DIR / "anomaly_model.joblib"
+    model_path = MODEL_DIR / "anomaly_model.csv"
     if model_path.exists():
         try:
             model = joblib.load(model_path)

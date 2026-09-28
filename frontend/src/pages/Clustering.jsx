@@ -37,7 +37,7 @@ const Clustering = () => {
             <span className="pulse-beacon-cyan"></span>
             <span>ROUTE GROUPING — SIMILAR ROUTES CLUSTERED TOGETHER</span>
           </div>
-          <h1 className="hero-main-title">Route & Commuter Clustering</h1>
+          <h1 className="hero-main-title">Route Grouping</h1>
           <p className="hero-desc">
             The AI automatically groups Karachi's 110 bus routes into categories based on how busy they are, how many passengers they carry, and how reliable their schedules are.
           </p>

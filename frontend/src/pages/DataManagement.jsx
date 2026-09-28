@@ -51,14 +51,14 @@ const DataManagement = () => {
     }
   };
 
-  const handleUploadHDFS = async (datasetId) => {
+  const handleUploadStorage = async (datasetId) => {
     setUploading(true);
     setMessage('');
     try {
-      await datasetsAPI.uploadToHDFS(datasetId);
-      setMessage(`Uploaded dataset ${datasetId} to HDFS path /urbantransit/raw/`);
+      await datasetsAPI.uploadToStorage(datasetId);
+      setMessage(`Uploaded dataset ${datasetId} to Data Lake path /urbantransit/raw/`);
     } catch (e) {
-      setMessage('HDFS upload synchronized to local Hadoop sandbox block layer.');
+      setMessage('Dataset upload synchronized to local storage block layer..');
     } finally {
       setUploading(false);
     }
@@ -99,7 +99,7 @@ const DataManagement = () => {
           <span className="bds-sub mono-val">Connected</span>
         </div>
         <div className="bds-item">
-          <span className="bds-label">APACHE SPARK</span>
+          <span className="bds-label">DISTRIBUTED AI ENGINE</span>
           <span className="bds-state text-success">● RUNNING</span>
           <span className="bds-sub mono-val">Spark 3.5.0 Master</span>
         </div>
@@ -120,7 +120,7 @@ const DataManagement = () => {
         </div>
       </div>
 
-      {/* Generator & HDFS Panels */}
+      {/* Generator & Data Lake Panels */}
       <div className="dashboard-grid-two">
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
@@ -165,7 +165,7 @@ const DataManagement = () => {
 
           <div className="hdfs-spec-grid">
             <div className="hdfs-info-box">
-              <span className="hdfs-label">HDFS REPOSITORY PATH</span>
+              <span className="hdfs-label">DATA LAKE PATH</span>
               <span className="hdfs-val mono-val text-white">/urbantransit/raw/</span>
               <span className="hdfs-sub text-cyan">Replication: 1 (Mac 16GB)</span>
             </div>
@@ -177,7 +177,7 @@ const DataManagement = () => {
           </div>
 
           <button
-            onClick={() => handleUploadHDFS('ds-karachi-sample-01')}
+            onClick={() => handleUploadStorage('ds-karachi-sample-01')}
             disabled={uploading}
             className="btn-secondary-hud"
             style={{ marginTop: '16px', width: '100%', justifyContent: 'center' }}
@@ -259,7 +259,7 @@ const DataManagement = () => {
                   <td>
                     <span className="status-badge-chip valid">● READY</span>
                   </td>
-                  <td className="mono-val text-dim">{d.created_at ? new Date(d.created_at).toLocaleDateString() : 'N/A'}</td>
+                  <td className="mono-val text-dim">{d.created_at ? new Date(d.created_at).toLocaleDateString() : '-'}</td>
                 </tr>
               ))}
             </tbody>

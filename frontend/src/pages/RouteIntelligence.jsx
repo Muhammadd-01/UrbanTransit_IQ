@@ -19,15 +19,15 @@ const RouteIntelligence = () => {
         if (res.data?.performance?.length) {
           setRoutes(res.data.performance.map(r => ({
             ...r,
-            route_id: r.route || 'N/A',
-            route_name: `Route ${r.route || 'N/A'}`,
+            route_id: r.route || '-',
+            route_name: `Route ${r.route || '-'}`,
             trips: r.trip_count || 0,
-            daily_volume: r.daily_volume != null ? r.daily_volume.toLocaleString() : 'N/A',
-            avg_delay: r.avg_delay != null ? `${r.avg_delay.toFixed(1)}m` : 'N/A',
-            on_time: r.on_time_pct != null ? `${r.on_time_pct.toFixed(1)}%` : 'N/A',
+            daily_volume: r.daily_volume != null ? r.daily_volume.toLocaleString() : '-',
+            avg_delay: r.avg_delay != null ? `${r.avg_delay.toFixed(1)}m` : '-',
+            on_time: r.on_time_pct != null ? `${r.on_time_pct.toFixed(1)}%` : '-',
             load_factor_val: r.load_factor || 0,
-            load_factor_str: r.load_factor != null ? `${r.load_factor}%` : 'N/A',
-            headway: r.headway != null ? `${r.headway}m` : 'N/A',
+            load_factor_str: r.load_factor != null ? `${r.load_factor}%` : '-',
+            headway: r.headway != null ? `${r.headway}m` : '-',
             bunching: r.bunching || 'LOW',
             composite_score: r.composite_score || 0
           })));
@@ -100,17 +100,17 @@ const RouteIntelligence = () => {
                   <td className="mono-val text-cyan"><strong>{r.route_id}</strong></td>
                   <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{r.route_name}</td>
                   <td className="mono-val">{r.trips || 0}</td>
-                  <td className="mono-val">{r.passengers || 'N/A'}</td>
+                  <td className="mono-val">{r.daily_volume || '-'}</td>
                   <td className="mono-val" style={{ color: r.avg_delay?.includes('16') ? 'var(--color-danger)' : 'var(--color-accent)' }}>
-                    {r.avg_delay || 'N/A'}
+                    {r.avg_delay || '-'}
                   </td>
-                  <td className="mono-val text-cyan">{r.on_time || 'N/A'}</td>
-                  <td className="mono-val text-gold">{r.utilization || 'N/A'}</td>
-                  <td className="mono-val">{r.headway || 'N/A'}</td>
+                  <td className="mono-val text-cyan">{r.on_time || '-'}</td>
+                  <td className="mono-val text-gold">{r.load_factor_str || '-'}</td>
+                  <td className="mono-val">{r.headway || '-'}</td>
                   <td className="mono-val" style={{ color: r.bunching?.includes('HIGH') ? 'var(--color-danger)' : 'var(--color-success)' }}>
-                    {r.bunching || 'N/A'}
+                    {r.bunching || '-'}
                   </td>
-                  <td className="mono-val text-cyan"><strong>{r.composite_score || 'N/A'}/100</strong></td>
+                  <td className="mono-val text-cyan"><strong>{r.composite_score != null ? r.composite_score : '-'}/100</strong></td>
                   <td>
                     <span className={`status-badge-chip ${r.status === 'EXCELLENT' ? 'valid' : (r.status === 'GOOD' ? 'flagged' : 'quarantined')}`}>
                       {r.status || 'NORMAL'}

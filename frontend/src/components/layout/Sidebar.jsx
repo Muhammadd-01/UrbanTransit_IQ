@@ -4,7 +4,7 @@ import {
   FaTachometerAlt, FaRoute, FaCar, FaClock, 
   FaChartLine, FaMagic, FaExclamationTriangle,
   FaLightbulb, FaExchangeAlt, FaShieldAlt,
-  FaDatabase, FaFileAlt, FaCog, FaUser,
+  FaDatabase, FaFileAlt, FaCog, FaUser, FaUsers,
   FaChevronLeft, FaChevronRight
 } from 'react-icons/fa';
 import './Sidebar.css';
@@ -49,7 +49,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             </NavLink>
             <NavLink to="/od-analysis" title="Origin-Destination Matrix">
               <FaExchangeAlt className="nav-icon" />
-              <span className="nav-text">OD Analysis</span>
+              <span className="nav-text">Travel Patterns</span>
             </NavLink>
           </>
         )}
@@ -66,7 +66,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             </NavLink>
             <NavLink to="/vehicle-analytics" title="Vehicle Fleet & Maintenance">
               <FaCar className="nav-icon" />
-              <span className="nav-text">Vehicle Analytics</span>
+              <span className="nav-text">Fleet Monitor</span>
             </NavLink>
             <NavLink to="/delay-analytics" title="Delay Analytics & ML Inference">
               <FaClock className="nav-icon" />
@@ -91,7 +91,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             </NavLink>
             <NavLink to="/anomaly-detection" title="Isolation Forest Anomaly Telemetry">
               <FaExclamationTriangle className="nav-icon" />
-              <span className="nav-text">Anomaly Detection</span>
+              <span className="nav-text">Unusual Activity</span>
             </NavLink>
           </>
         )}
@@ -127,13 +127,17 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
               <FaDatabase className="nav-icon" />
               <span className="nav-text">Data Quality</span>
             </NavLink>
-            <NavLink to="/data-management" title="HDFS Storage Fabric & Synthesis">
+            <NavLink to="/data-management" title="Data Lake Storage & Synthesis">
               <FaDatabase className="nav-icon" />
               <span className="nav-text">Dataset Manager</span>
             </NavLink>
             <NavLink to="/settings" title="Externalized Analytical Thresholds">
               <FaCog className="nav-icon" />
               <span className="nav-text">System Settings</span>
+            </NavLink>
+            <NavLink to="/user-management" title="Manage Users">
+              <FaUsers className="nav-icon" />
+              <span className="nav-text">User Management</span>
             </NavLink>
           </>
         )}

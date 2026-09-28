@@ -10,6 +10,23 @@
 [![Design System](https://img.shields.io/badge/Design-Apple%20iOS%20Crystal%20Glass-059669?style=for-the-badge&logo=apple)](http://localhost:3000)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](LICENSE)
 
+**🌍 Live Demo:** [https://urban-transit.vercel.app/](https://urban-transit.vercel.app/)
+**📖 Technical Article:** [https://tinyurl.com/urbantransit-iq](https://tinyurl.com/urbantransit-iq)
+
+
+---
+
+## 🆕 Recent Updates
+
+- **Added User Management admin page** (CRUD for users with role assignment).
+- **PySpark MLlib is now genuine** (not sklearn pretending to be Spark).
+- **Simplified dashboard labels** for non-technical users (F1→Balance Score, Precision→Correct Positive Rate, etc.).
+- **Renamed pages**: OD Analysis→Travel Patterns, Anomaly Detection→Unusual Activity, Clustering→Route Grouping, Vehicle Analytics→Fleet Monitor.
+- **All analytics now use real MongoDB aggregation queries** (removed np.random and hardcoded values).
+- **Export/Reports page now has working CSV and JSON downloads**.
+- **Model comparison page shows all 6 metrics side by side**.
+- **Total pages now: 20** (added User Management).
+
 ---
 
 ## 🌟 Executive Overview: What Is UrbanTransit IQ?
@@ -48,6 +65,15 @@ UrbanTransit IQ solves this by bridging **Big Data Distributed Engineering (Apac
 ```
 
 ---
+
+
+## 🌌 Interactive 3D Landing & Glassmorphism System
+
+Before authenticating, users land on the **UrbanTransit IQ Command Center Gateway**—a fully interactive 3D WebGL experience featuring:
+- **WebGL Particle Matrices**: A dynamic 3D background symbolizing the flow of millions of transit records.
+- **iOS 27 Liquid Glassmorphism**: Complete dark mode and light mode synchronization using `backdrop-filter: blur(14px) saturate(160%)` for sleek, semi-transparent frosted glass UI components.
+- **Performance Archive (3D Gallery)**: An interactive 3D WebGL raycasting gallery where users can drag, pan, and click floating dashboard screenshots directly inside a 3D canvas space.
+- **Unified Theming System**: Seamless theme switching (Light Mode / Midnight Obsidian) that instantly propagates from the landing page down into the React dashboard via a dedicated `MessageChannel` bridge without page reloads.
 
 ## 🧭 The End-to-End Data Journey
 
@@ -130,7 +156,7 @@ UrbanTransit IQ implements an enterprise 4-tier Role-Based Access Control struct
 
 ---
 
-## 🗺️ Information Architecture: All 18 Interactive Pages
+## 🗺️ Information Architecture: All 20 Interactive Pages
 
 ```
 UrbanTransit IQ Platform
@@ -170,7 +196,10 @@ UrbanTransit IQ Platform
 
 ## 🖥️ Screen-by-Screen Walkthrough
 
-### 1. Executive Command Dashboard (`/`)
+### 1. 3D WebGL Landing Experience (`/`)
+The interactive gateway. Features a responsive 3D orbital scroll wheel, an interactive WebGL certificate/gallery matrix, and live theme toggling. Showcases the core platform architecture and routes users to the main dashboard initialization protocol.
+
+### 2. Executive Command Dashboard (`/dashboard`)
 * **Mission Control Header**: Displays live Karachi transit vitals across 110 corridors, including total passengers, active fleet units, crowding levels, on-time performance, and pipeline data freshness.
 * **Spatial Movement Radar (Leaflet GIS)**: Interactive Karachi map with high-density station telemetry (Tower, Saddar, Nipa, Surjani BRT Depot, Numaish, Korangi). Features live radar sweep and mode filters (**Flow Density**, **Delay Hotspots**, **Bottlenecks**, **Anomalies**).
 * **24-Hour Time of Day Explorer**: Interactive temporal scrubber that dynamically modulates ridership load, dwell times, and occupancy across morning peak, midday, evening rush, and night hours.
@@ -183,7 +212,7 @@ UrbanTransit IQ Platform
 
 ---
 
-### 2. User Authentication & Login (`/login`)
+### 3. User Authentication & Login (`/login`)
 * **Role-Based Fast Login**: One-click quick login buttons for all 4 roles (**Muhammad Affan / Admin**, **Executive Director**, **Operations Analyst**, **Fleet Operator**).
 * **Security**: JWT token issuance with automated request header authorization and session expiration controls.
 
@@ -243,7 +272,7 @@ UrbanTransit IQ Platform
 
 ---
 
-### 11. Route & Corridor Clustering (`/clustering`)
+### 11. Route & Corridor Route Grouping (`/clustering`)
 * **Unsupervised K-Means**: Groups 110 transit corridors into 3 distinct functional profiles:
   * **Arterial Super-Corridors** (High volume, high load factor).
   * **Feeder & Coastal Lines** (Moderate load, local passenger transfers).
@@ -251,7 +280,7 @@ UrbanTransit IQ Platform
 
 ---
 
-### 12. Real-Time Anomaly Detection (`/anomaly-detection`)
+### 12. Real-Time Unusual Activity (`/anomaly-detection`)
 * **Isolation Forest Telemetry**: Detects operational hazards including bus bunching, sudden occupancy surges, and GPS coordinate drift.
 * **Visual Hazard Stream**: Luminous crimson alert cards with severity scores and mitigation recommendations.
 

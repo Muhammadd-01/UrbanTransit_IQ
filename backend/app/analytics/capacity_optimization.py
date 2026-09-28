@@ -23,6 +23,7 @@ import logging
 from typing import Dict, Any, Optional, List
 import pandas as pd
 import numpy as np
+from backend.app.database.mongo import get_mongo_db
 
 logger = logging.getLogger(__name__)
 
@@ -34,19 +35,26 @@ def analyze_capacity_gap(filters: Optional[Dict[str, Any]] = None) -> Dict[str, 
     
     if routes_file.exists():
         try:
+            db = get_mongo_db()
             routes_df = pd.read_csv(routes_file)
             for idx, r in routes_df.head(20).iterrows():
                 r_id = r['route_id']
-                cap = int(r.get('vehicle_capacity', 50))
+                
+                vehicle = db.vehicles.find_one({"route_id": r_id})
+                cap = int(vehicle.get('capacity', 50)) if vehicle and 'capacity' in vehicle else int(r.get('vehicle_capacity', 50))
+                
                 freq = int(r.get('frequency_peak_minutes', 10))
                 buses_per_hour = 60 // max(1, freq)
                 avail_cap = buses_per_hour * cap
                 
-                # Empirical peak demand
-                if 'PB' in r_id or 'GL' in r_id:
-                    demand = int(avail_cap * np.random.uniform(0.95, 1.35))
-                else:
-                    demand = int(avail_cap * np.random.uniform(0.40, 0.85))
+                pipeline = [
+                    {"$match": {"route_id": r_id}},
+                    {"$group": {"_id": None, "avg_load": {"$avg": "$load"}}}
+                ]
+                agg_res = list(db.passenger_counts.aggregate(pipeline))
+                avg_load = agg_res[0].get('avg_load', 0) if agg_res else 0
+                
+                demand = int(buses_per_hour * avg_load)
                     
                 gap = demand - avail_cap
                 utilization = round((demand / max(1, avail_cap)) * 100.0, 1)

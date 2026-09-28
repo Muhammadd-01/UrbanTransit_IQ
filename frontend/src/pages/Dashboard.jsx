@@ -207,12 +207,56 @@ const Dashboard = () => {
     executeSpark, executeXgb
   } = React.useContext(require('../contexts/PipelineContext').PipelineContext);
 
-  const STATIONS = isTrained ? _STATIONS : [];
-  const INITIAL_ALERTS = isTrained ? _INITIAL_ALERTS : [];
+  const [STATIONS, setSTATIONS] = useState([]);
   
   useEffect(() => {
-    setAlerts(INITIAL_ALERTS);
-  }, [isTrained]);
+    if (!isTrained) {
+      setAlerts([]);
+      return;
+    }
+    
+    let dynamicAlerts = [];
+    if (kpis) {
+      if (kpis.avg_occupancy && kpis.avg_occupancy > 0.90) {
+        dynamicAlerts.push({
+          id: 'ALT-DYN-1',
+          severity: 'coral',
+          title: 'System-Wide Overcrowding',
+          time: 'LIVE',
+          description: `Occupancy exceeds ${(kpis.avg_occupancy * 100).toFixed(1)}%. Buffer fleet deployment recommended.`,
+          actionLabel: 'Deploy Buffer Fleet',
+          resolved: false
+        });
+      }
+      if (kpis.avg_delay && kpis.avg_delay > 10) {
+        dynamicAlerts.push({
+          id: 'ALT-DYN-2',
+          severity: 'gold',
+          title: 'Severe Route Delays',
+          time: 'LIVE',
+          description: `Average delays of ${kpis.avg_delay.toFixed(1)}m detected. Signal retiming recommended.`,
+          actionLabel: 'Retime Signals',
+          resolved: false
+        });
+      }
+    }
+    
+    setAlerts(dynamicAlerts.length > 0 ? dynamicAlerts : _INITIAL_ALERTS);
+  }, [isTrained, kpis]);
+
+  useEffect(() => {
+    if (isTrained) {
+      analyticsAPI.getStops(getFilterParams()).then(res => {
+        if (res.data && res.data.length > 0) {
+          setSTATIONS(res.data);
+        } else {
+          setSTATIONS(_STATIONS);
+        }
+      }).catch(() => setSTATIONS(_STATIONS));
+    } else {
+      setSTATIONS([]);
+    }
+  }, [isTrained, filters]);
 
   // Futuristic Holographic Center-Screen Analyzer State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -360,7 +404,7 @@ const Dashboard = () => {
         <div className="island-center-gauges">
           <div className="gauge-item">
             <span className="gauge-label">TOTAL PASSENGERS TODAY</span>
-            <strong className="gauge-val text-success">{kpis?.on_time_rate ? (kpis.on_time_rate * 100).toFixed(1) + '% OPTIMAL' : 'N/A'}</strong>
+            <strong className="gauge-val text-success">{kpis?.total_passengers != null ? kpis.total_passengers.toLocaleString() : 'Loading...'}</strong>
           </div>
           <div className="gauge-divider"></div>
           <div className="gauge-item">
@@ -526,7 +570,7 @@ const Dashboard = () => {
               </div>
               <div className="tile-radial-content">
                 <div className="radial-stat-block">
-                  <span className="radial-number">{kpis?.on_time_rate ? (kpis.on_time_rate * 100).toFixed(1) + '%' : 'N/A'}</span>
+                  <span className="radial-number">{kpis ? '-' : 'Loading...'}</span>
                   <small>Punctuality</small>
                 </div>
                 <div className="radial-context-text">
@@ -551,7 +595,7 @@ const Dashboard = () => {
               <div className="velocity-dwell-bar">
                 <div className="dwell-fill" style={{ width: `${Math.min(100, displayDelay * 10)}%`, background: displayDelay > 6 ? '#FF3B30' : '#007AFF' }}></div>
               </div>
-              <small className="tile-caption">Average wait time: {kpis?.median_dwell ? kpis.median_dwell + 'm' : 'N/A'}</small>
+              <small className="tile-caption">Average delay: {kpis?.avg_delay != null ? kpis.avg_delay.toFixed(1) + 'm' : 'Loading...'}</small>
             </div>
 
             {/* Dispatched Fleet Units Tile */}
@@ -633,8 +677,8 @@ const Dashboard = () => {
             </h3>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto' }}>
               {isAdmin
-                ? 'Start training AI models on your transit data. Each model learns from your 3 million+ records to predict delays, crowding, and route performance.'
-                : 'Production AI models delivering live transit predictions and performance metrics trained across 3,000,000+ transit records.'}
+                ? 'Start training AI models on your transit data. Each model learns from your 2 million+ records to predict delays, crowding, and route performance.'
+                : 'Production AI models delivering live transit predictions and performance metrics trained across 2,000,000+ transit records.'}
             </p>
             {isAdmin && (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginTop: '18px' }}>
@@ -649,7 +693,7 @@ const Dashboard = () => {
                     cursor: 'pointer', transition: 'all 0.2s'
                   }}
                 >
-                  70% — 2.1M Records
+                  70% — 1.4M Records
                 </button>
                 <button
                   onClick={() => setDataSplit('30')}
@@ -661,7 +705,7 @@ const Dashboard = () => {
                     cursor: 'pointer', transition: 'all 0.2s'
                   }}
                 >
-                  30% — 900K Records
+                  30% — 600K Records
                 </button>
               </div>
             )}
@@ -715,7 +759,6 @@ const Dashboard = () => {
                         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Boarding:</span> <b className="text-cyan">{sparkResult.raw_data.boarding} Passengers</b></div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Load:</span> <b className="text-cyan">{sparkResult.raw_data.load} Passengers</b></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Operating Hour:</span> <b className="text-cyan">{sparkResult.raw_data.hour > 12 ? `${sparkResult.raw_data.hour - 12}:00 PM` : sparkResult.raw_data.hour === 12 ? '12:00 PM' : sparkResult.raw_data.hour === 0 ? '12:00 AM' : `${sparkResult.raw_data.hour}:00 AM`}</b></div>
                         </div>
                     </div>
                     
@@ -729,11 +772,22 @@ const Dashboard = () => {
                             <div>Prediction: <b style={{ color: sparkResult.pred === 'DELAYED' ? '#ef4444' : '#22c55e' }}>{sparkResult.pred}</b></div>
                             <div>Confidence: <b>{sparkResult.confidence}</b></div>
                             <div>Accuracy: <b>{sparkResult.accuracy}%</b></div>
-                            <div>F1-Score: <b>{sparkResult.f1_score}</b></div>
-                            <div>Precision: <b>{sparkResult.precision}</b></div>
-                            <div>Recall: <b>{sparkResult.recall}</b></div>
-                            <div style={{ gridColumn: '1 / -1' }}>Conf. Matrix: <b style={{ fontSize: '0.8rem' }}>{sparkResult.cm}</b></div>
-                            <div>Latency: <b className="text-cyan">{sparkResult.latency}</b></div>
+                            <div>Balance Score: <b>{sparkResult.f1_score}</b></div>
+                            <div>Correct Positive Rate: <b>{sparkResult.precision}</b></div>
+                            <div>Detection Rate: <b>{sparkResult.recall}</b></div>
+                            <div style={{ gridColumn: '1 / -1' }}>
+  {(() => {
+    const cm = sparkResult.cm || '';
+    const match = cm.match(/TP:(\d+)\s+TN:(\d+)\s+FP:(\d+)\s+FN:(\d+)/);
+    if (match) {
+      const correct = parseInt(match[1]) + parseInt(match[2]);
+      const wrong = parseInt(match[3]) + parseInt(match[4]);
+      return <>Correct Predictions: <b>{correct.toLocaleString()}</b> ✓ &nbsp; Wrong Predictions: <b>{wrong.toLocaleString()}</b> ✗</>;
+    }
+    return <>Conf. Matrix: <b>{cm}</b></>;
+  })()}
+</div>
+                            <div>Response Time: <b className="text-cyan">{sparkResult.latency}</b></div>
                         </div>
                     </div>
                  </div>
@@ -776,7 +830,7 @@ const Dashboard = () => {
                  </span>
                  <p style={{ margin: 0, fontSize: '0.88rem', maxWidth: '300px' }}>
                    {isAdmin 
-                     ? 'Click "Execute Spark" to train the model on the full 3M dataset.' 
+                     ? 'Click "Execute Spark" to train the model on the full 2M dataset.' 
                      : 'Awaiting Administrator Training — This model has not been trained yet. Please contact an Administrator to deploy models.'}
                  </p>
               </div>
@@ -829,7 +883,6 @@ const Dashboard = () => {
                         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Boarding:</span> <b className="text-cyan">{xgbResult.raw_data.boarding} Passengers</b></div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Load:</span> <b className="text-cyan">{xgbResult.raw_data.load} Passengers</b></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Operating Hour:</span> <b className="text-cyan">{xgbResult.raw_data.hour > 12 ? `${xgbResult.raw_data.hour - 12}:00 PM` : xgbResult.raw_data.hour === 12 ? '12:00 PM' : xgbResult.raw_data.hour === 0 ? '12:00 AM' : `${xgbResult.raw_data.hour}:00 AM`}</b></div>
                         </div>
                     </div>
                     
@@ -843,11 +896,22 @@ const Dashboard = () => {
                             <div>Prediction: <b style={{ color: xgbResult.pred === 'DELAYED' ? '#ef4444' : '#22c55e' }}>{xgbResult.pred}</b></div>
                             <div>Confidence: <b>{xgbResult.confidence}</b></div>
                             <div>Accuracy: <b>{xgbResult.accuracy}%</b></div>
-                            <div>F1-Score: <b>{xgbResult.f1_score}</b></div>
-                            <div>Precision: <b>{xgbResult.precision}</b></div>
-                            <div>Recall: <b>{xgbResult.recall}</b></div>
-                            <div style={{ gridColumn: '1 / -1' }}>Conf. Matrix: <b style={{ fontSize: '0.8rem' }}>{xgbResult.cm}</b></div>
-                            <div>Latency: <b className="text-cyan">{xgbResult.latency}</b></div>
+                            <div>Balance Score: <b>{xgbResult.f1_score}</b></div>
+                            <div>Correct Positive Rate: <b>{xgbResult.precision}</b></div>
+                            <div>Detection Rate: <b>{xgbResult.recall}</b></div>
+                            <div style={{ gridColumn: '1 / -1' }}>
+  {(() => {
+    const cm = xgbResult.cm || '';
+    const match = cm.match(/TP:(\d+)\s+TN:(\d+)\s+FP:(\d+)\s+FN:(\d+)/);
+    if (match) {
+      const correct = parseInt(match[1]) + parseInt(match[2]);
+      const wrong = parseInt(match[3]) + parseInt(match[4]);
+      return <>Correct Predictions: <b>{correct.toLocaleString()}</b> ✓ &nbsp; Wrong Predictions: <b>{wrong.toLocaleString()}</b> ✗</>;
+    }
+    return <>Conf. Matrix: <b>{cm}</b></>;
+  })()}
+</div>
+                            <div>Response Time: <b className="text-cyan">{xgbResult.latency}</b></div>
                         </div>
                     </div>
                  </div>
@@ -890,7 +954,7 @@ const Dashboard = () => {
                  </span>
                  <p style={{ margin: 0, fontSize: '0.88rem', maxWidth: '300px' }}>
                    {isAdmin 
-                     ? 'Click "Execute XGBoost" to train the model on the full 3M dataset.' 
+                     ? 'Click "Execute XGBoost" to train the model on the full 2M dataset.' 
                      : 'Awaiting Administrator Training — This model has not been trained yet. Please contact an Administrator to deploy models.'}
                  </p>
               </div>

@@ -45,7 +45,7 @@ const Recommendations = () => {
         {loading && (
           <div style={{padding: '30px', textAlign: 'center', color: 'var(--color-cyan)', fontSize: '1.2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px'}}>
             <FaBolt className="pulse-beacon-cyan" size={32} />
-            <span>AI is analyzing 3M+ records to generate dynamic operational recommendations...</span>
+            <span>AI is analyzing 2M+ records to generate dynamic operational recommendations...</span>
           </div>
         )}
         {!loading && displayRecs.length === 0 && (

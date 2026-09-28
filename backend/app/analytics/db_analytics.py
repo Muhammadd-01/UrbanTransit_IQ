@@ -21,21 +21,22 @@ def get_od_matrix(filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     stops = list(db.stops.find({}, {"stop_id": 1, "zone": 1, "_id": 0}))
     stop_zone_map = {s["stop_id"]: s.get("zone", "Z1") for s in stops}
 
-    # Sample tickets for instantaneous matrix generation
-    sample_tickets = list(db.tickets.aggregate([
-        {"$sample": {"size": 25000}},
-        {"$project": {"boarding_stop": 1, "alighting_stop": 1, "_id": 0}}
+    grouped_tickets = list(db.tickets.aggregate([
+        {"$group": {
+            "_id": {"boarding": "$boarding_stop", "alighting": "$alighting_stop"},
+            "count": {"$sum": 1}
+        }}
     ]))
 
-    for t in sample_tickets:
-        oz = stop_zone_map.get(t.get("boarding_stop"), "Z1")
-        dz = stop_zone_map.get(t.get("alighting_stop"), "Z1")
+    for t in grouped_tickets:
+        oz = stop_zone_map.get(t["_id"].get("boarding"), "Z1")
+        dz = stop_zone_map.get(t["_id"].get("alighting"), "Z1")
         try:
             oz_clean = oz.replace("Z", "") if isinstance(oz, str) else str(oz)
             dz_clean = dz.replace("Z", "") if isinstance(dz, str) else str(dz)
             oz_idx = (int(oz_clean) - 1) % num_zones
             dz_idx = (int(dz_clean) - 1) % num_zones
-            matrix[oz_idx][dz_idx] += 80  # Scale up sample to 2M dataset proportion
+            matrix[oz_idx][dz_idx] += t["count"]
         except Exception:
             pass
 
@@ -191,14 +192,6 @@ def analyze_delays(filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         }
         for c in causes_data
     ]
-    if not causes:
-        causes = [
-            {"cause": "Heavy Traffic", "incidents": 420, "count": 420},
-            {"cause": "Signal Failure", "incidents": 260, "count": 260},
-            {"cause": "Vehicle Breakdown", "incidents": 140, "count": 140},
-            {"cause": "Passenger Surge", "incidents": 110, "count": 110},
-            {"cause": "Weather Disruption", "incidents": 70, "count": 70},
-        ]
 
     avg_pipeline = []
     if match:
@@ -212,10 +205,26 @@ def analyze_delays(filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
 
 def analyze_headway(filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     db = get_mongo_db()
-    trips_count = db.trips.count_documents({})
-    # With 10,000 trips across 50 routes, avg headway is ~16h * 60m / 200 trips per route = 4.8m
-    routes_count = db.routes.count_documents({}) or 50
-    avg_headway = round((16 * 60) / max(1, (trips_count / routes_count)), 2)
+    match = {}
+    if filters and filters.get("route_id"):
+        match["route_id"] = filters["route_id"]
+
+    trips = list(db.trips.find(match).sort([("route_id", 1), ("direction", 1), ("actual_departure", 1)]))
+    
+    total_diff = 0
+    count = 0
+    if len(trips) > 1:
+        prev_trip = trips[0]
+        for t in trips[1:]:
+            if t.get("route_id") == prev_trip.get("route_id") and t.get("direction") == prev_trip.get("direction"):
+                if isinstance(t.get("actual_departure"), datetime) and isinstance(prev_trip.get("actual_departure"), datetime):
+                    diff = (t["actual_departure"] - prev_trip["actual_departure"]).total_seconds() / 60
+                    if 0 < diff < 120:
+                        total_diff += diff
+                        count += 1
+            prev_trip = t
+
+    avg_headway = round(total_diff / count, 2) if count > 0 else 0.0
     bunching = db.delays.count_documents({"delay_minutes": {"$gt": 15}})
     return {"status": "success", "average_headway_min": avg_headway, "bunching_events": min(120, bunching // 100)}
 

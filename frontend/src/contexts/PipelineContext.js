@@ -70,12 +70,12 @@ export const PipelineProvider = ({ children }) => {
 
   const PIPELINE_STEPS = (modelName, algo) => [
     `Pre-flight check: Analyzing database volume...`,
-    `Detected 3,000,000+ records in target tables.`,
+    `Detected 2,000,000+ records in target tables.`,
     `Calculating computational complexity and estimating ETA...`,
-    `> Estimated Training Time: ~35 seconds on 3,000,000 records`,
+    `> Estimated Training Time: ~35 seconds on 2,000,000 records`,
     `Establishing connection to MongoDB...`,
-    `Querying passenger_counts collection (3M+ records)...`,
-    `Fetching ALL records from database (3M+ rows)...`,
+    `Querying passenger_counts collection (2M+ records)...`,
+    `Fetching ALL records from database (2M+ rows)...`,
     `Loaded 4 feature columns: boarding, alighting, load, hour`,
     `Preprocessing & null-fill complete`,
     `Splitting dataset — 90% train / 10% test (seed=42)`,
@@ -91,7 +91,7 @@ export const PipelineProvider = ({ children }) => {
   ];
 
   const WAITING_MESSAGES = [
-    `Still training — processing 3,000,000+ records takes time...`,
+    `Still training — processing 2,000,000+ records takes time...`,
     `Optimizing hyperparameters across feature space...`,
     `Cross-validating prediction boundaries...`,
     `Evaluating decision tree ensemble performance...`,

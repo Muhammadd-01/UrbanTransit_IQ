@@ -11,32 +11,7 @@ from backend.app.database.models import SparkJobMonitor
 
 logger = logging.getLogger(__name__)
 
-_SPARK_JOBS: List[Dict[str, Any]] = [
-    {
-        "id": "job-spark-ingestion-01",
-        "job_name": "PySpark_Raw_Ingestion",
-        "status": "success",
-        "start_time": datetime.utcnow().isoformat(),
-        "end_time": datetime.utcnow().isoformat(),
-        "duration_seconds": 14.1,
-        "records_processed": 2000000,
-        "stage": "Completed",
-        "error_details": None,
-        "log_path": "logs/spark_ingestion.log",
-    },
-    {
-        "id": "job-spark-quality-01",
-        "job_name": "Spark_Data_Quality_Audit",
-        "status": "success",
-        "start_time": datetime.utcnow().isoformat(),
-        "end_time": datetime.utcnow().isoformat(),
-        "duration_seconds": 22.4,
-        "records_processed": 2000000,
-        "stage": "Completed",
-        "error_details": None,
-        "log_path": "logs/spark_quality.log",
-    }
-]
+_SPARK_JOBS: List[Dict[str, Any]] = []
 
 def _job_to_dict(job: SparkJobMonitor) -> Dict[str, Any]:
     return {

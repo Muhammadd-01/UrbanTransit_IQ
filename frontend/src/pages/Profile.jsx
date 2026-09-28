@@ -59,7 +59,7 @@ const Profile = () => {
 
   const teamMembers = [
     { name: 'Muhammad Affan', role: 'Lead Architect & Full-Stack Engineer', focus: 'FastAPI Backend, Supabase Ledger, React UI' },
-    { name: 'Muhammad Hammad', role: 'Big Data & Spark Engineer', focus: 'Apache Hadoop, HDFS Setup, PySpark Ingestion' },
+    { name: 'Muhammad Hammad', role: 'Big Data & Spark Engineer', focus: 'Distributed Data Setup, PySpark Ingestion' },
     { name: 'Shahmir Qadri', role: 'Machine Learning & Forecasting Engineer', focus: 'Spark MLlib, Python XGBoost, SARIMA' },
     { name: 'Waqas Rehman', role: 'Data Quality & Analytics Engineer', focus: '4-Tier Audit Engine, Karachi Spatial Geometry' },
   ];
@@ -226,7 +226,7 @@ const Profile = () => {
                 <FaMicrochip className="ent-icon" />
               </div>
               <div className="entitlement-text">
-                <strong>Apache Spark Cluster Engine</strong>
+                <strong>Distributed AI Cluster Engine</strong>
                 <p>2GB Driver / 2GB Executor allocation • 8 Shuffle Partitions</p>
                 <span className="status-granted">✓ RUNTIME GRANTED</span>
               </div>
@@ -237,7 +237,7 @@ const Profile = () => {
                 <FaHdd className="ent-icon" />
               </div>
               <div className="entitlement-text">
-                <strong>Hadoop HDFS Storage Ledger</strong>
+                <strong>Distributed Storage Ledger</strong>
                 <p>Path: <code>/urbantransit/raw/</code> • Replication: 1 (Pseudo-Distributed)</p>
                 <span className="status-granted">✓ WRITE & READ ACCESS</span>
               </div>

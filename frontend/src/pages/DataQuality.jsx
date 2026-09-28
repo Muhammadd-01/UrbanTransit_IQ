@@ -112,7 +112,7 @@ const DataQuality = () => {
       <div className="kpi-grid-four">
         <KPICard 
           title="CLEAN RECORDS"
-          value={report?.valid != null ? `${((report.valid / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.valid_percentage ? `${report.valid_percentage}%` : 'N/A')}
+          value={report?.valid != null ? `${((report.valid / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.valid_percentage ? `${report.valid_percentage}%` : '-')}
           techCode="Clean"
           change="0.2"
           changeDirection="up"
@@ -134,7 +134,7 @@ const DataQuality = () => {
         />
         <KPICard 
           title="FLAGGED RECORDS"
-          value={report?.invalid != null ? `${((report.invalid / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.flagged_percentage ? `${report.flagged_percentage}%` : 'N/A')}
+          value={report?.invalid != null ? `${((report.invalid / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.flagged_percentage ? `${report.flagged_percentage}%` : '-')}
           techCode="Flagged"
           change="0.2"
           changeDirection="down"
@@ -145,7 +145,7 @@ const DataQuality = () => {
         />
         <KPICard 
           title="REMOVED RECORDS"
-          value={report?.missing != null ? `${((report.missing / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.quarantined_percentage ? `${report.quarantined_percentage}%` : 'N/A')}
+          value={report?.missing != null ? `${((report.missing / (report.total_records || 1)) * 100).toFixed(1)}%` : (report?.quarantined_percentage ? `${report.quarantined_percentage}%` : '-')}
           techCode="Removed"
           change="0.05"
           changeDirection="down"

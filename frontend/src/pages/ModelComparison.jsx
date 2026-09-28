@@ -22,47 +22,59 @@ const ModelComparison = () => {
   useEffect(() => {
     const savedSpark = localStorage.getItem('pipeline_spark_result');
     const savedXgb = localStorage.getItem('pipeline_xgb_result');
-    let hasSpark = false;
-    let hasXgb = false;
-    try { if (savedSpark) { setSparkResult(JSON.parse(savedSpark)); hasSpark = true; } } catch(e) { console.error(e); }
-    try { if (savedXgb) { setXgbResult(JSON.parse(savedXgb)); hasXgb = true; } } catch(e) { console.error(e); }
+    let sparkData = null;
+    let xgbData = null;
+    try { if (savedSpark) { sparkData = JSON.parse(savedSpark); setSparkResult(sparkData); } } catch(e) { console.error(e); }
+    try { if (savedXgb) { xgbData = JSON.parse(savedXgb); setXgbResult(xgbData); } } catch(e) { console.error(e); }
 
-    // If not in localStorage, fetch from pipeline status so ALL roles can see the trained model comparison immediately
-    if (!hasSpark || !hasXgb) {
+    const needsSpark = !sparkData || sparkData.precision === undefined || sparkData.precision === '-';
+    const needsXgb = !xgbData || xgbData.precision === undefined || xgbData.precision === '-';
+
+    if (needsSpark || needsXgb) {
       pipelineAPI.getStatus().then(res => {
-        if (!hasSpark && res.data?.spark_is_trained && res.data?.spark_raw_data) {
-          setSparkResult({
+        if (needsSpark && res.data?.spark_is_trained && res.data?.spark_raw_data) {
+          const newSpark = {
+            ...sparkData,
             pred: res.data.spark_pred || "ON-TIME",
             confidence: res.data.spark_confidence || "100.0%",
             latency: res.data.spark_latency || "25ms",
-            accuracy: res.data.spark_acc,
-            f1_score: res.data.spark_f1,
-            mae: res.data.spark_mae,
-            rmse: res.data.spark_rmse,
+            accuracy: res.data.spark_acc ?? res.data.accuracy ?? '-',
+            f1_score: res.data.spark_f1 ?? res.data.f1_score ?? '-',
+            precision: res.data.spark_precision ?? res.data.precision ?? '-',
+            recall: res.data.spark_recall ?? res.data.recall ?? '-',
+            mae: res.data.spark_mae ?? res.data.mae ?? '-',
+            rmse: res.data.spark_rmse ?? res.data.rmse ?? '-',
+            confusion_matrix: res.data.spark_confusion_matrix ?? res.data.confusion_matrix ?? '-',
             mape: res.data.spark_mape,
             r2: res.data.spark_r2,
             records_used: res.data.records_used,
             raw_data: res.data.spark_raw_data,
             trained_at: res.data.trained_at,
             training_time_seconds: res.data.training_time_seconds,
-          });
+          };
+          setSparkResult(newSpark);
         }
-        if (!hasXgb && res.data?.xgb_is_trained && res.data?.xgb_raw_data) {
-          setXgbResult({
+        if (needsXgb && res.data?.xgb_is_trained && res.data?.xgb_raw_data) {
+          const newXgb = {
+            ...xgbData,
             pred: res.data.xgb_pred || "ON-TIME",
             confidence: res.data.xgb_confidence || "100.0%",
             latency: res.data.xgb_latency || "12ms",
-            accuracy: res.data.xgb_acc,
-            f1_score: res.data.xgb_f1,
-            mae: res.data.xgb_mae,
-            rmse: res.data.xgb_rmse,
+            accuracy: res.data.xgb_acc ?? res.data.accuracy ?? '-',
+            f1_score: res.data.xgb_f1 ?? res.data.f1_score ?? '-',
+            precision: res.data.xgb_precision ?? res.data.precision ?? '-',
+            recall: res.data.xgb_recall ?? res.data.recall ?? '-',
+            mae: res.data.xgb_mae ?? res.data.mae ?? '-',
+            rmse: res.data.xgb_rmse ?? res.data.rmse ?? '-',
+            confusion_matrix: res.data.xgb_confusion_matrix ?? res.data.confusion_matrix ?? '-',
             mape: res.data.xgb_mape,
             r2: res.data.xgb_r2,
             records_used: res.data.records_used,
             raw_data: res.data.xgb_raw_data,
             trained_at: res.data.trained_at,
             training_time_seconds: res.data.training_time_seconds,
-          });
+          };
+          setXgbResult(newXgb);
         }
       }).catch(console.error);
     }
@@ -160,7 +172,7 @@ const ModelComparison = () => {
               <span className="step-num">1</span>
               <div>
                 <strong>Data Collection</strong>
-                <p>Both models receive the same real-time data from Karachi's transit system — passenger boarding counts, vehicle loads, and time of day — pulled from a database of 3 million historical records.</p>
+                <p>Both models receive the same real-time data from Karachi's transit system — passenger boarding counts, vehicle loads, and time of day — pulled from a database of 2 million historical records.</p>
               </div>
             </div>
             <div className="explainer-step">
@@ -319,13 +331,17 @@ const ModelComparison = () => {
 
                 {/* Technical Spec Rows */}
                 <div className="pipeline-spec-list">
-                  <div className="spec-row"><span className="spec-label">PREDICTION</span><span className="spec-val mono-val" style={{ color: sparkResult.pred === 'DELAYED' ? '#DC2626' : '#16A34A' }}>{sparkResult.pred}</span></div>
-                  <div className="spec-row"><span className="spec-label">CONFIDENCE</span><span className="spec-val mono-val">{sparkResult.confidence}</span></div>
-                  <div className="spec-row"><span className="spec-label">ACCURACY</span><span className="spec-val mono-val">{sparkResult.accuracy}%</span></div>
-                  <div className="spec-row"><span className="spec-label">F1-SCORE</span><span className="spec-val mono-val">{sparkResult.f1_score}</span></div>
-                  <div className="spec-row"><span className="spec-label">RMSE ERROR</span><span className="spec-val mono-val text-danger">{sparkResult.rmse}</span></div>
-                  <div className="spec-row"><span className="spec-label">LATENCY</span><span className="spec-val mono-val text-cyan">{sparkResult.latency}</span></div>
-                  <div className="spec-row"><span className="spec-label">RECORDS TRAINED</span><span className="spec-val mono-val">{sparkResult.records_used?.toLocaleString()}</span></div>
+                  <div className="spec-row"><span className="spec-label">PREDICTION</span><span className="spec-val mono-val" style={{ color: xgbResult.pred === 'DELAYED' ? '#DC2626' : '#16A34A' }}>{xgbResult.pred}</span></div>
+                  <div className="spec-row"><span className="spec-label">CONFIDENCE</span><span className="spec-val mono-val">{xgbResult.confidence}</span></div>
+                  <div className="spec-row"><span className="spec-label">ACCURACY</span><span className="spec-val mono-val">{xgbResult.accuracy ?? '-'}%</span></div>
+                  <div className="spec-row"><span className="spec-label">BALANCE SCORE (F1-SCORE)</span><span className="spec-val mono-val">{xgbResult.f1_score ?? xgbResult.f1 ?? '-'}</span></div>
+                  <div className="spec-row"><span className="spec-label">CORRECT POSITIVE RATE (PRECISION)</span><span className="spec-val mono-val">{xgbResult.precision ?? '-'}</span></div>
+                  <div className="spec-row"><span className="spec-label">DETECTION RATE (RECALL)</span><span className="spec-val mono-val">{xgbResult.recall ?? '-'}</span></div>
+                  <div className="spec-row"><span className="spec-label">MAE (AVERAGE ERROR)</span><span className="spec-val mono-val">{xgbResult.mae ?? '-'}</span></div>
+                  <div className="spec-row"><span className="spec-label">RMSE (SPREAD ERROR)</span><span className="spec-val mono-val text-danger">{xgbResult.rmse ?? '-'}</span></div>
+                  <div className="spec-row"><span className="spec-label">CONFUSION MATRIX</span><span className="spec-val mono-val">{typeof xgbResult.confusion_matrix === 'object' ? JSON.stringify(xgbResult.confusion_matrix) : (xgbResult.confusion_matrix ?? '-')}</span></div>
+                  <div className="spec-row"><span className="spec-label">LATENCY</span><span className="spec-val mono-val text-cyan">{xgbResult.latency ?? '-'}</span></div>
+                  <div className="spec-row"><span className="spec-label">RECORDS TRAINED</span><span className="spec-val mono-val">{xgbResult.records_used?.toLocaleString()}</span></div>
                 </div>
               </div>
             ) : (

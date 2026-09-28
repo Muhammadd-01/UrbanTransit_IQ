@@ -32,7 +32,12 @@ const PassengerFlow = () => {
   const maxIn = data?.hourly_distribution?.length > 0 ? Math.max(...data.hourly_distribution.map(d => d.inbound || 0)) : 0;
   const maxOut = data?.hourly_distribution?.length > 0 ? Math.max(...data.hourly_distribution.map(d => d.outbound || 0)) : 0;
   const asymmetry = maxOut ? (maxIn / maxOut).toFixed(1) : 0;
-  const busiest = data?.top_boarding_stops?.[0]?.stop_name || 'N/A';
+  const busiest = data?.top_boarding_stops?.[0]?.stop_name || '-';
+
+  // Morning-Evening Balance: Calculate the symmetry between morning peak and evening peak
+  const morningEveningBalance = (maxIn > 0 && maxOut > 0) 
+    ? ((Math.min(maxIn, maxOut) / Math.max(maxIn, maxOut)) * 100).toFixed(1) 
+    : "0.0";
 
   return (
     <div className="page-container passengerflow-page">
@@ -137,7 +142,7 @@ const PassengerFlow = () => {
           </div>
           <div className="pf-insight-content">
             <span className="pf-insight-label">Morning-Evening Balance</span>
-            <span className="pf-insight-val">{data ? '94.2%' : '0%'} <span className="text-gold" style={{ fontSize: '0.78rem' }}>High Congruence</span></span>
+            <span className="pf-insight-val">{data ? `${morningEveningBalance}%` : '0%'} <span className="text-gold" style={{ fontSize: '0.78rem' }}>High Congruence</span></span>
             <span className="pf-insight-sub">How well bus schedules match passenger demand patterns</span>
           </div>
         </div>

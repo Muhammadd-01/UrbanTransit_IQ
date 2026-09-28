@@ -74,7 +74,7 @@ const DelayAnalytics = () => {
       <div className="kpi-grid-five">
         <KPICard 
           title="AVG NETWORK DELAY"
-          value={delayData?.average_delay != null ? `${delayData.average_delay} min` : 'N/A'}
+          value={delayData?.average_delay != null ? `${delayData.average_delay} min` : '-'}
           techCode="Average"
           change="1.4"
           changeDirection="down"
@@ -96,7 +96,7 @@ const DelayAnalytics = () => {
         />
         <KPICard 
           title="TOP CAUSE"
-          value={delayData?.top_causes?.[0]?.cause || 'N/A'}
+          value={delayData?.top_causes?.[0]?.cause || '-'}
           techCode="Top Cause"
           change="2.1"
           changeDirection="down"
@@ -107,7 +107,7 @@ const DelayAnalytics = () => {
         />
         <KPICard 
           title="WORST 5% DELAYS"
-          value="N/A"
+          value="-"
           techCode="Critical"
           change="3.4"
           changeDirection="down"
@@ -118,7 +118,7 @@ const DelayAnalytics = () => {
         />
         <KPICard 
           title="ON-TIME RELIABILITY"
-          value="N/A"
+          value="-"
           techCode="Schedule"
           change="2.1"
           changeDirection="up"

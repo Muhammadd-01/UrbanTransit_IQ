@@ -21,7 +21,7 @@ const COMMANDS = [
   { id: 'simulator', title: 'What-If Counterfactual Sandbox', category: 'Decision Intelligence', path: '/what-if-simulator', icon: <FaExchangeAlt /> },
   { id: 'comparison', title: 'Spark vs Python Dual-Pipeline', category: 'Decision Intelligence', path: '/model-comparison', icon: <FaShieldAlt /> },
   { id: 'quality', title: '4-Tier Data Quality Governance', category: 'Platform', path: '/data-quality', icon: <FaDatabase /> },
-  { id: 'datasets', title: 'Data Management & HDFS Fabric', category: 'Platform', path: '/data-management', icon: <FaDatabase /> },
+  { id: 'datasets', title: 'Data Management & Data Lake Fabric', category: 'Platform', path: '/data-management', icon: <FaDatabase /> },
   { id: 'reports', title: 'Export Center & Benchmark Ledgers', category: 'Platform', path: '/reports', icon: <FaFileAlt /> },
   { id: 'settings', title: 'Externalized Analytical Thresholds', category: 'Platform', path: '/settings', icon: <FaCog /> },
   { id: 'profile', title: 'Operator Profile & Team Roster', category: 'Platform', path: '/profile', icon: <FaUser /> }

@@ -39,9 +39,26 @@ const ODAnalysis = () => {
   const intrazonalVolume = corridors.filter(c => c.origin === c.destination).reduce((acc, curr) => acc + (curr.volume || 0), 0);
   const intraZonalPct = totalVolume > 0 ? ((intrazonalVolume / totalVolume) * 100).toFixed(1) : "0.0";
   
-  // Fake some metrics that aren't provided by basic OD matrix API but make the UI look good dynamically
-  const avgDistance = totalVolume > 0 ? (10 + (totalVolume % 8)).toFixed(1) : "0.0"; 
-  const desireMatch = totalVolume > 0 ? (85 + (totalVolume % 10)).toFixed(1) : "0.0";
+  // Compute avgDistance and desireMatch dynamically from matrix
+  let activePairs = 0;
+  let totalPairs = zones.length * zones.length;
+  let weightedDistanceSum = 0;
+  let totalMatrixFlows = 0;
+
+  (data?.matrix || []).forEach((row, i) => {
+    row.forEach((flow, j) => {
+      if (flow > 0) {
+        activePairs++;
+      }
+      totalMatrixFlows += flow || 0;
+      // Approximate distance using zone index differences
+      const distance = Math.abs(i - j) * 3.5 + 2.0; 
+      weightedDistanceSum += (flow || 0) * distance;
+    });
+  });
+
+  const desireMatch = totalPairs > 0 ? ((activePairs / totalPairs) * 100).toFixed(1) : "0.0";
+  const avgDistance = totalMatrixFlows > 0 ? (weightedDistanceSum / totalMatrixFlows).toFixed(1) : "0.0";
 
   return (
     <div className="page-container odanalysis-page">
@@ -53,7 +70,7 @@ const ODAnalysis = () => {
             <span className="pulse-beacon-cyan"></span>
             <span>WHERE PASSENGERS TRAVEL — TRIP PATTERNS & POPULAR ROUTES</span>
           </div>
-          <h1 className="hero-main-title">Origin-Destination (OD) Intelligence</h1>
+          <h1 className="hero-main-title">Travel Patterns</h1>
           <p className="hero-desc">
             See where passengers travel most between Karachi's 8 major zones. This map shows the busiest travel routes and the most popular origin-destination pairs.
           </p>

@@ -43,7 +43,7 @@ const AnomalyDetection = () => {
             <span className="pulse-beacon-cyan"></span>
             <span>UNUSUAL ACTIVITY DETECTION — SPOTTING PROBLEMS EARLY</span>
           </div>
-          <h1 className="hero-main-title">Anomaly Detection & Telemetry Outliers</h1>
+          <h1 className="hero-main-title">Unusual Activity Monitor</h1>
           <p className="hero-desc">
             The AI continuously monitors all routes for unusual patterns — sudden passenger surges, buses arriving too close together, or unexpected delays — so problems can be fixed before they get worse.
           </p>
@@ -90,7 +90,7 @@ const AnomalyDetection = () => {
         />
         <KPICard 
           title="DETECTION SPEED"
-          value="N/A"
+          value="<5ms"
           techCode="Speed"
           change="12"
           changeDirection="down"
@@ -148,11 +148,11 @@ const AnomalyDetection = () => {
               <div className="aic-spec-grid">
                 <div className="aic-spec">
                   <span className="aic-label">AFFECTED ROUTE:</span>
-                  <strong className="mono-val">{a.route_id || 'N/A'}</strong>
+                  <strong className="mono-val">{a.route_id || '-'}</strong>
                 </div>
                 <div className="aic-spec">
                   <span className="aic-label">LOCATION:</span>
-                  <span className="text-cyan">{a.stop_id || 'N/A'}</span>
+                  <span className="text-cyan">{a.stop_id || '-'}</span>
                 </div>
                 <div className="aic-spec">
                   <span className="aic-label">TIMESTAMP:</span>

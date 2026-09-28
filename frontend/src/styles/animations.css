@@ -1,0 +1,193 @@
+/* =========================================
+   SCROLL-IN ANIMATIONS — Global Styles
+   ========================================= */
+
+/* Base hidden state for scroll-in elements */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for cards in a row */
+.scroll-animate.delay-1 { transition-delay: 0.1s; }
+.scroll-animate.delay-2 { transition-delay: 0.2s; }
+.scroll-animate.delay-3 { transition-delay: 0.3s; }
+.scroll-animate.delay-4 { transition-delay: 0.4s; }
+
+/* Slide from left */
+.scroll-animate-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-animate-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide from right */
+.scroll-animate-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-animate-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale up */
+.scroll-animate-scale {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.scroll-animate-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Fade only */
+.scroll-animate-fade {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+.scroll-animate-fade.visible {
+  opacity: 1;
+}
+
+/* =========================================
+   CHART LINE-DRAW ANIMATION
+   ========================================= */
+
+/* Recharts line animation — the path draws itself */
+.recharts-line .recharts-line-curve {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: lineDrawIn 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes lineDrawIn {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Recharts area fill animation */
+.recharts-area .recharts-area-area {
+  opacity: 0;
+  animation: areaFadeIn 1s ease-out 1.5s forwards;
+}
+
+@keyframes areaFadeIn {
+  to { opacity: 0.3; }
+}
+
+/* Recharts bar animation — bars grow up */
+.recharts-bar-rectangle {
+  animation: barGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom;
+}
+
+@keyframes barGrow {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Pie chart animation */
+.recharts-pie-sector {
+  animation: pieSpin 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pieSpin {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* =========================================
+   TABLE ROW ANIMATION
+   ========================================= */
+.table-animate tbody tr {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: tableRowSlide 0.4s ease-out forwards;
+}
+
+.table-animate tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.table-animate tbody tr:nth-child(2) { animation-delay: 0.1s; }
+.table-animate tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.table-animate tbody tr:nth-child(4) { animation-delay: 0.2s; }
+.table-animate tbody tr:nth-child(5) { animation-delay: 0.25s; }
+.table-animate tbody tr:nth-child(6) { animation-delay: 0.3s; }
+.table-animate tbody tr:nth-child(7) { animation-delay: 0.35s; }
+.table-animate tbody tr:nth-child(8) { animation-delay: 0.4s; }
+.table-animate tbody tr:nth-child(9) { animation-delay: 0.45s; }
+.table-animate tbody tr:nth-child(10) { animation-delay: 0.5s; }
+
+@keyframes tableRowSlide {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =========================================
+   KPI CARD COUNTER ANIMATION
+   ========================================= */
+.kpi-card-animated {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.kpi-card-animated:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+
+/* =========================================
+   MAP ROUTE ANIMATION
+   ========================================= */
+.map-route-line {
+  stroke-dasharray: 10 5;
+  animation: dashMove 30s linear infinite;
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -500;
+  }
+}
+
+.map-popup-animate {
+  animation: popupSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

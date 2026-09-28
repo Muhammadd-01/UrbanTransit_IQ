@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 const client = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
-  timeout: 900000, // Increased to 15 minutes for 3M record ML pipelines
+  timeout: 900000, // Increased to 15 minutes for 2M record ML pipelines
 });
 
 client.interceptors.request.use((config) => {
@@ -40,6 +40,13 @@ export const authAPI = {
   me: () => client.get('/api/auth/me'),
 };
 
+export const usersAPI = {
+  list: () => client.get('/api/users'),
+  create: (data) => client.post('/api/users', data),
+  update: (id, data) => client.put(`/api/users/${id}`, data),
+  delete: (id) => client.delete(`/api/users/${id}`),
+};
+
 export const dashboardAPI = {
   getKPIs: (filters) => client.get('/api/dashboard/kpis', { params: filters }),
   getSummary: (filters) => client.get('/api/dashboard/summary', { params: filters }),
@@ -56,6 +63,7 @@ export const analyticsAPI = {
   getOccupancy: (filters) => client.get('/api/analytics/occupancy', { params: filters }),
   getHeadway: (filters) => client.get('/api/analytics/headway', { params: filters }),
   getRoutes: () => client.get("/api/analytics/routes"),
+  getStops: (filters) => client.get('/api/analytics/stops', { params: filters }),
   getVehicleBunching: (filters) => client.get('/api/analytics/vehicle-bunching', { params: filters }),
   getVehicleUtilization: (filters) => client.get('/api/analytics/vehicle-utilization', { params: filters }),
   getBottlenecks: (filters) => client.get('/api/analytics/bottlenecks', { params: filters }),
@@ -107,7 +115,7 @@ export const reportsAPI = {
 export const datasetsAPI = {
   generate: (config) => client.post('/api/datasets/generate', config),
   list: () => client.get('/api/datasets'),
-  uploadToHDFS: (id) => client.post(`/api/datasets/${id}/upload-hdfs`),
+  uploadToStorage: (id) => client.post(`/api/datasets/${id}/upload-hdfs`),
 };
 
 export const qualityAPI = {

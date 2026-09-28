@@ -28,6 +28,7 @@ import ModelComparison from './pages/ModelComparison';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import UserManagement from './pages/UserManagement';
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/user-management" element={<UserManagement />} />
             </Route>
           </Routes>
         </PipelineProvider>

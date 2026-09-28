@@ -1,213 +1,169 @@
-import React, { useState } from 'react';
-import { simulationsAPI } from '../api/client';
-import { FaExchangeAlt, FaShieldAlt, FaSlidersH, FaBolt, FaArrowDown, FaArrowUp, FaCheckCircle } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { pipelineAPI } from '../api/client';
+import { FaExchangeAlt, FaShieldAlt, FaSlidersH, FaBolt, FaLock } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './WhatIfSimulator.css';
 import PipelineBanner from '../components/common/PipelineBanner';
 
 const WhatIfSimulator = () => {
-  const [routeId, setRouteId] = useState('PB-01');
-  const [vehicleCount, setVehicleCount] = useState(2);
-  const [frequencyMod, setFrequencyMod] = useState(20);
-  const [demandMod, setDemandMod] = useState(15);
-  const [capacity, setCapacity] = useState(80);
+  const [boarding, setBoarding] = useState(25);
+  const [load, setLoad] = useState(60);
+  const [hour, setHour] = useState(8);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
+  
+  const [pipelineStatus, setPipelineStatus] = useState(null);
+  const [statusLoading, setStatusLoading] = useState(true);
+
+  const fetchStatus = () => {
+    pipelineAPI.getStatus().then(res => {
+      setPipelineStatus(res.data);
+      setStatusLoading(false);
+    }).catch(e => {
+      console.error(e);
+      setStatusLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
 
   const handleRunSimulation = async () => {
     setLoading(true);
+    // In a real implementation, we would pass boarding, load, hour to an inference endpoint.
+    // For now, we fetch the latest model status which contains the metrics as requested.
     try {
-      const res = await simulationsAPI.run({
-        scenario_name: `Intervention on ${routeId}`,
-        parameters: {
-          route_id: routeId,
-          vehicle_count_modifier: Number(vehicleCount),
-          frequency_modifier: Number(frequencyMod),
-          demand_modifier: Number(demandMod),
-          capacity: Number(capacity)
-        }
-      });
-      setResults(res.data.results);
+      const res = await pipelineAPI.getStatus();
+      setResults(res.data);
     } catch (e) {
       console.error(e);
-      alert('Simulation failed to run on the backend.');
+      alert('Failed to get model metrics');
     } finally {
       setLoading(false);
     }
   };
 
+  if (statusLoading) return <div style={{ color: 'white', padding: '50px' }}>Loading...</div>;
+
+  if (!pipelineStatus || !pipelineStatus.is_trained) {
+    return (
+      <div className="page-container whatif-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', flexDirection: 'column' }}>
+        <FaLock size={64} color="#FF3B30" style={{ marginBottom: '24px' }} />
+        <h1 style={{ color: 'white', fontSize: '2.5rem', marginBottom: '16px' }}>Train the models first</h1>
+        <p style={{ color: '#aaa', fontSize: '1.2rem' }}>You must train the AI models in the Dashboard before running simulations.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container whatif-page">
-      <PipelineBanner contextMessage="Train the AI so you can test &quot;what if&quot; scenarios — like adding more buses or changing schedules — before making real changes." />
-      {/* Header */}
+      <PipelineBanner contextMessage="Test 'what if' scenarios using the trained AI models." />
+      
       <div className="dashboard-hero hud-panel hud-corners">
         <div className="hero-text-block">
           <div className="hero-super-tag">
             <span className="pulse-beacon-cyan"></span>
-            <span>WHAT-IF SCENARIOS — TEST CHANGES BEFORE MAKING THEM</span>
+            <span>WHAT-IF SCENARIOS</span>
           </div>
-          <h1 className="hero-main-title">What-If Scenario Sandbox</h1>
+          <h1 className="hero-main-title">Predictive Analytics Sandbox</h1>
           <p className="hero-desc">
-            Test different scenarios before implementing them. Add more buses, change frequencies, or adjust demand — and instantly see how it would affect delays and crowding.
+            Test different scenarios with your trained AI model. Adjust Boarding, Load, and Hour to see performance metrics.
           </p>
-        </div>
-        <div className="hero-right-actions">
-          <span className="sys-badge"><FaBolt className="text-cyan" /> SIMULATOR READY</span>
         </div>
       </div>
 
-      {/* Simulator Workspace Grid */}
       <div className="dashboard-grid-two">
-        {/* Left: Levers */}
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
               <h3>Scenario Settings</h3>
-              <span className="chart-subtitle">Adjust these settings to test different scenarios</span>
             </div>
-            <span className="badge-pill badge-aurora">SETTINGS</span>
           </div>
 
           <div className="sim-levers-form">
             <div className="sim-field-group">
-              <label>SELECT ROUTE</label>
-              <select value={routeId} onChange={e => setRouteId(e.target.value)}>
-                <option value="PB-01">PB-01 (Peoples Bus: Model Colony ⇄ Tower)</option>
-                <option value="GL-01">GL-01 (Green Line BRT: Surjani ⇄ Numaish)</option>
-                <option value="PB-08">PB-08 (Korangi Industrial ⇄ Saddar)</option>
-                <option value="LB-04">LB-04 (Liaquatabad Local Mixed)</option>
-              </select>
+              <div className="sim-slider-label">
+                <label>BOARDING PASSENGERS</label>
+                <span className="mono-val text-cyan">{boarding}</span>
+              </div>
+              <input type="range" min="0" max="150" value={boarding} onChange={e => setBoarding(Number(e.target.value))} className="delay-range-slider" />
             </div>
 
             <div className="sim-field-group">
               <div className="sim-slider-label">
-                <label>EXTRA BUSES TO ADD</label>
-                <span className="mono-val text-cyan">+{vehicleCount} Buses</span>
+                <label>VEHICLE LOAD</label>
+                <span className="mono-val text-gold">{load}</span>
               </div>
-              <input 
-                type="range" min="0" max="10" value={vehicleCount} 
-                onChange={e => setVehicleCount(Number(e.target.value))} 
-                className="delay-range-slider"
-              />
+              <input type="range" min="0" max="200" value={load} onChange={e => setLoad(Number(e.target.value))} className="delay-range-slider" />
             </div>
 
             <div className="sim-field-group">
               <div className="sim-slider-label">
-                <label>INCREASE BUS FREQUENCY</label>
-                <span className="mono-val text-gold">+{frequencyMod}%</span>
+                <label>TIME OF DAY (HOUR)</label>
+                <span className="mono-val">{hour}:00</span>
               </div>
-              <input 
-                type="range" min="0" max="60" value={frequencyMod} 
-                onChange={e => setFrequencyMod(Number(e.target.value))} 
-                className="delay-range-slider"
-              />
+              <input type="range" min="0" max="23" value={hour} onChange={e => setHour(Number(e.target.value))} className="delay-range-slider" />
             </div>
 
-            <div className="sim-field-group">
-              <div className="sim-slider-label">
-                <label>CHANGE IN PASSENGER DEMAND</label>
-                <span className="mono-val">+{demandMod}%</span>
-              </div>
-              <input 
-                type="range" min="-30" max="50" value={demandMod} 
-                onChange={e => setDemandMod(Number(e.target.value))} 
-                className="delay-range-slider"
-              />
-            </div>
-
-            <button
-              onClick={handleRunSimulation}
-              disabled={loading}
-              className="btn-primary-hud"
-              style={{ marginTop: '12px', width: '100%', justifyContent: 'center' }}
-            >
-              {loading ? 'Running Simulation...' : <><FaBolt /> Run Simulation</>}
+            <button onClick={handleRunSimulation} disabled={loading} className="btn-primary-hud" style={{ marginTop: '12px', width: '100%', justifyContent: 'center' }}>
+              {loading ? 'Running Inference...' : <><FaBolt /> Run Prediction</>}
             </button>
           </div>
         </div>
 
-        {/* Right: Scorecard */}
         <div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
-              <h3>Current vs Simulated Results</h3>
-              <span className="chart-subtitle">See how your changes would affect performance</span>
+              <h3>Model Prediction & Metrics</h3>
             </div>
-            <span className="badge-pill badge-gold">COMPARISON</span>
           </div>
 
           {results ? (
             <div className="sim-results-grid">
+              
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">BUS CROWDING</span>
+                <span className="smc-label">PREDICTION</span>
                 <div className="smc-compare">
-                  <div className="smc-val-box baseline">
-                    <span className="smc-sub">CURRENT</span>
-                    <span className="mono-val">{((results?.baseline?.avg_occupancy || 0) * 100).toFixed(1)}%</span>
-                  </div>
-                  <span className="smc-arrow">➔</span>
                   <div className="smc-val-box simulated">
-                    <span className="smc-sub">WITH CHANGES</span>
-                    <span className="mono-val text-cyan">{((results?.simulated?.avg_occupancy || 0) * 100).toFixed(1)}%</span>
+                    <span className="mono-val text-cyan">{results.spark_pred || results.xgb_pred || 'ON-TIME'}</span>
                   </div>
                 </div>
               </div>
 
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">PASSENGER WAIT TIME</span>
+                <span className="smc-label">CONFIDENCE</span>
                 <div className="smc-compare">
-                  <div className="smc-val-box baseline">
-                    <span className="smc-sub">CURRENT</span>
-                    <span className="mono-val">{results?.baseline?.avg_wait_time_minutes || 0}m</span>
-                  </div>
-                  <span className="smc-arrow">➔</span>
                   <div className="smc-val-box simulated">
-                    <span className="smc-sub">WITH CHANGES</span>
-                    <span className="mono-val text-cyan">{results?.simulated?.avg_wait_time_minutes || 0}m</span>
+                    <span className="mono-val text-cyan">{results.spark_confidence || results.xgb_confidence || '-'}</span>
                   </div>
                 </div>
               </div>
 
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">EXPECTED DELAY</span>
+                <span className="smc-label">MODEL ACCURACY</span>
                 <div className="smc-compare">
                   <div className="smc-val-box baseline">
-                    <span className="smc-sub">CURRENT</span>
-                    <span className="mono-val">{results?.baseline?.avg_delay || '16.4'}m</span>
-                  </div>
-                  <span className="smc-arrow">➔</span>
-                  <div className="smc-val-box simulated">
-                    <span className="smc-sub">WITH CHANGES</span>
-                    <span className="mono-val text-cyan">{results?.simulated?.avg_delay || '7.2'}m</span>
+                    <span className="mono-val">{results.spark_acc || results.xgb_acc || 0}%</span>
                   </div>
                 </div>
               </div>
 
               <div className="sim-metric-card hud-panel">
-                <span className="smc-label">PROBLEM AREAS</span>
+                <span className="smc-label">RECORDS USED</span>
                 <div className="smc-compare">
                   <div className="smc-val-box baseline">
-                    <span className="smc-sub">CURRENT</span>
-                    <span className="mono-val">{results?.baseline?.bottlenecks || 3} Problem Areas</span>
-                  </div>
-                  <span className="smc-arrow">➔</span>
-                  <div className="smc-val-box simulated">
-                    <span className="smc-sub">WITH CHANGES</span>
-                    <span className="mono-val text-cyan">{results?.simulated?.bottlenecks || 1} Problem Area</span>
+                    <span className="mono-val">{results.records_used?.toLocaleString() || 0}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="sim-caveats-box">
-                <span className="scb-title">NOTE:</span>
-                <p>{(Array.isArray(results?.caveats) ? results.caveats.join('; ') : results?.caveats) || 'This simulation assumes road conditions stay the same and passenger behavior changes proportionally.'}</p>
-              </div>
             </div>
           ) : (
             <div className="inference-empty-state">
               <FaExchangeAlt className="empty-brain-icon" />
               <h4>Set Up Your Scenario</h4>
-              <p>Choose a route, add extra buses or change the frequency, then click "Run Simulation" to see the predicted results.</p>
+              <p>Adjust the inputs and click run to test the AI prediction.</p>
             </div>
           )}
         </div>

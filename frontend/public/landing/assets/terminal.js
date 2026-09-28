@@ -32,7 +32,7 @@
 
   function fileContent(name){
     if(name === 'about.txt'){
-      return "UrbanTransit IQ is a predictive machine learning pipeline.\nCombining Apache Spark and XGBoost, it predicts transit bottlenecks\nand passenger flows up to 30 minutes in advance.\n\nStatus: Systems Operational.";
+      return "UrbanTransit IQ is a predictive machine learning pipeline.\nCombining Spark AI Engine and XGBoost, it predicts transit bottlenecks\nand passenger flows up to 30 minutes in advance.\n\nStatus: Systems Operational.";
     }
     if(name === 'skills.txt' && typeof SKILLS !== 'undefined'){
       return Object.entries(SKILLS).map(([cat, items]) =>

@@ -15,7 +15,7 @@ const periodicElements = [
   { id: 'Pd', name: 'Pydantic', group: 'api', num: 14, desc: 'Data Validation' },
 
   { id: 'Sp', name: 'Spark', group: 'bigdata', num: 21, desc: 'Distributed Analytics' },
-  { id: 'Hd', name: 'HDFS', group: 'bigdata', num: 22, desc: 'Distributed Storage' },
+  { id: 'Hd', name: 'Data Lake', group: 'bigdata', num: 22, desc: 'Distributed Storage' },
   { id: 'Ka', name: 'Kafka', group: 'bigdata', num: 23, desc: 'Event Streaming' },
   { id: 'Pq', name: 'Parquet', group: 'bigdata', num: 24, desc: 'Columnar Format' },
 

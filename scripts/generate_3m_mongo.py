@@ -198,7 +198,7 @@ def generate_mongo_data():
 
     # 8. Tickets (3,000,000) - Batched
     logger.info("Generating 3,000,000 Tickets in batches of 100,000...")
-    total_tickets = 3000000
+    total_tickets = 2000000
     chunk_size = 100000
     payment_methods = ["smart_card", "mobile_app", "cash", "credit_card"]
     payment_probs = [0.60, 0.25, 0.10, 0.05]
@@ -232,7 +232,7 @@ def generate_mongo_data():
             logger.info(f"  ... inserted {chunk + chunk_size:,} tickets into MongoDB")
 
     # 9. Passenger Counts (3,000,000) - Batched with realistic is_delayed labels
-    total_passenger_counts = 3000000
+    total_passenger_counts = 2000000
     logger.info(f"Generating {total_passenger_counts:,} Passenger Counts with noisy is_delayed labels...")
     chunk_size_pc = 100000
     for chunk_start in range(0, total_passenger_counts, chunk_size_pc):

@@ -30,7 +30,7 @@ const VehicleAnalytics = () => {
             <span className="pulse-beacon-cyan"></span>
             <span>BUS FLEET — VEHICLE STATUS & PERFORMANCE</span>
           </div>
-          <h1 className="hero-main-title">Vehicle Fleet & Maintenance Analytics</h1>
+          <h1 className="hero-main-title">Fleet Monitor</h1>
           <p className="hero-desc">
             Monitor the health of every bus in the fleet. Track which vehicles need maintenance, which ones are in service, and plan repairs before breakdowns happen.
           </p>
@@ -118,14 +118,14 @@ const VehicleAnalytics = () => {
               {maintenanceList.map((v, i) => (
                 <tr key={i}>
                   <td className="mono-val text-cyan"><strong>{v.vehicle_id}</strong></td>
-                  <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{v.type || 'N/A'}</td>
-                  <td style={{ color: 'var(--color-text-secondary)' }}>{v.depot || 'N/A'}</td>
-                  <td className="mono-val text-dim">{v.age_years || 'N/A'} Years</td>
-                  <td className="mono-val">{v.odometer || 'N/A'}</td>
+                  <td style={{ color: 'var(--color-text)', fontWeight: '600' }}>{v.type || '-'}</td>
+                  <td style={{ color: 'var(--color-text-secondary)' }}>{v.depot || '-'}</td>
+                  <td className="mono-val text-dim">{v.age_years || '-'} Years</td>
+                  <td className="mono-val">{v.odometer || '-'}</td>
                   <td className="mono-val text-coral"><strong>{v.delay_count || 0} Events</strong></td>
                   <td>
                     <span className={`status-badge-chip ${v.condition === 'CRITICAL' ? 'quarantined' : 'corrected'}`}>
-                      {v.condition || 'N/A'}
+                      {v.condition || '-'}
                     </span>
                   </td>
                 </tr>

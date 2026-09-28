@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config.settings import settings
 from backend.app.api import auth, dashboard, datasets, quality, analytics, predictions, forecasting, clustering, anomalies, recommendations, simulations, comparison, reports, spark_jobs, settings_api, export, pipeline_execution
+from backend.app.api.users import router as users_router
 from backend.app.utils.mode_check import verify_competition_mode
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,7 @@ app.include_router(reports.router, prefix="/api/reports", tags=["reports"])
 app.include_router(spark_jobs.router, prefix="/api/spark-jobs", tags=["spark_jobs"])
 app.include_router(settings_api.router, prefix="/api/settings", tags=["settings"])
 app.include_router(export.router, prefix="/api/export", tags=["export"])
+app.include_router(users_router, prefix="/api/users", tags=["users"])
 
 @app.on_event("startup")
 async def startup_event():

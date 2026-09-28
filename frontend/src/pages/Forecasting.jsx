@@ -142,7 +142,7 @@ const Forecasting = () => {
       <div className="kpi-grid-four">
         <KPICard 
           title="AVERAGE PREDICTION ERROR"
-          value={forecastData?.metrics?.mae != null ? String(forecastData.metrics.mae) : 'N/A'}
+          value={forecastData?.metrics?.mae != null ? String(forecastData.metrics.mae) : 'Loading...'}
           techCode="Accuracy"
           change="8.4"
           changeDirection="down"
@@ -153,7 +153,7 @@ const Forecasting = () => {
         />
         <KPICard 
           title="PREDICTION ERROR RANGE"
-          value={forecastData?.metrics?.rmse != null ? String(forecastData.metrics.rmse) : 'N/A'}
+          value={forecastData?.metrics?.rmse != null ? String(forecastData.metrics.rmse) : 'Loading...'}
           techCode="Error Range"
           change="6.2"
           changeDirection="down"
@@ -164,7 +164,7 @@ const Forecasting = () => {
         />
         <KPICard 
           title="FORECAST ACCURACY"
-          value={forecastData?.metrics?.mape != null ? `${forecastData.metrics.mape}%` : 'N/A'}
+          value={forecastData?.metrics?.mape != null ? `${forecastData.metrics.mape}%` : 'Loading...'}
           techCode="Precision"
           change="2.1"
           changeDirection="down"

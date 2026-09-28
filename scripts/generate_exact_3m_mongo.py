@@ -198,7 +198,7 @@ def generate_mongo_data():
 
     # 8. Tickets (3,000,000) - Batched
     logger.info("Generating 1,000,000 Tickets in batches of 100,000...")
-    total_tickets = 3000000
+    total_tickets = 2000000
     chunk_size = 100000
     payment_methods = ["smart_card", "mobile_app", "cash", "credit_card"]
     payment_probs = [0.60, 0.25, 0.10, 0.05]

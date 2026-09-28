@@ -112,11 +112,11 @@ const Settings = () => {
               <span className="status-badge-chip valid">ONLINE CLUSTER (OFFLINE RESILIENT)</span>
             </div>
             <div className="ps-row">
-              <span className="ps-label">APACHE SPARK RESOURCE:</span>
+              <span className="ps-label">DISTRIBUTED AI RESOURCE:</span>
               <strong className="mono-val text-cyan">2GB Driver / 2GB Executor (Standalone)</strong>
             </div>
             <div className="ps-row">
-              <span className="ps-label">HADOOP HDFS STORAGE:</span>
+              <span className="ps-label">DISTRIBUTED STORAGE:</span>
               <strong className="mono-val text-white">Replication 1 / 64MB Block Size</strong>
             </div>
             <div className="ps-row">

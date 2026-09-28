@@ -32,26 +32,26 @@ def load_stops(data_dir='data/raw', nrows=None):
 def load_trips(data_dir='data/raw', nrows=None):
     return load_csv_files(os.path.join(data_dir, 'trips*.csv'), nrows=nrows)
 
-def load_tickets(data_dir='data/raw', nrows=50000):
+def load_tickets(data_dir='data/raw', nrows=None):
     return load_csv_files(os.path.join(data_dir, 'tickets*.csv'), nrows=nrows)
 
-def load_delays(data_dir='data/raw', nrows=50000):
+def load_delays(data_dir='data/raw', nrows=None):
     return load_csv_files(os.path.join(data_dir, 'delays*.csv'), nrows=nrows)
 
-def load_passenger_counts(data_dir='data/raw', nrows=50000):
+def load_passenger_counts(data_dir='data/raw', nrows=None):
     return load_csv_files(os.path.join(data_dir, 'passenger_counts*.csv'), nrows=nrows)
 
 def load_service_calendar(data_dir='data/raw', nrows=None):
     return load_csv_files(os.path.join(data_dir, 'service_calendar*.csv'), nrows=nrows)
 
-def load_all_data(data_dir='data/raw', nrows_tickets=20000, nrows_trips=25000) -> Dict[str, pd.DataFrame]:
-    """Load all raw data into a dictionary of DataFrames with memory-safe defaults."""
+def load_all_data(data_dir='data/raw', nrows_tickets=None, nrows_trips=None) -> Dict[str, pd.DataFrame]:
+    """Load all raw data into a dictionary of DataFrames."""
     return {
         'routes': load_routes(data_dir),
         'stops': load_stops(data_dir),
         'trips': load_trips(data_dir, nrows=nrows_trips),
         'tickets': load_tickets(data_dir, nrows=nrows_tickets),
-        'delays': load_delays(data_dir, nrows=nrows_trips * 2),
-        'passenger_counts': load_passenger_counts(data_dir, nrows=nrows_trips * 2),
+        'delays': load_delays(data_dir, nrows=nrows_trips),
+        'passenger_counts': load_passenger_counts(data_dir, nrows=nrows_trips),
         'service_calendar': load_service_calendar(data_dir)
     }

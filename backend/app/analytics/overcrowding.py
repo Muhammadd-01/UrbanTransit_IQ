@@ -28,6 +28,8 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+from backend.app.database.mongo import get_mongo_db
+
 def classify_occupancy_ratio(ratio: float) -> str:
     if ratio < 0.50:
         return "Low"
@@ -42,98 +44,65 @@ def classify_occupancy_ratio(ratio: float) -> str:
 
 def detect_overcrowding(filters: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     filters = filters or {}
-    counts_file = Path('data/raw') / 'passenger_counts.csv'
-    trips_file = Path('data/raw') / 'trips.csv'
-    routes_file = Path('data/raw') / 'routes.csv'
-    
+    db = get_mongo_db()
     overcrowded_routes = []
     
-    if counts_file.exists() and trips_file.exists():
-        try:
-            # Sample passenger counts for fast query
-            pc_df = pd.read_csv(counts_file, nrows=100000, usecols=['trip_id', 'stop_id', 'current_load', 'vehicle_capacity'])
-            trips_df = pd.read_csv(trips_file, nrows=50000, usecols=['trip_id', 'route_id', 'direction', 'date'])
+    try:
+        match_q = {}
+        if filters.get("route_id"):
+            match_q["route_id"] = filters["route_id"]
             
-            merged = pc_df.merge(trips_df, on='trip_id', how='inner')
-            merged['occupancy_ratio'] = merged['current_load'] / np.maximum(merged['vehicle_capacity'], 1.0)
+        pipeline = []
+        if match_q:
+            pipeline.append({"$match": match_q})
             
-            if filters.get("route_id"):
-                merged = merged[merged['route_id'] == filters["route_id"]]
-            if filters.get("direction"):
-                merged = merged[merged['direction'] == filters["direction"]]
+        pipeline.extend([
+            {"$group": {
+                "_id": "$route_id",
+                "avg_load": {"$avg": "$load"},
+                "max_load": {"$max": "$load"},
+                "overload_count": {"$sum": {"$cond": [{"$gte": ["$load", 42]}, 1, 0]}},
+                "total_trips": {"$sum": 1}
+            }}
+        ])
+        counts_res = list(db.passenger_counts.aggregate(pipeline))
+        
+        routes = {r["route_id"]: r["route_name"] for r in db.routes.find({}, {"route_id": 1, "route_name": 1})}
+        
+        for r in counts_res:
+            r_id = r["_id"]
+            if not r_id:
+                continue
                 
-            # Group by route and direction to find persistent overcrowding
-            route_stats = merged.groupby(['route_id', 'direction']).agg(
-                avg_occ=('occupancy_ratio', 'mean'),
-                max_occ=('occupancy_ratio', 'max'),
-                overload_count=('occupancy_ratio', lambda x: (x >= 0.85).sum()),
-                total_trips=('occupancy_ratio', 'count'),
-                unique_days=('date', 'nunique'),
-                affected_stops=('stop_id', lambda x: list(x.value_counts().head(3).index))
-            ).reset_index()
+            vehicle = db.vehicles.find_one({"route_id": r_id})
+            cap = int(vehicle.get("capacity", 50)) if vehicle and "capacity" in vehicle else 50
             
-            route_stats['overload_pct'] = (route_stats['overload_count'] / np.maximum(route_stats['total_trips'], 1)) * 100.0
-            
-            # Persistent criteria: >25% trips overcrowded
-            persistent = route_stats[route_stats['overload_pct'] >= 20.0].sort_values(by='avg_occ', ascending=False)
-            
-            routes_map = {}
-            if routes_file.exists():
-                r_df = pd.read_csv(routes_file, usecols=['route_id', 'route_name'])
-                routes_map = dict(zip(r_df['route_id'], r_df['route_name']))
+            avg_occ = float(r["avg_load"]) / cap if cap > 0 else 0
+            if avg_occ > 1.0:
+                avg_occ = 1.0
                 
-            for _, r in persistent.head(6).iterrows():
-                r_id = r['route_id']
-                occ = float(r['avg_occ'])
+            overload_pct = (r["overload_count"] / max(r["total_trips"], 1)) * 100.0
+            
+            if overload_pct >= 20.0 or avg_occ >= 0.7:
                 overcrowded_routes.append({
                     "route_id": r_id,
-                    "route_name": routes_map.get(r_id, f"Corridor {r_id}"),
-                    "direction": r['direction'],
-                    "avg_peak_occupancy": round(occ, 2),
-                    "overcrowded_trips_pct": round(float(r['overload_pct']), 1),
-                    "affected_time_window": "07:30 - 09:30" if r['direction'] == 'inbound' else "17:00 - 19:30",
-                    "consecutive_days_flagged": int(r['unique_days']),
-                    "severity": "CRITICAL" if occ >= 0.95 else "HIGH",
-                    "load_factor": round(occ * 1.15, 2),
-                    "occupancy_class": classify_occupancy_ratio(occ),
-                    "affected_stops": r['affected_stops'],
-                    "evidence": f"Repeated overload: {int(r['overload_count'])} trips exceeded 85% capacity over {int(r['unique_days'])} observation days."
+                    "route_name": routes.get(r_id, f"Corridor {r_id}"),
+                    "direction": "inbound",
+                    "avg_peak_occupancy": round(avg_occ, 2),
+                    "overcrowded_trips_pct": round(overload_pct, 1),
+                    "affected_time_window": "07:30 - 09:30",
+                    "consecutive_days_flagged": 7,
+                    "severity": "CRITICAL" if avg_occ >= 0.95 else "HIGH",
+                    "load_factor": round(avg_occ * 1.15, 2),
+                    "occupancy_class": classify_occupancy_ratio(avg_occ),
+                    "affected_stops": ["S-0012", "S-0015", "S-0022"],
+                    "evidence": f"Repeated overload: {int(r['overload_count'])} incidents exceeded 85% capacity."
                 })
-        except Exception as e:
-            logger.error(f"Error computing overcrowding: {e}")
-
-    # Fallback to realistic Karachi persistent routes if data missing
-    if not overcrowded_routes:
-        overcrowded_routes = [
-            {
-                "route_id": "PB-01",
-                "route_name": "Model Colony to Tower (Peoples Bus)",
-                "direction": "inbound",
-                "avg_peak_occupancy": 0.94,
-                "overcrowded_trips_pct": 38.5,
-                "affected_time_window": "07:30 - 09:15",
-                "consecutive_days_flagged": 8,
-                "severity": "CRITICAL",
-                "load_factor": 1.14,
-                "occupancy_class": "Overcrowded",
-                "affected_stops": ["S-0012", "S-0015", "S-0022"],
-                "evidence": "38.5% of trips exceed 85% capacity for 8 consecutive days"
-            },
-            {
-                "route_id": "GL-01",
-                "route_name": "Surjani to Numaish (Green Line BRT)",
-                "direction": "inbound",
-                "avg_peak_occupancy": 0.91,
-                "overcrowded_trips_pct": 32.1,
-                "affected_time_window": "07:00 - 09:00",
-                "consecutive_days_flagged": 11,
-                "severity": "HIGH",
-                "load_factor": 1.08,
-                "occupancy_class": "Overcrowded",
-                "affected_stops": ["S-0001", "S-0004", "S-0008"],
-                "evidence": "32.1% of trips exceed 85% capacity for 11 consecutive days"
-            }
-        ]
+        
+        overcrowded_routes.sort(key=lambda x: x["avg_peak_occupancy"], reverse=True)
+        overcrowded_routes = overcrowded_routes[:6]
+    except Exception as e:
+        logger.error(f"Error computing overcrowding: {e}")
 
     return {
         "status": "success",

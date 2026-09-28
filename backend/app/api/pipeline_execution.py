@@ -28,7 +28,7 @@ import json
 import os
 import logging
 from pathlib import Path
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier as SKLearnRF, GradientBoostingClassifier
 from sklearn.ensemble import RandomForestRegressor, IsolationForest
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
@@ -37,6 +37,16 @@ from sklearn.metrics import (
     mean_absolute_error, mean_squared_error, r2_score
 )
 import joblib
+
+# PySpark MLlib — genuine distributed ML
+try:
+    from pyspark.sql import SparkSession
+    from pyspark.ml.feature import VectorAssembler
+    from pyspark.ml.classification import RandomForestClassifier as SparkRFClassifier
+    from pyspark.ml.evaluation import MulticlassClassificationEvaluator, BinaryClassificationEvaluator
+    HAS_PYSPARK = True
+except ImportError:
+    HAS_PYSPARK = False
 
 # Try importing XGBoost; fallback to sklearn GradientBoosting if unavailable
 try:
@@ -180,7 +190,7 @@ def _train_pipeline(target: str = "ALL", data_split: str = "70"):
                 '30' = train on the remaining 30% of 3M (900K records)
     """
     train_start = time.time()
-    split_label = "30% (900K)" if data_split == "30" else "70% (2.1M)"
+    split_label = "30% (600K)" if data_split == "30" else "70% (1.4M)"
     logger.info(f"Starting pipeline training for target={target}, split={split_label} on MongoDB records...")
 
     df = _fetch_training_data()
@@ -198,13 +208,13 @@ def _train_pipeline(target: str = "ALL", data_split: str = "70"):
 
     # Select which split to train on based on user selection
     if data_split == "30":
-        X_train_full = X_30   # 900K records
+        X_train_full = X_30
         y_train_full = y_30
-        records_label = 900000
+        records_label = len(X_30)
     else:
-        X_train_full = X_70   # 2.1M records
+        X_train_full = X_70
         y_train_full = y_70
-        records_label = 2100000
+        records_label = len(X_70)
 
     # Further split the selected portion into train/eval (80/20 of the chosen portion)
     X_train, X_test, y_train, y_test = train_test_split(
@@ -224,35 +234,116 @@ def _train_pipeline(target: str = "ALL", data_split: str = "70"):
         "hour": int(latest_row["hour"]),
     }
 
-    # Train Spark Model
+    # Train Spark Model — GENUINE PySpark MLlib
     if target in ("ALL", "SPARK"):
-        spark_model = RandomForestClassifier(n_estimators=30, max_depth=10, max_samples=0.25, random_state=42, n_jobs=-1)
-        spark_model.fit(X_train, y_train)
-        joblib.dump(spark_model, _SPARK_MODEL_PATH)
-        
-        sp_preds = spark_model.predict(X_test)
-        sp_proba = spark_model.predict_proba(X_test)
-        sp_probs = sp_proba[:, 1] if sp_proba.shape[1] > 1 else sp_proba[:, 0]
-        spark_metrics = _compute_all_metrics(y_test, sp_preds, sp_probs, "spark")
-        metrics.update(spark_metrics)
-        metrics["spark_is_trained"] = True
+        if HAS_PYSPARK:
+            logger.info("Training with GENUINE PySpark MLlib RandomForestClassifier...")
+            # Use Java 17 for PySpark compatibility
+            os.environ["JAVA_HOME"] = "/usr/local/opt/openjdk@17"
+            spark = SparkSession.builder \
+                .appName("UrbanTransitIQ") \
+                .master("local[*]") \
+                .config("spark.driver.memory", "4g") \
+                .config("spark.executor.memory", "2g") \
+                .config("spark.sql.shuffle.partitions", "16") \
+                .config("spark.ui.showConsoleProgress", "false") \
+                .config("spark.log.level", "ERROR") \
+                .getOrCreate()
+            spark.sparkContext.setLogLevel("ERROR")
 
-        # Live inference on the exact latest MongoDB row
-        inf_start = time.time()
-        sp_pred_val = int(spark_model.predict(latest_X)[0])
-        sp_prob = float(spark_model.predict_proba(latest_X)[0].max())
-        sp_latency = round((time.time() - inf_start) * 1000, 2)
-        metrics["spark_pred"] = "DELAYED" if sp_pred_val == 1 else "ON-TIME"
-        metrics["spark_confidence"] = f"{round(sp_prob * 100, 2)}%"
-        metrics["spark_latency"] = f"{sp_latency}ms"
-        metrics["spark_raw_data"] = row_dict
-        logger.info(f"Saved Spark model to {_SPARK_MODEL_PATH}")
+            # Convert pandas train/test to Spark DataFrames
+            train_pdf = X_train.copy()
+            train_pdf["label"] = y_train.values
+            test_pdf = X_test.copy()
+            test_pdf["label"] = y_test.values
+
+            spark_train = spark.createDataFrame(train_pdf.astype(float))
+            spark_test = spark.createDataFrame(test_pdf.astype(float))
+
+            # PySpark MLlib feature assembly
+            feature_cols = ["boarding", "alighting", "load", "hour"]
+            assembler = VectorAssembler(inputCols=feature_cols, outputCol="features")
+            spark_train = assembler.transform(spark_train)
+            spark_test = assembler.transform(spark_test)
+
+            # PySpark MLlib RandomForestClassifier — tuned for 2M dataset
+            spark_rf = SparkRFClassifier(
+                featuresCol="features",
+                labelCol="label",
+                numTrees=150,
+                maxDepth=8,
+                maxBins=64,
+                seed=42
+            )
+            spark_model = spark_rf.fit(spark_train)
+
+            # Save PySpark model
+            spark_model_save_path = str(_MODEL_DIR / "spark_rf_model")
+            spark_model.write().overwrite().save(spark_model_save_path)
+
+            # Evaluate on test set
+            spark_preds_df = spark_model.transform(spark_test)
+            sp_preds_pd = spark_preds_df.select("label", "prediction", "probability").toPandas()
+            sp_preds = sp_preds_pd["prediction"].astype(int).values
+            sp_true = sp_preds_pd["label"].astype(int).values
+            sp_probs = sp_preds_pd["probability"].apply(lambda v: float(v[1]) if len(v) > 1 else float(v[0])).values
+
+            spark_metrics = _compute_all_metrics(sp_true, sp_preds, sp_probs, "spark")
+            metrics.update(spark_metrics)
+            metrics["spark_is_trained"] = True
+            metrics["spark_engine"] = "PySpark MLlib (Genuine)"
+
+            # Live inference on the exact latest MongoDB row
+            inf_start = time.time()
+            latest_spark = spark.createDataFrame(latest_X.astype(float))
+            latest_spark = assembler.transform(latest_spark)
+            live_pred = spark_model.transform(latest_spark).select("prediction", "probability").toPandas()
+            sp_pred_val = int(live_pred["prediction"].iloc[0])
+            sp_prob_vec = live_pred["probability"].iloc[0]
+            sp_prob = float(max(sp_prob_vec))
+            sp_latency = round((time.time() - inf_start) * 1000, 2)
+
+            metrics["spark_pred"] = "DELAYED" if sp_pred_val == 1 else "ON-TIME"
+            metrics["spark_confidence"] = f"{round(sp_prob * 100, 2)}%"
+            metrics["spark_latency"] = f"{sp_latency}ms"
+            metrics["spark_raw_data"] = row_dict
+
+            # Also save an sklearn-compatible copy for auxiliary usage
+            sklearn_rf = SKLearnRF(n_estimators=150, max_depth=8, random_state=42, n_jobs=-1)
+            sklearn_rf.fit(X_train, y_train)
+            joblib.dump(sklearn_rf, _SPARK_MODEL_PATH)
+
+            spark.stop()
+            logger.info(f"PySpark MLlib model saved to {spark_model_save_path}")
+        else:
+            logger.warning("PySpark not available, falling back to sklearn RandomForest")
+            spark_model = SKLearnRF(n_estimators=150, max_depth=8, random_state=42, n_jobs=-1)
+            spark_model.fit(X_train, y_train)
+            joblib.dump(spark_model, _SPARK_MODEL_PATH)
+
+            sp_preds = spark_model.predict(X_test)
+            sp_proba = spark_model.predict_proba(X_test)
+            sp_probs = sp_proba[:, 1] if sp_proba.shape[1] > 1 else sp_proba[:, 0]
+            spark_metrics = _compute_all_metrics(y_test, sp_preds, sp_probs, "spark")
+            metrics.update(spark_metrics)
+            metrics["spark_is_trained"] = True
+            metrics["spark_engine"] = "sklearn (PySpark unavailable)"
+
+            inf_start = time.time()
+            sp_pred_val = int(spark_model.predict(latest_X)[0])
+            sp_prob = float(spark_model.predict_proba(latest_X)[0].max())
+            sp_latency = round((time.time() - inf_start) * 1000, 2)
+            metrics["spark_pred"] = "DELAYED" if sp_pred_val == 1 else "ON-TIME"
+            metrics["spark_confidence"] = f"{round(sp_prob * 100, 2)}%"
+            metrics["spark_latency"] = f"{sp_latency}ms"
+            metrics["spark_raw_data"] = row_dict
+            logger.info(f"Saved sklearn fallback Spark model to {_SPARK_MODEL_PATH}")
 
     # Train XGBoost Model
     if target in ("ALL", "XGBOOST", "PYTHON"):
         if HAS_XGBOOST:
             xgb_model = xgb.XGBClassifier(
-                n_estimators=100, max_depth=6, learning_rate=0.1, tree_method="hist",
+                n_estimators=200, max_depth=10, learning_rate=0.05, tree_method="hist",
                 random_state=42, eval_metric="logloss", n_jobs=-1
             )
         else:
@@ -329,7 +420,7 @@ async def force_retrain(data_split: str = "70"):
     return {
         "status": "retrained",
         "data_split": data_split,
-        "records_used": metrics.get("records_used", 3000000),
+        "records_used": metrics.get("records_used", 2000000),
         "spark_acc": round(metrics.get("spark_acc", 0.0) * 100, 2),
         "xgb_acc": round(metrics.get("xgb_acc", 0.0) * 100, 2),
         "training_time_seconds": metrics.get("training_time_seconds", 0.0),
@@ -457,7 +548,7 @@ async def execute_pipeline(pipeline_type: str, data_split: str = "70", authoriza
         "rmse": round(metrics.get(f"{prefix}_rmse", 0.0), 4),
         "mape": round(metrics.get(f"{prefix}_mape", 0.0), 2),
         "r2": round(metrics.get(f"{prefix}_r2", 0.0), 4),
-        "records_used": metrics.get("records_used", 3000000),
+        "records_used": metrics.get("records_used", 2000000),
         "training_time_seconds": metrics.get("training_time_seconds", 0.0),
         "trained_at": metrics.get("trained_at"),
         "raw_data": raw_data,
@@ -543,6 +634,6 @@ async def execute_comparison():
         "xgb_mape": round(metrics.get("xgb_mape", 0.0), 2),
         "spark_r2": round(metrics.get("spark_r2", 0.0), 4),
         "xgb_r2": round(metrics.get("xgb_r2", 0.0), 4),
-        "records_used": metrics.get("records_used", 3000000),
+        "records_used": metrics.get("records_used", 2000000),
         "latency_ms": latency_ms,
     }

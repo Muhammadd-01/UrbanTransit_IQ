@@ -160,7 +160,7 @@ const ModelComparison = () => {
               <span className="step-num">1</span>
               <div>
                 <strong>Data Collection</strong>
-                <p>Both models receive the same real-time data from Karachi's transit system — passenger boarding counts, vehicle loads, and time of day — pulled from a database of 2 million historical records.</p>
+                <p>Both models receive the same real-time data from Karachi's transit system — passenger boarding counts, vehicle loads, and time of day — pulled from a database of 3 million historical records.</p>
               </div>
             </div>
             <div className="explainer-step">

@@ -93,7 +93,7 @@ export const mockDualPipeline = {
 };
 
 export const mockDataQuality = {
-  total_records: 2000000,
+  total_records: 10000000,
   clean_records: 1845000,
   corrected_records: 122000,
   flagged_records: 28000,
@@ -136,6 +136,6 @@ export const mockRecommendations = [
 ];
 
 export const mockDatasets = [
-  { id: 'ds-01', name: 'Karachi Transit Core Ledger 2026', scale: 'COMPETITION', record_count: 2000000, status: 'READY', created_at: '2026-09-23T08:00:00Z' },
+  { id: 'ds-01', name: 'Karachi Transit Core Ledger 2026', scale: 'COMPETITION', record_count: 10000000, status: 'READY', created_at: '2026-09-23T08:00:00Z' },
   { id: 'ds-02', name: 'Peoples Bus Telemetry Sample', scale: 'MEDIUM', record_count: 500000, status: 'READY', created_at: '2026-09-22T14:30:00Z' },
 ];

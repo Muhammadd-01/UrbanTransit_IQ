@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from typing import List
-from backend.app.schemas.dataset import DatasetCreate, DatasetResponse
+from backend.app.schemas.dataset import GenerationConfig, DatasetResponse
 from backend.app.services.dataset_service import list_datasets, generate_dataset, upload_dataset_to_hdfs
 
 router = APIRouter()
@@ -21,7 +21,7 @@ async def get_datasets():
     ]
 
 @router.post("/generate", response_model=DatasetResponse)
-async def create_dataset(request: DatasetCreate):
+async def create_dataset(request: GenerationConfig):
     record = generate_dataset(scale=request.scale)
     return DatasetResponse(
         id=record["id"],

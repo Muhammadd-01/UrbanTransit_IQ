@@ -72,7 +72,7 @@ const Login = () => {
         setSuccessMsg('Account registered successfully! Signing you in...');
         setTimeout(async () => {
           await login(email, password);
-          navigate('/');
+          navigate('/dashboard');
         }, 1200);
       } else {
         await login(email, password);
@@ -81,7 +81,7 @@ const Login = () => {
         } else {
           localStorage.removeItem('rememberedEmail');
         }
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (err) {
       setError(
@@ -105,7 +105,7 @@ const Login = () => {
       } else {
         localStorage.removeItem('rememberedEmail');
       }
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError('Quick login failed. Ensure backend server is active on port 8000.');
     } finally {

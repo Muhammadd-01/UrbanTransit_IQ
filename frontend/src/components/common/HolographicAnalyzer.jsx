@@ -8,7 +8,7 @@ const HolographicAnalyzer = ({ isOpen, title = "Executing Spatial Telemetry Anal
   const [progress, setProgress] = useState(12);
 
   const steps = [
-    "FETCHING 2,000,000 LIVE POSTGRESQL RECORDS...",
+    "FETCHING 3,000,000 LIVE POSTGRESQL RECORDS...",
     "TRAINING AI ENSEMBLE MODEL IN LIVE MEMORY...",
     "CALCULATING F1-SCORE AND RMSE ERROR METRICS...",
     "EXTRACTING LATEST REAL-TIME TELEMETRY ROW...",

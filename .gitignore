@@ -85,3 +85,10 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Backend Trained Models
+backend/trained_models/*.joblib
+backend/trained_models/*.pkl
+backend/trained_models/*.model
+backend/trained_models/*.json
+backend/trained_models/spark/

@@ -69,12 +69,12 @@ export const PipelineProvider = ({ children }) => {
 
   const PIPELINE_STEPS = (modelName, algo) => [
     `Pre-flight check: Analyzing database volume...`,
-    `Detected 2,000,000+ records in target tables.`,
+    `Detected 3,000,000+ records in target tables.`,
     `Calculating computational complexity and estimating ETA...`,
-    `> Estimated Training Time: ~35 seconds on 2,000,000 records`,
+    `> Estimated Training Time: ~35 seconds on 3,000,000 records`,
     `Establishing connection to MongoDB...`,
-    `Querying passenger_counts collection (2M+ records)...`,
-    `Fetching ALL records from database (2M+ rows)...`,
+    `Querying passenger_counts collection (3M+ records)...`,
+    `Fetching ALL records from database (3M+ rows)...`,
     `Loaded 4 feature columns: boarding, alighting, load, hour`,
     `Preprocessing & null-fill complete`,
     `Splitting dataset — 90% train / 10% test (seed=42)`,
@@ -90,7 +90,7 @@ export const PipelineProvider = ({ children }) => {
   ];
 
   const WAITING_MESSAGES = [
-    `Still training — processing 2,000,000+ records takes time...`,
+    `Still training — processing 3,000,000+ records takes time...`,
     `Optimizing hyperparameters across feature space...`,
     `Cross-validating prediction boundaries...`,
     `Evaluating decision tree ensemble performance...`,
@@ -135,7 +135,7 @@ export const PipelineProvider = ({ children }) => {
       const seconds = (exactTrainingSeconds % 60).toFixed(1);
       const timeTakenStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
       
-      setSparkSteps(prev => [...prev, `✓ Distributed pipeline complete in ${timeTakenStr} — ${(res.data.records_used || 2000000).toLocaleString()} records trained`]);
+      setSparkSteps(prev => [...prev, `✓ Distributed pipeline complete in ${timeTakenStr} — ${(res.data.records_used || 10000000).toLocaleString()} records trained`]);
       
       setTimeout(() => {
         setSparkResult(res.data);
@@ -168,7 +168,7 @@ export const PipelineProvider = ({ children }) => {
       const seconds = (exactTrainingSeconds % 60).toFixed(1);
       const timeTakenStr = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
       
-      setXgbSteps(prev => [...prev, `✓ GPU-accelerated pipeline complete in ${timeTakenStr} — ${(res.data.records_used || 2000000).toLocaleString()} records trained`]);
+      setXgbSteps(prev => [...prev, `✓ GPU-accelerated pipeline complete in ${timeTakenStr} — ${(res.data.records_used || 10000000).toLocaleString()} records trained`]);
       
       setTimeout(() => {
         setXgbResult(res.data);

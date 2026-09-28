@@ -60,10 +60,14 @@ def generate_dataset(scale: str = "small", created_by: Optional[str] = None) -> 
     """Generates synthetic dataset and tracks record in database."""
     dataset_id = str(uuid.uuid4())
     logger.info(f"Triggering data generation with scale={scale}")
-    
     try:
-        run_generator(scale=scale)
+        import subprocess
+        logger.info(f"Triggering dynamic MongoDB data generation...")
+        res = subprocess.run(["./venv/bin/python", "scripts/generate_exact_3m_mongo.py"], capture_output=True, text=True)
+        if res.returncode != 0:
+            raise Exception(res.stderr)
         status = "ready"
+
     except Exception as e:
         logger.error(f"Data generation failed: {e}")
         status = "failed"

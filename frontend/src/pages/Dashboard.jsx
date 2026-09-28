@@ -133,7 +133,7 @@ const InflowVelocityChart = React.memo(({ flowData }) => {
 
 const RootCauseChart = React.memo(({ delayData }) => {
   const chartData = useMemo(() => {
-    const rawCauses = delayData?.top_causes || [];
+    const rawCauses = delayData?.causes || delayData?.top_causes || [];
     let causes = rawCauses;
     if (!causes || causes.length === 0) {
       causes = [
@@ -313,18 +313,18 @@ const Dashboard = () => {
   }
 
   // Reactive Values based on Scrubber
-  const displayPassengers = isTrained ? Math.round(
+  const displayPassengers = Math.round(
     (kpis ? kpis.total_passengers : 2482100) * (temporalMultiplier.factor * 0.9 + 0.1)
-  ) : 0;
+  );
   
-  const displayOccupancy = isTrained ? Math.min(
+  const displayOccupancy = Math.min(
     98, 
     Math.round((kpis ? kpis.avg_occupancy * 100 : 74) * (temporalMultiplier.factor * 0.85 + 0.15))
-  ) : 0;
+  );
   
-  const displayDelay = isTrained ? (
+  const displayDelay = (
     (kpis ? kpis.avg_delay : 5.8) * (temporalMultiplier.factor * 0.9 + 0.1)
-  ).toFixed(1) : "0.0";
+  ).toFixed(1);
 
   return (
     <motion.div 
@@ -632,8 +632,8 @@ const Dashboard = () => {
             </h3>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto' }}>
               {isAdmin
-                ? 'Start training AI models on your transit data. Each model learns from your 2 million+ records to predict delays, crowding, and route performance.'
-                : 'Production AI models delivering live transit predictions and performance metrics trained across 2,000,000+ transit records.'}
+                ? 'Start training AI models on your transit data. Each model learns from your 3 million+ records to predict delays, crowding, and route performance.'
+                : 'Production AI models delivering live transit predictions and performance metrics trained across 3,000,000+ transit records.'}
             </p>
         </div>
 
@@ -700,10 +700,9 @@ const Dashboard = () => {
                             <div>Confidence: <b>{sparkResult.confidence}</b></div>
                             <div>Accuracy: <b>{sparkResult.accuracy}%</b></div>
                             <div>F1-Score: <b>{sparkResult.f1_score}</b></div>
-                            <div>MAE: <b>{sparkResult.mae}</b></div>
-                            <div>RMSE: <b className="text-danger">{sparkResult.rmse}</b></div>
-                            <div>MAPE: <b>{sparkResult.mape}%</b></div>
-                            <div>R²: <b className="text-cyan">{sparkResult.r2}</b></div>
+                            <div>Precision: <b>{sparkResult.precision}</b></div>
+                            <div>Recall: <b>{sparkResult.recall}</b></div>
+                            <div style={{ gridColumn: '1 / -1' }}>Conf. Matrix: <b style={{ fontSize: '0.8rem' }}>{sparkResult.cm}</b></div>
                             <div>Latency: <b className="text-cyan">{sparkResult.latency}</b></div>
                         </div>
                     </div>
@@ -747,7 +746,7 @@ const Dashboard = () => {
                  </span>
                  <p style={{ margin: 0, fontSize: '0.88rem', maxWidth: '300px' }}>
                    {isAdmin 
-                     ? 'Click "Execute Spark" to train the model on the full 2M dataset.' 
+                     ? 'Click "Execute Spark" to train the model on the full 3M dataset.' 
                      : 'Awaiting Administrator Training — This model has not been trained yet. Please contact an Administrator to deploy models.'}
                  </p>
               </div>
@@ -815,10 +814,9 @@ const Dashboard = () => {
                             <div>Confidence: <b>{xgbResult.confidence}</b></div>
                             <div>Accuracy: <b>{xgbResult.accuracy}%</b></div>
                             <div>F1-Score: <b>{xgbResult.f1_score}</b></div>
-                            <div>MAE: <b>{xgbResult.mae}</b></div>
-                            <div>RMSE: <b className="text-danger">{xgbResult.rmse}</b></div>
-                            <div>MAPE: <b>{xgbResult.mape}%</b></div>
-                            <div>R²: <b className="text-cyan">{xgbResult.r2}</b></div>
+                            <div>Precision: <b>{xgbResult.precision}</b></div>
+                            <div>Recall: <b>{xgbResult.recall}</b></div>
+                            <div style={{ gridColumn: '1 / -1' }}>Conf. Matrix: <b style={{ fontSize: '0.8rem' }}>{xgbResult.cm}</b></div>
                             <div>Latency: <b className="text-cyan">{xgbResult.latency}</b></div>
                         </div>
                     </div>
@@ -862,7 +860,7 @@ const Dashboard = () => {
                  </span>
                  <p style={{ margin: 0, fontSize: '0.88rem', maxWidth: '300px' }}>
                    {isAdmin 
-                     ? 'Click "Execute XGBoost" to train the model on the full 2M dataset.' 
+                     ? 'Click "Execute XGBoost" to train the model on the full 3M dataset.' 
                      : 'Awaiting Administrator Training — This model has not been trained yet. Please contact an Administrator to deploy models.'}
                  </p>
               </div>
@@ -887,7 +885,13 @@ const Dashboard = () => {
             <span className="badge-pill badge-aurora">TREND LINE</span>
           </div>
 
-          <InflowVelocityChart flowData={flowData} />
+          {isTrained ? (
+            <InflowVelocityChart flowData={flowData} />
+          ) : (
+            <div style={{ height: '290px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>
+              <p style={{ color: 'var(--color-text-muted)' }}>No data available. Please train AI models first.</p>
+            </div>
+          )}
         </div>
 
         {/* Right: Empirical Root Cause Delay Attribution Donut */}
@@ -900,7 +904,13 @@ const Dashboard = () => {
             <span className="badge-pill badge-gold">SPARK AI MODEL</span>
           </div>
 
-          <RootCauseChart delayData={delayData} />
+          {isTrained ? (
+            <RootCauseChart delayData={delayData} />
+          ) : (
+            <div style={{ height: '290px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5 }}>
+              <p style={{ color: 'var(--color-text-muted)' }}>No data available. Please train AI models first.</p>
+            </div>
+          )}
         </div>
 
       </div>

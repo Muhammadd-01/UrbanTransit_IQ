@@ -10,8 +10,6 @@ _KPI_CACHE = None
 @router.get("/kpis", response_model=KPIResponse)
 async def get_kpis():
     global _KPI_CACHE
-    if _KPI_CACHE is not None:
-        return _KPI_CACHE
 
     db = get_mongo_db()
     try:

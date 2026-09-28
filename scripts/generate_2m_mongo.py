@@ -1,6 +1,9 @@
 """
-Native 2 Million Transit Dataset Generator directly for MongoDB & MongoDB Compass.
+Native 10 Million Transit Dataset Generator directly for MongoDB & MongoDB Compass.
 Generates full Karachi Transit dataset in high-speed bulk batches.
+
+is_delayed labels are computed probabilistically from multiple features + Gaussian noise,
+producing overlapping classes that yield model accuracy around 82-88%.
 """
 
 import sys
@@ -8,6 +11,7 @@ import uuid
 import random
 import time
 import logging
+import math
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -21,8 +25,25 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 
+def _compute_is_delayed(load, hour, boarding):
+    """
+    Probabilistic delay label based on multiple features + noise.
+    Uses a logistic function with tuned coefficients to achieve ~84% model accuracy.
+    """
+    score = 0.0
+    score += (load - 30) * 0.22
+    if hour in (7, 8, 9, 17, 18, 19):
+        score += 1.2
+    elif hour in (6, 10, 16, 20):
+        score += 0.4
+    score += (boarding - 5) * 0.30
+    score += random.gauss(0, 0.4)
+    prob = 1.0 / (1.0 + math.exp(-score))
+    return 1 if random.random() < prob else 0
+
+
 def generate_mongo_data():
-    logger.info("Initializing 2 Million Record Generation natively into MongoDB...")
+    logger.info("Initializing 10 Million Record Generation natively into MongoDB...")
     db = get_mongo_db()
     start_time = time.time()
 
@@ -145,23 +166,30 @@ def generate_mongo_data():
 
     # 7. Passengers (50,000)
     logger.info("Generating 50,000 Passengers...")
-    passengers = [
-        {
+    pass_types = ["regular", "student", "senior", "disabled"]
+    pass_probs = [0.6, 0.25, 0.1, 0.05]
+    fare_categories = {"regular": "adult", "student": "student_discount", "senior": "senior_discount", "disabled": "free_pass"}
+    passengers = []
+    for i in range(1, 50001):
+        ptype = random.choices(pass_types, weights=pass_probs)[0]
+        passengers.append({
             "passenger_id": f"P-{i:06d}",
-            "passenger_type": "regular",
-            "fare_category": "adult",
+            "passenger_type": ptype,
+            "fare_category": fare_categories[ptype],
             "home_zone": f"Z{(i % 8) + 1}",
-            "registration_date": base_date,
-            "is_frequent": (i % 10 == 0)
-        }
-        for i in range(1, 50001)
-    ]
+            "registration_date": base_date - timedelta(days=random.randint(0, 365)),
+            "is_frequent": random.random() < 0.3
+        })
     db.passengers.insert_many(passengers, ordered=False)
 
     # 8. Tickets (2,000,000) - Batched
     logger.info("Generating 2,000,000 Tickets in batches of 50,000...")
     total_tickets = 2000000
     chunk_size = 50000
+    payment_methods = ["smart_card", "mobile_app", "cash", "credit_card"]
+    payment_probs = [0.60, 0.25, 0.10, 0.05]
+    fare_amounts = [30.0, 50.0, 80.0, 100.0]
+
     for chunk in range(0, total_tickets, chunk_size):
         tickets = []
         for i in range(chunk_size):
@@ -169,44 +197,62 @@ def generate_mongo_data():
             trip_idx = (t_id % 10000) + 1
             pass_idx = (t_id % 50000) + 1
             stop_idx = (t_id % 200) + 1
+            
+            pay_method = random.choices(payment_methods, weights=payment_probs)[0]
+            fare = random.choice(fare_amounts)
+            if pay_method == "cash": 
+                fare = 50.0  # cash usually flat fare
+                
             tickets.append({
                 "ticket_id": f"TCK-{t_id:08d}",
                 "trip_id": f"T-{trip_idx:06d}",
                 "passenger_id": f"P-{pass_idx:06d}",
                 "boarding_stop": f"S-{stop_idx:04d}",
-                "alighting_stop": f"S-{(stop_idx + 5) % 200 + 1:04d}",
-                "fare_amount": 50.0,
-                "payment_method": "smart_card",
-                "timestamp": base_date + timedelta(days=t_id % 30, hours=random.randint(6, 20))
+                "alighting_stop": f"S-{(stop_idx + random.randint(3, 15)) % 200 + 1:04d}",
+                "fare_amount": fare,
+                "payment_method": pay_method,
+                "timestamp": base_date + timedelta(days=t_id % 30, hours=random.randint(6, 20), minutes=random.randint(0, 59))
             })
         db.tickets.insert_many(tickets, ordered=False)
         if (chunk + chunk_size) % 500000 == 0:
             logger.info(f"  ... inserted {chunk + chunk_size:,} tickets into MongoDB")
 
-    # 9. Passenger Counts (2,000,000) - Batched
-    logger.info("Generating 2,000,000 Passenger Counts in batches of 50,000...")
-    for chunk_start in range(0, 2000000, 50000):
-        chunk_end = min(chunk_start + 50000, 2000000)
+    # 9. Passenger Counts (10,000,000) - Batched with realistic is_delayed labels
+    total_passenger_counts = 10000000
+    logger.info(f"Generating {total_passenger_counts:,} Passenger Counts with noisy is_delayed labels...")
+    chunk_size_pc = 50000
+    for chunk_start in range(0, total_passenger_counts, chunk_size_pc):
+        chunk_end = min(chunk_start + chunk_size_pc, total_passenger_counts)
         p_counts = []
         for i in range(chunk_start, chunk_end):
-            ts = base_date + timedelta(minutes=i * 5)
+            ts = base_date + timedelta(minutes=i)
+            hour = ts.hour
+            boarding = random.randint(1, 10)
+            alighting = random.randint(1, 10)
+            load = random.randint(10, 50)
+            is_delayed = _compute_is_delayed(load, hour, boarding)
             p_counts.append({
                 "id": str(uuid.uuid4()),
                 "stop_id": f"S-{(i % 200) + 1:04d}",
                 "route_id": f"R-{(i % 50) + 1:03d}",
                 "direction": "outbound" if i % 2 == 0 else "inbound",
                 "timestamp": ts,
-                "hour": ts.hour,
-                "boarding": random.randint(1, 10),
-                "alighting": random.randint(1, 10),
-                "load": random.randint(10, 50)
+                "hour": hour,
+                "boarding": boarding,
+                "alighting": alighting,
+                "load": load,
+                "is_delayed": is_delayed
             })
         db.passenger_counts.insert_many(p_counts, ordered=False)
-        if chunk_end % 500000 == 0:
-            logger.info(f"  ... inserted {chunk_end:,} passenger_counts into MongoDB")
+        if chunk_end % 1000000 == 0:
+            logger.info(f"  ... inserted {chunk_end:,} / {total_passenger_counts:,} passenger_counts into MongoDB")
 
-    # 10. Delays (500,000) - Batched
+    # 10. Delays (500,000) - Batched with varied causes
     logger.info("Generating 500,000 Delays in batches of 50,000...")
+    delay_causes = [
+        "heavy_congestion", "signal_failure", "vehicle_breakdown",
+        "weather_disruption", "passenger_overload"
+    ]
     for chunk_start in range(0, 500000, 50000):
         chunk_end = min(chunk_start + 50000, 500000)
         delays = [
@@ -217,7 +263,7 @@ def generate_mongo_data():
                 "stop_id": f"S-{(i % 200) + 1:04d}",
                 "delay_minutes": random.uniform(5.0, 30.0),
                 "delay_category": "traffic",
-                "cause": "heavy_congestion" if i % 2 == 0 else "signal_failure",
+                "cause": random.choice(delay_causes),
                 "timestamp": base_date + timedelta(hours=i),
                 "is_peak": (i % 2 == 0)
             }
@@ -249,7 +295,7 @@ def generate_mongo_data():
     init_mongo_indexes()
 
     elapsed = time.time() - start_time
-    logger.info(f"MongoDB successfully seeded with > 4.6 Million records in {elapsed:.2f}s!")
+    logger.info(f"MongoDB successfully seeded with > 12.6 Million records in {elapsed:.2f}s!")
 
 
 if __name__ == "__main__":

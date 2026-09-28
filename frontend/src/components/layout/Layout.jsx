@@ -38,7 +38,7 @@ const Layout = () => {
               <p style={{ maxWidth: '400px', lineHeight: '1.6' }}>
                 {isAnalyzingSpark || isAnalyzingXgb 
                   ? "The machine learning pipeline is currently training on the database. Analytics will unlock automatically once complete."
-                  : "Analytical data is hidden because the ML models have not been trained yet. Please return to the Dashboard and Execute the pipeline to process the 2M+ records."
+                  : "Analytical data is hidden because the ML models have not been trained yet. Please return to the Dashboard and Execute the pipeline to process the 3M+ records."
                 }
               </p>
             </div>

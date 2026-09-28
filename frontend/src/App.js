@@ -9,6 +9,7 @@ import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Pages
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import DataManagement from './pages/DataManagement';
@@ -34,28 +35,29 @@ function App() {
       <FilterProvider>
         <PipelineProvider>
           <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Login />} />
-          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/data-management" element={<DataManagement />} />
-            <Route path="/data-quality" element={<DataQuality />} />
-            <Route path="/passenger-flow" element={<PassengerFlow />} />
-            <Route path="/od-analysis" element={<ODAnalysis />} />
-            <Route path="/route-intelligence" element={<RouteIntelligence />} />
-            <Route path="/delay-analytics" element={<DelayAnalytics />} />
-            <Route path="/forecasting" element={<Forecasting />} />
-            <Route path="/clustering" element={<Clustering />} />
-            <Route path="/anomaly-detection" element={<AnomalyDetection />} />
-            <Route path="/vehicle-analytics" element={<VehicleAnalytics />} />
-            <Route path="/recommendations" element={<Recommendations />} />
-            <Route path="/what-if-simulator" element={<WhatIfSimulator />} />
-            <Route path="/model-comparison" element={<ModelComparison />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-        </Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Login />} />
+            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/data-management" element={<DataManagement />} />
+              <Route path="/data-quality" element={<DataQuality />} />
+              <Route path="/passenger-flow" element={<PassengerFlow />} />
+              <Route path="/od-analysis" element={<ODAnalysis />} />
+              <Route path="/route-intelligence" element={<RouteIntelligence />} />
+              <Route path="/delay-analytics" element={<DelayAnalytics />} />
+              <Route path="/forecasting" element={<Forecasting />} />
+              <Route path="/clustering" element={<Clustering />} />
+              <Route path="/anomaly-detection" element={<AnomalyDetection />} />
+              <Route path="/vehicle-analytics" element={<VehicleAnalytics />} />
+              <Route path="/recommendations" element={<Recommendations />} />
+              <Route path="/what-if-simulator" element={<WhatIfSimulator />} />
+              <Route path="/model-comparison" element={<ModelComparison />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+          </Routes>
         </PipelineProvider>
         <ToastContainer 
           position="bottom-right" 

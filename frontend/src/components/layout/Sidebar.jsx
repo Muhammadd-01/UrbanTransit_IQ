@@ -39,7 +39,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
             <div className="nav-group-header">
               <span className="nav-text">INTELLIGENCE</span>
             </div>
-            <NavLink to="/" end title="Dashboard Overview">
+            <NavLink to="/dashboard" end title="Dashboard Overview">
               <FaTachometerAlt className="nav-icon" />
               <span className="nav-text">Overview</span>
             </NavLink>

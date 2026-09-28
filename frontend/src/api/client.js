@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 const client = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
-  timeout: 900000, // Increased to 15 minutes for 2M record ML pipelines
+  timeout: 900000, // Increased to 15 minutes for 3M record ML pipelines
 });
 
 client.interceptors.request.use((config) => {

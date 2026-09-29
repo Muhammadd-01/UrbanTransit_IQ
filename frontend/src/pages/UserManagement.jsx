@@ -3,6 +3,7 @@ import { usersAPI } from '../api/client';
 import { FaUsers, FaPlus, FaEdit, FaTrash, FaShieldAlt } from 'react-icons/fa';
 import './Settings.css';
 import { toast } from 'react-toastify';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -78,25 +79,28 @@ const UserManagement = () => {
 
   return (
     <div className="page-container settings-page">
-      <div className="dashboard-hero hud-panel hud-corners">
-        <div className="hero-text-block">
-          <div className="hero-super-tag">
-            <span className="pulse-beacon-cyan"></span>
-            <span>PLATFORM CONFIGURATION // ACCESS CONTROL</span>
+      <ScrollAnimate type="down">
+        <div className="dashboard-hero hud-panel hud-corners">
+          <div className="hero-text-block">
+            <div className="hero-super-tag">
+              <span className="pulse-beacon-cyan"></span>
+              <span>PLATFORM CONFIGURATION // ACCESS CONTROL</span>
+            </div>
+            <h1 className="hero-main-title">User Management</h1>
+            <p className="hero-desc">
+              Manage system operators, analysts, and administrators. Assign role-based access for UrbanTransit IQ modules.
+            </p>
           </div>
-          <h1 className="hero-main-title">User Management</h1>
-          <p className="hero-desc">
-            Manage system operators, analysts, and administrators. Assign role-based access for UrbanTransit IQ modules.
-          </p>
+          <div className="hero-right-actions">
+            <button className="btn-primary" onClick={() => handleOpenModal()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FaPlus /> Add User
+            </button>
+          </div>
         </div>
-        <div className="hero-right-actions">
-          <button className="btn-primary" onClick={() => handleOpenModal()} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <FaPlus /> Add User
-          </button>
-        </div>
-      </div>
+      </ScrollAnimate>
 
-      <div className="chart-card hud-panel hud-corners" style={{ marginTop: '20px' }}>
+      <ScrollAnimate type="up">
+        <div className="chart-card hud-panel hud-corners" style={{ marginTop: '20px' }}>
         <div className="chart-header">
           <div>
             <h3>System Roster</h3>
@@ -105,7 +109,7 @@ const UserManagement = () => {
         </div>
 
         <div className="table-responsive" style={{ overflowX: 'auto', marginTop: '15px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <table className='table-animate' style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
                 <th style={{ padding: '12px' }}>Name</th>
@@ -147,6 +151,7 @@ const UserManagement = () => {
           </table>
         </div>
       </div>
+      </ScrollAnimate>
 
       {isModalOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(5px)' }}>

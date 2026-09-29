@@ -4,6 +4,7 @@ import { FaExchangeAlt, FaShieldAlt, FaSlidersH, FaBolt, FaLock } from 'react-ic
 import KPICard from '../components/common/KPICard';
 import './WhatIfSimulator.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const WhatIfSimulator = () => {
   const [boarding, setBoarding] = useState(25);

@@ -17,6 +17,7 @@ import KPICard from "../components/common/KPICard";
 import PipelineBanner from "../components/common/PipelineBanner";
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './PassengerFlow.css';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const PassengerFlow = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
@@ -149,7 +150,8 @@ const PassengerFlow = () => {
       </div>
 
       {/* Directional Flow Bar Chart Container */}
-      <div className="pf-chart-card hud-panel hud-corners">
+      <ScrollAnimate type="up">
+<div className="pf-chart-card hud-panel hud-corners">
         <div className="pf-chart-header">
           <div className="pf-chart-title-group">
             <h3>Hourly Passenger Flow — Boarding vs Getting Off</h3>
@@ -205,9 +207,11 @@ const PassengerFlow = () => {
           style={{ width: '100%' }}
         />
       </div>
+</ScrollAnimate>
 
       {/* Top Boarding Terminals Ledger */}
-      <div className="pf-chart-card hud-panel hud-corners">
+      <ScrollAnimate type="up">
+<div className="pf-chart-card hud-panel hud-corners">
         <div className="pf-chart-header">
           <div className="pf-chart-title-group">
             <h3>Busiest Stations & Stops</h3>
@@ -219,7 +223,7 @@ const PassengerFlow = () => {
         </div>
 
         <div className="pf-table-wrapper">
-          <table className="data-table">
+          <table className="data-table table-animate">
             <thead>
               <tr>
                 <th style={{ width: '80px' }}>Rank</th>
@@ -296,6 +300,7 @@ const PassengerFlow = () => {
           </table>
         </div>
       </div>
+</ScrollAnimate>
     </div>
   );
 };

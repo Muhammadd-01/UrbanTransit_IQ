@@ -4,6 +4,7 @@ import { FaExclamationTriangle, FaShieldAlt, FaCrosshairs, FaClock, FaRoute, FaM
 import KPICard from '../components/common/KPICard';
 import './AnomalyDetection.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const AnomalyDetection = () => {
   const [anomalies, setAnomalies] = useState([]);
@@ -102,7 +103,8 @@ const AnomalyDetection = () => {
       </div>
 
       {/* Anomaly Category Filter Chips */}
-      <div className="chart-card hud-panel hud-corners">
+      <ScrollAnimate type="up">
+<div className="chart-card hud-panel hud-corners">
         <div className="audit-controls-header">
           <div>
             <h3>Live Unusual Activity Feed</h3>
@@ -178,6 +180,7 @@ const AnomalyDetection = () => {
           })}
         </div>
       </div>
+</ScrollAnimate>
     </div>
   );
 };

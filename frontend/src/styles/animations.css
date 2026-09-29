@@ -191,3 +191,72 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .kpi-tiles-row, .kpi-grid, .stats-grid, .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .dashboard-grid, .analytics-grid, .content-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .map-view-wrapper {
+    min-height: 300px !important;
+  }
+  .dual-pipeline-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 12px !important;
+  }
+  .kpi-tiles-row, .kpi-grid, .stats-grid, .metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .page-header h1, .page-title {
+    font-size: 1.3rem !important;
+  }
+  .glassmorphism-card, .glass-card, .metric-card {
+    padding: 14px !important;
+  }
+  table {
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .sidebar {
+    width: 0 !important;
+    transform: translateX(-100%) !important;
+  }
+  .sidebar.open {
+    width: 260px !important;
+    transform: translateX(0) !important;
+  }
+  .main-content {
+    margin-left: 0 !important;
+  }
+  .chart-container {
+    height: 250px !important;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .page-content {
+    padding: 8px !important;
+  }
+  .kpi-tiles-row {
+    gap: 8px !important;
+  }
+  .page-header h1, .page-title {
+    font-size: 1.1rem !important;
+  }
+}

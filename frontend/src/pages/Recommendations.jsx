@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import KPICard from '../components/common/KPICard';
 import './Recommendations.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const Recommendations = () => {
   const [recs, setRecs] = useState([]);
@@ -61,7 +62,8 @@ const Recommendations = () => {
                 : (r.priority === 2 ? '3px solid var(--color-warning)' : '3px solid var(--color-accent)') 
             }}
           >
-            <div className="rec-card-top">
+            <ScrollAnimate type="up">
+<div className="rec-card-top">
               <div className="rec-priority-pill">
                 <span className={`status-badge-chip ${r.priority === 1 ? 'quarantined' : (r.priority === 2 ? 'corrected' : 'valid')}`}>
                   PRIORITY #{r.priority || (i + 1)}
@@ -72,6 +74,7 @@ const Recommendations = () => {
                 Confidence: {r.confidence_level}
               </span>
             </div>
+</ScrollAnimate>
 
             <h3 className="rec-title">{r.recommendation}</h3>
 

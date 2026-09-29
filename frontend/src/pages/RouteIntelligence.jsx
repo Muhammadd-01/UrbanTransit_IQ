@@ -5,6 +5,7 @@ import { FaRoute, FaCheckCircle, FaExclamationTriangle, FaStar, FaTimes, FaBus, 
 import KPICard from '../components/common/KPICard';
 import './RouteIntelligence.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const RouteIntelligence = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
@@ -68,7 +69,7 @@ const RouteIntelligence = () => {
         </div>
 
         <div className="table-container">
-          <table className="data-table">
+          <table className="data-table table-animate">
             <thead>
               <tr>
                 <th>Corridor</th>

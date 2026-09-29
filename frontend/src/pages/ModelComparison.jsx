@@ -5,6 +5,7 @@ import { liveComparisonAPI, pipelineAPI } from '../api/client';
 import { FaCheckCircle, FaExclamationCircle, FaShieldAlt, FaBalanceScale, FaBolt, FaPython, FaExchangeAlt, FaCogs, FaDatabase, FaFileExport, FaInfoCircle, FaArrowRight, FaClock, FaUsers } from 'react-icons/fa';
 import KPICard from '../components/common/KPICard';
 import './ModelComparison.css';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const ModelComparison = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
@@ -453,7 +454,7 @@ const ModelComparison = () => {
           </div>
 
           <div className="table-container">
-            <table className="data-table">
+            <table className="data-table table-animate">
               <thead>
                 <tr>
                   <th>Case ID</th>

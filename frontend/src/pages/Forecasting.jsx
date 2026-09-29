@@ -6,6 +6,7 @@ import KPICard from '../components/common/KPICard';
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './Forecasting.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const Forecasting = () => {
   const [horizon, setHorizon] = useState(14);
@@ -65,7 +66,8 @@ const Forecasting = () => {
       </div>
 
       {/* Main Forecast Chart */}
-      <div className="chart-card hud-panel hud-corners">
+      <ScrollAnimate type="up">
+<div className="chart-card hud-panel hud-corners">
         <div className="chart-header">
           <div>
             <h3>Predicted Daily Passengers ({horizon}-Day Forecast)</h3>
@@ -116,6 +118,7 @@ const Forecasting = () => {
           style={{ width: '100%' }}
         />
       </div>
+</ScrollAnimate>
 
       {/* Objective Model Metrics Benchmark */}
       <div className="forecast-models-benchmark hud-panel">
@@ -139,7 +142,8 @@ const Forecasting = () => {
       </div>
 
       {/* Error KPI Cards */}
-      <div className="kpi-grid-four">
+      <ScrollAnimate type="up">
+<div className="kpi-grid-four">
         <KPICard 
           title="AVERAGE PREDICTION ERROR"
           value={forecastData?.metrics?.mae != null ? String(forecastData.metrics.mae) : 'Loading...'}
@@ -185,6 +189,7 @@ const Forecasting = () => {
           icon={<FaBrain />}
         />
       </div>
+</ScrollAnimate>
     </div>
   );
 };

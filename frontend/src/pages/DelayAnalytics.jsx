@@ -5,6 +5,7 @@ import { FaClock, FaCheckCircle, FaExclamationCircle, FaBrain, FaSlidersH, FaBol
 import KPICard from '../components/common/KPICard';
 import './DelayAnalytics.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const DelayAnalytics = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
@@ -26,26 +27,36 @@ const DelayAnalytics = () => {
     });
   }, [filters, getFilterParams]);
 
+  const [scanning, setScanning] = useState(false);
+
   const handlePredict = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const start = performance.now();
+    setScanning(true);
+    setPrediction(null);
+    
     try {
-      const res = await predictionsAPI.predictDelay({
-        route_id: routeId,
+      const { pipelineAPI } = await import('../api/client');
+      const res = await pipelineAPI.predictDelay({
+        route: routeId,
         hour: Number(hour),
-        passenger_load: Number(passengerLoad),
-        historical_delay: Number(historicalDelay),
-        day_of_week: 1,
-        is_peak: [7, 8, 9, 17, 18, 19].includes(Number(hour))
+        load: Number(passengerLoad)
       });
-      const diff = Math.round(performance.now() - start);
-      setLatency(`${diff}ms`);
-      setPrediction(res.data);
+      
+      // Simulate "AI Thinking" animation for 1.5s for UX
+      setTimeout(() => {
+        setLatency(`${res.data.latency_ms}ms`);
+        setPrediction(res.data);
+        setScanning(false);
+        setLoading(false);
+      }, 1500);
+      
     } catch (e) {
       console.error(e);
-    } finally {
+      setScanning(false);
       setLoading(false);
+      // If models aren't trained, show an error alert
+      alert(e.response?.data?.detail || "Failed to run prediction. Did you train the models?");
     }
   };
 
@@ -152,7 +163,8 @@ const DelayAnalytics = () => {
 
       {/* Dual Panel: Input Form & Inference Output */}
       <div className="dashboard-grid-two">
-        <div className="chart-card hud-panel hud-corners">
+        <ScrollAnimate type="up">
+<div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
               <h3>Predict a Delay</h3>
@@ -213,8 +225,10 @@ const DelayAnalytics = () => {
             </button>
           </form>
         </div>
+</ScrollAnimate>
 
-        <div className="chart-card hud-panel hud-corners">
+        <ScrollAnimate type="up">
+<div className="chart-card hud-panel hud-corners">
           <div className="chart-header">
             <div>
               <h3>Prediction Results</h3>
@@ -223,12 +237,20 @@ const DelayAnalytics = () => {
             <span className="badge-pill badge-gold">PREDICTION RESULT</span>
           </div>
 
-          {prediction ? (
+          {scanning ? (
+            <div className="inference-empty-state" style={{ animation: 'pulse 1.5s infinite' }}>
+              <div style={{ fontSize: '3rem', color: 'var(--color-cyan)', marginBottom: '15px' }} className="spinner-glow">
+                <FaBolt />
+              </div>
+              <h4 style={{ color: 'var(--color-cyan)' }}>AI Analyzing Pipeline...</h4>
+              <p>Scanning 2 million historical records and evaluating current network conditions.</p>
+            </div>
+          ) : prediction ? (
             <div className="inference-result-view">
               <div className="inference-result-box">
                 <span className="irb-label">PREDICTED DELAY</span>
-                <div className="inference-delay-val">
-                  {prediction?.predicted_delay || 0} <span className="text-dim">min</span>
+                <div className="inference-delay-val" style={{ color: prediction?.raw_pred === 'DELAYED' ? 'var(--color-coral)' : 'var(--color-emerald)', fontSize: '24px' }}>
+                  {prediction?.raw_pred || 'ON-TIME'}
                 </div>
                 <div className="irb-badge-wrap">
                   <span className={`status-badge-chip ${prediction?.severity?.toLowerCase() || 'unknown'}`}>
@@ -265,6 +287,7 @@ const DelayAnalytics = () => {
             </div>
           )}
         </div>
+</ScrollAnimate>
       </div>
     </div>
   );

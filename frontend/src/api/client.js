@@ -142,6 +142,7 @@ export default client;
 export const pipelineAPI = {
   executePipeline: (type, dataSplit = '70') => client.post(`/api/pipeline/execute?pipeline_type=${type}&data_split=${dataSplit}`),
   getStatus: () => client.get('/api/pipeline/status'),
+  predictDelay: (data) => client.post('/api/pipeline/predict', data),
 };
 
 export const liveComparisonAPI = {

@@ -16,6 +16,7 @@ import KPICard from '../components/common/KPICard';
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './ODAnalysis.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const ODAnalysis = () => {
   const { getFilterParams, filters } = useContext(FilterContext);
@@ -170,7 +171,8 @@ const ODAnalysis = () => {
       </div>
 
       {/* 8x8 Zonal Heatmap Container */}
-      <div className="od-chart-card hud-panel hud-corners">
+      <ScrollAnimate type="up">
+<div className="od-chart-card hud-panel hud-corners">
         <div className="od-chart-header">
           <div className="od-chart-title-group">
             <h3>Zonal Passenger Exchange Density Heatmap</h3>
@@ -225,9 +227,11 @@ const ODAnalysis = () => {
           />
         </div>
       </div>
+</ScrollAnimate>
 
       {/* Top High-Demand Commuter Corridors Ledger */}
-      <div className="od-chart-card hud-panel hud-corners">
+      <ScrollAnimate type="up">
+<div className="od-chart-card hud-panel hud-corners">
         <div className="od-chart-header">
           <div className="od-chart-title-group">
             <h3>Top High-Demand Origin-Destination Corridors</h3>
@@ -239,7 +243,7 @@ const ODAnalysis = () => {
         </div>
 
         <div className="od-table-wrapper">
-          <table className="data-table">
+          <table className="data-table table-animate">
             <thead>
               <tr>
                 <th style={{ width: '70px' }}>Rank</th>
@@ -309,6 +313,7 @@ const ODAnalysis = () => {
           </table>
         </div>
       </div>
+</ScrollAnimate>
     </div>
   );
 };

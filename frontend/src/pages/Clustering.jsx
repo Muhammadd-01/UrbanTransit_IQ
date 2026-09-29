@@ -5,6 +5,7 @@ import { FaMagic, FaProjectDiagram, FaCheckCircle, FaRoute } from 'react-icons/f
 import KPICard from '../components/common/KPICard';
 import './Clustering.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const Clustering = () => {
   const { getFilterParams, filters } = useContext(FilterContext);

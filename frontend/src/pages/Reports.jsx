@@ -3,6 +3,7 @@ import { FaFilePdf, FaDownload, FaFileCsv, FaChartPie, FaShieldAlt, FaBalanceSca
 import './Reports.css';
 import PipelineBanner from '../components/common/PipelineBanner';
 import { pipelineAPI, analyticsAPI } from '../api/client';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 const Reports = () => {
   const [downloadMsg, setDownloadMsg] = useState('');
@@ -150,10 +151,12 @@ const Reports = () => {
       {/* Export Cards Grid */}
       <div className="reports-cards-grid">
         <div className="chart-card hud-panel hud-corners report-card">
-          <div className="report-card-header">
+          <ScrollAnimate type="up">
+<div className="report-card-header">
             <FaCogs className="report-icon text-cyan" />
             <span className="badge-pill badge-aurora">PIPELINE RESULTS</span>
           </div>
+</ScrollAnimate>
           <h3>Pipeline Results</h3>
           <p>Export the trained model metrics from the pipeline status.</p>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -167,10 +170,12 @@ const Reports = () => {
         </div>
 
         <div className="chart-card hud-panel hud-corners report-card">
-          <div className="report-card-header">
+          <ScrollAnimate type="up">
+<div className="report-card-header">
             <FaUsers className="report-icon text-gold" />
             <span className="badge-pill badge-gold">PASSENGER ANALYTICS</span>
           </div>
+</ScrollAnimate>
           <h3>Passenger Analytics</h3>
           <p>Export passenger flow and analytics data.</p>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -184,10 +189,12 @@ const Reports = () => {
         </div>
 
         <div className="chart-card hud-panel hud-corners report-card">
-          <div className="report-card-header">
+          <ScrollAnimate type="up">
+<div className="report-card-header">
             <FaClock className="report-icon text-sky" />
             <span className="badge-pill badge-violet">DELAY REPORT</span>
           </div>
+</ScrollAnimate>
           <h3>Delay Report</h3>
           <p>Export delay analytics and prediction reports.</p>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -201,10 +208,12 @@ const Reports = () => {
         </div>
 
         <div className="chart-card hud-panel hud-corners report-card">
-          <div className="report-card-header">
+          <ScrollAnimate type="up">
+<div className="report-card-header">
             <FaRoute className="report-icon text-emerald" />
             <span className="badge-pill badge-emerald" style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10B981' }}>ROUTE PERFORMANCE</span>
           </div>
+</ScrollAnimate>
           <h3>Route Performance</h3>
           <p>Export overall route performance and metrics.</p>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -218,10 +227,12 @@ const Reports = () => {
         </div>
         
         <div className="chart-card hud-panel hud-corners report-card">
-          <div className="report-card-header">
+          <ScrollAnimate type="up">
+<div className="report-card-header">
             <FaChartPie className="report-icon text-cyan" />
             <span className="badge-pill badge-aurora">EXECUTIVE PDF</span>
           </div>
+</ScrollAnimate>
           <h3>Executive Summary Report</h3>
           <p>
             A complete overview of Karachi's transit performance including passenger numbers, fleet status, problem areas, and recommended actions.

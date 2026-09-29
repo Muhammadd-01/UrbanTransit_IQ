@@ -5,6 +5,7 @@ import { FaBus, FaCar, FaWrench, FaTools, FaCheckCircle, FaExclamationTriangle }
 import KPICard from '../components/common/KPICard';
 import './VehicleAnalytics.css';
 import PipelineBanner from '../components/common/PipelineBanner';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 
 const VehicleAnalytics = () => {
@@ -41,7 +42,8 @@ const VehicleAnalytics = () => {
       </div>
 
       {/* Fleet KPI Strip */}
-      <div className="kpi-grid-four">
+      <ScrollAnimate type="up">
+<div className="kpi-grid-four">
         <KPICard 
           title="BUSES IN SERVICE"
           value={String(data?.active_vehicles || 0)}
@@ -87,6 +89,7 @@ const VehicleAnalytics = () => {
           icon={<FaCheckCircle />}
         />
       </div>
+</ScrollAnimate>
 
       {/* Maintenance Table */}
       <div className="chart-card hud-panel hud-corners">
@@ -99,7 +102,7 @@ const VehicleAnalytics = () => {
         </div>
 
         <div className="table-container">
-          <table className="data-table">
+          <table className="data-table table-animate">
             <thead>
               <tr>
                 <th>Vehicle ID</th>

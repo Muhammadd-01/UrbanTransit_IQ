@@ -11,7 +11,7 @@ import {
   FaTimes
 } from 'react-icons/fa';
 import Plot from 'react-plotly.js';
-import { MapContainer as LeafletMap, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import { MapContainer as LeafletMap, TileLayer, Marker, Popup, Circle, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,6 +20,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import HolographicAnalyzer from '../components/common/HolographicAnalyzer';
 import { getPlotlyLayout, defaultPlotlyConfig } from '../utils/plotlyTheme';
 import './Dashboard.css';
+import ScrollAnimate from '../hooks/useScrollAnimate';
 
 // Fix Leaflet marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -208,7 +209,24 @@ const Dashboard = () => {
   } = React.useContext(require('../contexts/PipelineContext').PipelineContext);
 
   const [STATIONS, setSTATIONS] = useState([]);
-  
+  const [selectedRoute, setSelectedRoute] = useState(null);
+
+  // Build route polylines from stations
+  const routeLines = useMemo(() => {
+    const routeColors = { 'PB-01': '#E11D48', 'PB-08': '#F59E0B', 'GL-01': '#16A34A', 'GL-02': '#007AFF', 'PB-03': '#8B5CF6', 'PB-05': '#EC4899' };
+    const grouped = {};
+    STATIONS.forEach(st => {
+      const r = st.route || 'Unknown';
+      if (!grouped[r]) grouped[r] = [];
+      grouped[r].push(st);
+    });
+    return Object.entries(grouped).map(([route, stops]) => ({
+      route,
+      positions: stops.map(s => s.pos),
+      color: routeColors[route] || '#007AFF',
+      stops
+    }));
+  }, [STATIONS]);
   useEffect(() => {
     if (!isTrained) {
       setAlerts([]);
@@ -441,7 +459,8 @@ const Dashboard = () => {
           ZONE B: ASYMMETRICAL 2-WING COMMAND COCKPIT (70% Left Wing | 30% Right Wing)
           ========================================================================= */}
         {/* 1. Integrated Holographic GIS Map (NOW FULL WIDTH) */}
-        <div className="spatial-map-console hud-panel hud-corners">
+        <ScrollAnimate type="up">
+<div className="spatial-map-console hud-panel hud-corners">
           {/* Map Top Console Header */}
           <div className="console-toolbar">
             <div className="console-heading">
@@ -485,7 +504,70 @@ const Dashboard = () => {
                   {st.congestion === "Severe" && <Circle center={st.pos} radius={350} pathOptions={{ color: "#E11D48", fillColor: "#E11D48", fillOpacity: 0.15 }} />}
                 </React.Fragment>
               ))}
+              {/* Route Polylines — animated dashed lines connecting stops */}
+              {routeLines.map((rl, idx) => (
+                <Polyline
+                  key={`route-${idx}`}
+                  positions={rl.positions}
+                  pathOptions={{
+                    color: selectedRoute === rl.route ? '#FFFFFF' : rl.color,
+                    weight: selectedRoute === rl.route ? 5 : 3,
+                    opacity: selectedRoute && selectedRoute !== rl.route ? 0.25 : 0.85,
+                    dashArray: '10 6',
+                    className: 'map-route-line'
+                  }}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedRoute(prev => prev === rl.route ? null : rl.route);
+                      setSelectedStation(null);
+                    }
+                  }}
+                />
+              ))}
             </LeafletMap>
+            {/* Route Details Panel */}
+            <AnimatePresence>
+              {selectedRoute && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  style={{
+                    position: 'absolute', top: '12px', right: '12px', zIndex: 1000,
+                    background: 'rgba(15,23,42,0.92)', backdropFilter: 'blur(16px)',
+                    borderRadius: '14px', padding: '16px', minWidth: '220px',
+                    border: '1px solid rgba(255,255,255,0.12)', color: '#E2E8F0'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <strong style={{ color: routeLines.find(r => r.route === selectedRoute)?.color || '#007AFF', fontSize: '1rem' }}>
+                      Route {selectedRoute}
+                    </strong>
+                    <button onClick={() => setSelectedRoute(null)} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '1.1rem' }}>✕</button>
+                  </div>
+                  {routeLines.find(r => r.route === selectedRoute)?.stops.map((st, i) => (
+                    <motion.div
+                      key={st.id || i}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      style={{
+                        padding: '8px', marginBottom: '6px',
+                        background: 'rgba(255,255,255,0.06)', borderRadius: '8px',
+                        fontSize: '0.78rem', cursor: 'pointer'
+                      }}
+                      onClick={() => handleSelectStationWithAnimation(st)}
+                    >
+                      <div style={{ fontWeight: 600, color: '#F1F5F9' }}>{st.name}</div>
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '3px', color: '#94A3B8' }}>
+                        <span>Delay: <b style={{ color: st.delay > 10 ? '#E11D48' : '#16A34A' }}>{st.delayStr}</b></span>
+                        <span>Load: <b>{st.load}</b></span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
             <AnimatePresence>
               {selectedStation && (
                 <motion.div initial={{ opacity: 0, scale: 0.9, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 10 }} className="floating-station-chip">
@@ -493,9 +575,14 @@ const Dashboard = () => {
                   <div className="chip-header">
                     <FaRobot className="text-cyan" /> <span>{selectedStation.name}</span>
                   </div>
-                  <div className="chip-stats">
-                    <div><span>ANOMALY</span><strong className={selectedStation.anomaly !== "Normal" ? "text-coral" : "text-green"}>{selectedStation.anomaly}</strong></div>
-                    <div><span>LOAD</span><strong>{selectedStation.load} Passengers</strong></div>
+                  <div className="chip-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>ROUTE</span><div style={{ fontWeight: 600, color: '#38BDF8' }}>{selectedStation.route}</div></div>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>DELAY</span><div style={{ fontWeight: 600, color: selectedStation.delay > 10 ? '#E11D48' : '#10B981' }}>{selectedStation.delayStr}</div></div>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>LOAD</span><div style={{ fontWeight: 600, color: '#F8FAFC' }}>{selectedStation.load}</div></div>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>CONGESTION</span><div style={{ fontWeight: 600, color: selectedStation.congestion === 'Severe' ? '#E11D48' : selectedStation.congestion === 'High' ? '#F59E0B' : '#10B981' }}>{selectedStation.congestion}</div></div>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>ANOMALY</span><div style={{ fontWeight: 600, color: selectedStation.anomaly !== "Normal" ? '#E11D48' : '#10B981' }}>{selectedStation.anomaly}</div></div>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>VEHICLES</span><div style={{ fontWeight: 600, color: '#F8FAFC' }}>{selectedStation.vehicles} buses</div></div>
+                    <div><span style={{ fontSize: '0.65rem', color: '#94A3B8' }}>SPEED</span><div style={{ fontWeight: 600, color: '#38BDF8' }}>{selectedStation.speed}</div></div>
                   </div>
                 </motion.div>
               )}
@@ -533,6 +620,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+</ScrollAnimate>
 
       <div className={`spatial-cockpit-split ${!isTrained ? 'split-full-width' : ' '}`}>
         
@@ -542,10 +630,11 @@ const Dashboard = () => {
           {/* 1. Integrated Holographic GIS Map with Floating Telemetry HUD & Radar */}
 
           {/* 2. Hierarchical Metric Bento (Cohesive 4-Cell Telemetry Deck) */}
-          <div className="hierarchical-bento-grid">
+          <ScrollAnimate type="up">
+<div className="hierarchical-bento-grid">
             
             {/* Grand Hero Tile: Ridership */}
-            <div className="bento-tile tile-hero hud-panel hud-corners">
+            <div className="bento-tile tile-hero kpi-card-animated hud-panel hud-corners">
               <div className="tile-top-row">
                 <span className="tile-tech-tag">{evaluatorMode ? "DATABASE RECORDS" : "HOURLY VOLUME"}</span>
                 <FaUsers className="tile-icon text-cyan" />
@@ -563,7 +652,7 @@ const Dashboard = () => {
             </div>
 
             {/* Radial Reliability Ring Tile */}
-            <div className="bento-tile tile-radial hud-panel hud-corners">
+            <div className="bento-tile tile-radial kpi-card-animated hud-panel hud-corners">
               <div className="tile-top-row">
                 <span className="tile-tech-tag">{evaluatorMode ? "SCHEDULE TARGET" : "ON-TIME PERFORMANCE"}</span>
                 <FaCheckCircle className="tile-icon text-success" />
@@ -581,7 +670,7 @@ const Dashboard = () => {
             </div>
 
             {/* Congestion Velocity Tile */}
-            <div className="bento-tile tile-velocity hud-panel hud-corners">
+            <div className="bento-tile tile-velocity kpi-card-animated hud-panel hud-corners">
               <div className="tile-top-row">
                 <span className="tile-tech-tag">{evaluatorMode ? "AI PREDICTION" : "ROUTE DELAY"}</span>
                 <FaClock className="tile-icon text-coral" />
@@ -599,7 +688,7 @@ const Dashboard = () => {
             </div>
 
             {/* Dispatched Fleet Units Tile */}
-            <div className="bento-tile tile-fleet hud-panel hud-corners">
+            <div className="bento-tile tile-fleet kpi-card-animated hud-panel hud-corners">
               <div className="tile-top-row">
                 <span className="tile-tech-tag">{evaluatorMode ? "LIVE DATABASE" : "BUSES ON ROAD"}</span>
                 <FaBus className="tile-icon text-cyan" />
@@ -614,6 +703,7 @@ const Dashboard = () => {
             </div>
 
           </div>
+</ScrollAnimate>
 
         </div>
 
@@ -621,7 +711,8 @@ const Dashboard = () => {
         {isTrained && <div className="cockpit-right-wing">
           
           {/* 2. Autonomous Incident Mitigation Cockpit */}
-          <div className="intelligence-panel hud-panel hud-corners">
+          <ScrollAnimate type="up">
+<div className="intelligence-panel hud-panel hud-corners">
             <div className="intel-header">
               <div className="intel-tag coral-tag">
                 <FaExclamationCircle /> SMART ALERTS
@@ -658,6 +749,7 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
+</ScrollAnimate>
 
         </div>}
 
@@ -667,7 +759,8 @@ const Dashboard = () => {
       {/* =========================================================================
           NEW ZONE: MASSIVE PIPELINE ENGINE (Full Width)
           ========================================================================= */}
-      <div className="massive-pipeline-zone hud-panel hud-corners" style={{ margin: '30px 0', padding: '30px' }}>
+      <ScrollAnimate type="up">
+<div className="massive-pipeline-zone hud-panel hud-corners" style={{ margin: '30px 0', padding: '30px' }}>
         <div className="intel-header" style={{ textAlign: 'center', marginBottom: '30px' }}>
             <div className="intel-tag coral-tag" style={{ display: 'inline-block', marginBottom: '10px' }}>
               <FaMicrochip /> {isAdmin ? 'AI MODEL TRAINING CENTER' : 'PRODUCTION AI MODELS & PREDICTIONS'}
@@ -963,6 +1056,7 @@ const Dashboard = () => {
 
         </div>
       </div>
+</ScrollAnimate>
 
 {/* =========================================================================
           ZONE C: PANORAMIC ANALYTICAL BASIN (Asymmetric 60% : 40% Split)
